@@ -1,19 +1,21 @@
 #!/bin/sh
 
 np=$1
-echo $np
+
+# Project root
+base_dir="$(dirname "$(readlink -f "$0")")"
 
 osmium extract \
-			--polygon $('pwd')/poly/$np.poly \
+			--polygon $base_dir/poly/$np.poly \
 			--strategy simple \
 			--clean uid --clean user --clean changeset \
 			-O \
-			-o $('pwd')/output/$np-contours.osm \
-			$('pwd')/maps/sl-contours.osm.pbf
+			-o $base_dir/tmp/$np-contours.osm \
+			$base_dir/data/sl-contours.osm.pbf
 
-$('pwd')/tools/osmosis-0.49.2/bin/osmosis \
-            --read-xml file=$('pwd')/output/$np-contours.osm \
+$base_dir/tool/osmosis-0.49.2/bin/osmosis \
+            --read-xml file=$base_dir/tmp/$np-contours.osm \
   			--tag-filter reject-relations \
 			--tag-filter accept-ways \
 			--used-node \
-			--write-xml $('pwd')/output/$np-contours-cleansed.osm
+			--write-xml $base_dir/map/$np-contours-cleansed.osm

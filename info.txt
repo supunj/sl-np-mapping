@@ -1,0 +1,4 @@
+Geospatial Data - OpenStreetMap contributors
+Elevation Data - USGS SRTM
+Symbols - Various artists
+Project - https://github.com/supunj/sl-np-mapping
