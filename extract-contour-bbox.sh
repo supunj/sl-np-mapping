@@ -6,7 +6,7 @@ np=$1
 base_dir="$(dirname "$(readlink -f "$0")")"
 
 osmium extract \
-			--polygon $base_dir/poly/$np.poly \
+			--polygon $base_dir/poly/$np-boundary-polygon.geojson \
 			--strategy simple \
 			--clean uid --clean user --clean changeset \
 			-O \
