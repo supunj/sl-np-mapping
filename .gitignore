@@ -1,3 +1,5 @@
 tmp/*
 *.xml
 raster/*
+symbology-style.db
+db/*

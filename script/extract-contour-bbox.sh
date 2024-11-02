@@ -3,7 +3,7 @@
 np=$1
 
 # Project root
-base_dir="$(dirname "$(readlink -f "$0")")"
+base_dir=$2
 
 osmium extract \
 			--polygon $base_dir/poly/$np-boundary-polygon.geojson \

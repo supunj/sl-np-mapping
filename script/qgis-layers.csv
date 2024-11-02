@@ -1,0 +1,20 @@
+beach|multipolygons|natural = 'beach'|"#FFD700"|transparent|0.0
+basin|multipolygons|natural = 'water' AND INSTR(other_tags, '"water"=>"basin"') > 0|"#D1E9F6"|transparent|0.0
+lagoon|multipolygons|natural = 'water' AND INSTR(other_tags, '"water"=>"lagoon"') > 0|"#85CFCB"|transparent|0.0
+wetland|multipolygons|natural = 'wetland'|"#84C69B"|transparent|0.0
+lake|multipolygons|natural = 'water' AND INSTR(other_tags, '"water"=>"lake"') > 0|"#29A19C"|transparent|0.0
+tank|multipolygons|natural = 'water' AND INSTR(other_tags, '"water"=>"reservoir"') > 0|"#2EB6CC"|transparent|0.0
+pond|multipolygons|natural = 'water' AND INSTR(other_tags, '"water"=>"pond"') > 0|"#A0D2DD"|transparent|0.0
+waterhole|multipolygons|amenity = 'watering_place'|"#346751"|transparent|0.0
+rock|multipolygons|natural = 'bare_rock'|"#181C14"|transparent|0.0
+industrial|multipolygons|landuse = 'industrial'|"#DBD8E3"|transparent|0.0
+building|multipolygons|building = 'yes'|"#561050"|transparent|0.0
+stream|lines|waterway = 'strem'|"#346751"|transparent|0.8
+canal|lines|waterway = 'canal'|"#346751"|transparent|0.5
+river|lines|waterway = 'river'|"#346751"|transparent|1.5
+track|lines|highway = 'track'|"#9ec8b9"|transparent|1.0
+path|lines|highway = 'path' OR highway = 'footway' OR highway = 'steps'|"#9ec8b9"|transparent|0.5
+other_road|lines|highway = 'residential' OR highway = 'unclassified' OR highway = 'service'|"#B55400"|transparent|0.8
+tertiary_road|lines|highway = 'tertiary'|"#346751"|transparent|1.0
+secondar_road|lines|highway = 'secondary'|"#346751"|transparent|1.5
+boundary|multipolygons|boundary = 'national_park' AND type = 'boundary'|transparent|"#9EC8B9"|1.0

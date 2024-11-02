@@ -2,15 +2,14 @@
 
 np=$1
 
-base_dir="$(dirname "$(readlink -f "$0")")"
+base_dir=$2
 
 case "$np" in
     "lahugala") name="Lahugala Kitulana National Park";;
     "kumana") name="Kumana National Park";;
+    "yb1") name="Yala National Park - Block 1";;
     *) break;;
 esac
-
-echo $name
 
 osmium tags-filter \
 			-O \

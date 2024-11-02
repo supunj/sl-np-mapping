@@ -3,7 +3,7 @@
 np=$1
 
 # Project root
-base_dir="$(dirname "$(readlink -f "$0")")"
+base_dir=$2
 
 # Extract the extent line using grep and then process it with awk
 extent_line=$(echo "$(ogrinfo -al -geom=NO $base_dir/poly/$np-boundary-polygon.geojson)" | grep "Extent:")

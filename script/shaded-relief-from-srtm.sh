@@ -4,7 +4,7 @@
 np=$1
 
 # Project root
-base_dir="$(dirname "$(readlink -f "$0")")"
+base_dir=$2
 
 # Clean-up the tmp
 rm $base_dir/tmp/*
@@ -12,7 +12,7 @@ rm $base_dir/tmp/*
 # Create the hgt file list for the use with  gdalwrap
 ls -1 $base_dir/data/srtm/*.hgt > $base_dir/tmp/hgt-list.txt
 
-set -- $(echo $($base_dir/get-bbox-for-park-polygon.sh $np) | awk -F '[|]+' '{print $1, $2, $3, $4}')
+set -- $(echo $($base_dir/script/get-bbox-for-park-polygon.sh $np $base_dir) | awk -F '[|]+' '{print $1, $2, $3, $4}')
 echo "$1 $2 $3 $4" 
 
 # Extract only the elevation data for the given park plygon and write to a GeoTiff

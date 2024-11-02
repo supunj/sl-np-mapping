@@ -4,7 +4,7 @@ np=$1
 size=$2
 
 # Project root
-base_dir="$(dirname "$(readlink -f "$0")")"
+base_dir=$2
 
 # Clean-up the tmp
 rm $base_dir/tmp/*
