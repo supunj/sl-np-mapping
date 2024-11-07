@@ -16,5 +16,7 @@ $base_dir/tool/osmosis-0.49.2/bin/osmosis \
 # Polulate spatialite
 ogr2ogr -f "SQLite" -dsco SPATIALITE=YES $base_dir/db/$np.db $base_dir/tmp/$np-cleansed-merged.osm
 
+spatialite $base_dir/db/$np.db < $base_dir/script/enrich-and-add-geometry.sql
+
 # Generate QGIS project
 python3 $base_dir/script/generate-qgis-project.py $np $base_dir/db/$np.db $base_dir/script/qgis-layers.csv $base_dir/qgis/$np.qgz

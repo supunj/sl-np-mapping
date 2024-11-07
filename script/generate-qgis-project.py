@@ -1,7 +1,8 @@
-from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes
+from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol
 import csv
 import sys
 from PyQt5.QtCore import Qt
+from qgis.analysis import QgsNativeAlgorithms
 
 # Check if the database path and properties file path are provided
 if len(sys.argv) < 4:
@@ -40,20 +41,51 @@ with open(layers_file, mode='r', newline='') as file:
         # Check if the layer is valid
         if layer.isValid():
             if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-                #symbol = QgsFillSymbol.createSimple({'color': 'blue', 'outline_color': 'white', 'outline_width': '0.0'})
                 symbol = QgsFillSymbol.createSimple({'color': row[3], 'outline_color': row[4], 'outline_width': row[5]})
-                #symbol.deleteSymbolLayer(1)
-                #symbol.symbolLayer(0).setStrokeWidth(0.0)
-                if float(row[5]) == 0: symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+                if float(row[5]) == 0: symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)                
+                layer.setOpacity(0.85)
             elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-                symbol = QgsLineSymbol.createSimple({'color': row[4], 'width': row[5]})
+                symbol = QgsLineSymbol.createSimple({'color': row[3], 'width': row[5]})
+            elif layer.geometryType() == QgsWkbTypes.PointGeometry:
+                symbol = QgsMarkerSymbol.createSimple({'name': 'circle', 'color': row[3], 'size': row[5]})
 
             layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
             # Add the layer to the new project
             project.addMapLayer(layer)
             print("Layer added to the new project.")
         else:
-            print("Layer failed to load.")
+            print("Layer failed to load.")  
+
+# Load the input SpatiaLite layers
+boundary = project.instance().mapLayersByName("boundary")[0]
+all_poly_sans_boundary = project.instance().mapLayersByName("all_poly_sans_boundary")[0]
+
+sys.path.append('/usr/share/qgis/python/plugins/')
+from qgis import processing
+from processing.core.Processing import Processing
+Processing.initialize()
+qgs.processingRegistry().addProvider(QgsNativeAlgorithms())
+
+difference_result = processing.run("qgis:difference", {
+    'INPUT':boundary.dataProvider().dataSourceUri(),
+    'OVERLAY':all_poly_sans_boundary.dataProvider().dataSourceUri(),
+    'OUTPUT':'spatialite://dbname=' + db_path + ' table="forest_cover" (geom)' ,'GRID_SIZE':None
+})
+
+# Load the resulting layer into the project
+forest_cover_layer = QgsVectorLayer('dbname=' + db_path + ' table="forest_cover" (geom)', "forest_cover", "spatialite")
+#boundary.renderer().co
+symbol = QgsFillSymbol.createSimple({'color': "#668B4E", 'outline_color': "transparent", 'outline_width': 0})
+symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+forest_cover_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+forest_cover_layer.setOpacity(0.85)
+project.addMapLayer(forest_cover_layer)
+project.removeMapLayer(all_poly_sans_boundary)
+
+print(forest_cover_layer.dataProvider().dataSourceUri())
+
+print("Difference layer created successfully.")
 
 # Save the project to the specified path
 project.write(new_project_path)
