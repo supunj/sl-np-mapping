@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='false' generator='JOSM'>
+  <node id='25368' action='modify' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.28850301432' lon='81.3699287619' />
+  <node id='25369' action='modify' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.29864382796' lon='81.3738555159' />
+  <node id='25370' action='modify' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.30096689711' lon='81.38794130954' />
+  <node id='25371' action='modify' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.3261460157' lon='81.37599325662' />
+  <node id='25372' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.337434' lon='81.383625' />
+  <node id='25373' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.35502' lon='81.39255' />
+  <node id='25374' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.367313' lon='81.395838' />
+  <node id='25375' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.419285' lon='81.397873' />
+  <node id='25376' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.425509' lon='81.437175' />
+  <node id='25377' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.41913' lon='81.471936' />
+  <node id='25378' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.399057' lon='81.500903' />
+  <node id='25379' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.385675' lon='81.541457' />
+  <node id='25380' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.385364' lon='81.569171' />
+  <node id='25381' action='modify' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.37042741708' lon='81.56986941797' />
+  <node id='25382' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.359377' lon='81.560873' />
+  <node id='25383' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.353775' lon='81.530966' />
+  <node id='25384' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.342726' lon='81.512333' />
+  <node id='25385' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.326229' lon='81.501842' />
+  <node id='25386' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.304441' lon='81.490725' />
+  <node id='25387' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.291212' lon='81.452833' />
+  <node id='25452' action='modify' timestamp='1977-05-10T01:27:00Z' version='1' lat='6.25131230667' lon='81.40766135216' />
+  <way id='579' action='modify' timestamp='1977-05-10T01:27:00Z' version='1'>
+    <nd ref='25452' />
+    <nd ref='25368' />
+    <nd ref='25369' />
+    <nd ref='25370' />
+    <nd ref='25371' />
+    <nd ref='25372' />
+    <nd ref='25373' />
+    <nd ref='25374' />
+    <nd ref='25375' />
+    <nd ref='25376' />
+    <nd ref='25377' />
+    <nd ref='25378' />
+    <nd ref='25379' />
+    <nd ref='25380' />
+    <nd ref='25381' />
+    <nd ref='25382' />
+    <nd ref='25383' />
+    <nd ref='25384' />
+    <nd ref='25385' />
+    <nd ref='25386' />
+    <nd ref='25387' />
+    <nd ref='25452' />
+    <tag k='area' v='yes' />
+    <tag k='name' v='yb1' />
+  </way>
+</osm>

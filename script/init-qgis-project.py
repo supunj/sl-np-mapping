@@ -2,7 +2,7 @@ from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceU
 import csv
 import sys
 from PyQt5.QtCore import Qt
-from qgis.analysis import QgsNativeAlgorithms
+# from qgis.analysis import QgsNativeAlgorithms
 
 # Check if the database path and properties file path are provided
 if len(sys.argv) < 4:
@@ -33,7 +33,7 @@ with open(layers_file, mode='r', newline='') as file:
     # Loop through each row in the CSV file
     for row in reader:
         print()  # Print the row, or perform other operations as needed
-        uri.setDataSource("", row[1], "GEOMETRY", row[2], "ogc_fid")
+        uri.setDataSource("", row[1], "geom", row[2], "ogc_fid")
 
         # Create a new vector layer from the URI
         layer = QgsVectorLayer(uri.uri(), row[0], "spatialite")
@@ -42,7 +42,7 @@ with open(layers_file, mode='r', newline='') as file:
         if layer.isValid():
             if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
                 symbol = QgsFillSymbol.createSimple({'color': row[3], 'outline_color': row[4], 'outline_width': row[5]})
-                if float(row[5]) == 0: symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)                
+                if float(row[5]) == 0: symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
                 layer.setOpacity(0.85)
             elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                 symbol = QgsLineSymbol.createSimple({'color': row[3], 'width': row[5]})
@@ -57,35 +57,33 @@ with open(layers_file, mode='r', newline='') as file:
         else:
             print("Layer failed to load.")  
 
-# Load the input SpatiaLite layers
-boundary = project.instance().mapLayersByName("boundary")[0]
-all_poly_sans_boundary = project.instance().mapLayersByName("all_poly_sans_boundary")[0]
+# ----This segment was used to invoke QGIS functions to do geometric manipulations. They were moved to Spatialite for flexibility. But keeping this segment in case it is needed in the future.----
+# # Load the input SpatiaLite layers
+# boundary = project.instance().mapLayersByName("boundary")[0]
+# all_poly_sans_boundary = project.instance().mapLayersByName("all_poly_sans_boundary")[0]
 
-sys.path.append('/usr/share/qgis/python/plugins/')
-from qgis import processing
-from processing.core.Processing import Processing
-Processing.initialize()
-qgs.processingRegistry().addProvider(QgsNativeAlgorithms())
+# sys.path.append('/usr/share/qgis/python/plugins/')
+# from qgis import processing
+# from processing.core.Processing import Processing
+# qgs.processingRegistry().addProvider(QgsNativeAlgorithms())
 
-difference_result = processing.run("qgis:difference", {
-    'INPUT':boundary.dataProvider().dataSourceUri(),
-    'OVERLAY':all_poly_sans_boundary.dataProvider().dataSourceUri(),
-    'OUTPUT':'spatialite://dbname=' + db_path + ' table="forest_cover" (geom)' ,'GRID_SIZE':None
-})
+# difference_result = processing.run("qgis:difference", {
+#     'INPUT':boundary.dataProvider().dataSourceUri(),
+#     'OVERLAY':all_poly_sans_boundary.dataProvider().dataSourceUri(),
+#     'OUTPUT':'spatialite://dbname=' + db_path + ' table="forest_cover_2" (geom)' ,'GRID_SIZE':None
+# })
 
-# Load the resulting layer into the project
-forest_cover_layer = QgsVectorLayer('dbname=' + db_path + ' table="forest_cover" (geom)', "forest_cover", "spatialite")
-#boundary.renderer().co
-symbol = QgsFillSymbol.createSimple({'color': "#668B4E", 'outline_color': "transparent", 'outline_width': 0})
-symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
-forest_cover_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-forest_cover_layer.setOpacity(0.85)
-project.addMapLayer(forest_cover_layer)
-project.removeMapLayer(all_poly_sans_boundary)
+# # Load the resulting layer into the project
+# forest_cover_layer = QgsVectorLayer('dbname=' + db_path + ' table="forest_cover_2" (geom)', "forest_cover_2", "spatialite")
+# symbol = QgsFillSymbol.createSimple({'color': "#668B4E", 'outline_color': "transparent", 'outline_width': 0})
+# symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+# forest_cover_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+# forest_cover_layer.setOpacity(0.85)
+# project.addMapLayer(forest_cover_layer)
+# #project.removeMapLayer(all_poly_sans_boundary)
 
-print(forest_cover_layer.dataProvider().dataSourceUri())
-
-print("Difference layer created successfully.")
+# print("Difference layer created successfully.")
+#...............................................................................................................................................................................................----
 
 # Save the project to the specified path
 project.write(new_project_path)
