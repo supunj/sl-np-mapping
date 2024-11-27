@@ -5,7 +5,7 @@ create view background_polygons as
 with background_split as (
     select 
         ST_Split(background.geom, coastline.geom) as background_collection
-    FROM (select ST_Union(geom) as geom
+    from (select ST_Union(geom) as geom
 		  from multipolygons
 		  where name = '{$np}_background') as background,
         ( select ST_LineMerge(ST_Union(geom)) as geom
@@ -29,30 +29,45 @@ insert into multipolygons(name, type, place, geom)
 
 -- Crop all ways to the background polygon
 update lines
-set geom = (
-    select case
-        when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'LINESTRING' then
-            ST_Intersection(lines.geom, polygons.geom)
-        when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then
-            ST_GeometryN(ST_Intersection(lines.geom, polygons.geom), 1)
-        else null
-    end
-    from (
-          select ST_Union(geom) as geom
-          from multipolygons
-          where name = '{$np}_background'
-         ) as polygons
-    where ST_Intersects(lines.geom, polygons.geom)
-)
-where exists (
-    select 1
-    from (
-          select ST_Union(geom) as geom
-          from multipolygons
-          where name = '{$np}_background'
-         ) as polygons
-    where ST_Intersects(lines.geom, polygons.geom)
-);
+set geom = case
+            when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(lines.geom, polygons.geom)
+            when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(lines.geom, polygons.geom), 1)
+            else null
+           end
+from (
+      select ST_Union(geom) as geom
+      from multipolygons
+      where name = '{$np}_background'
+      ) as polygons;
+
+-- Crop contours to the background polygon
+update contours
+set geom = case
+               when ST_GeometryType(ST_Intersection(contours.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(contours.geom, polygons.geom)
+               when ST_GeometryType(ST_Intersection(contours.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(contours.geom, polygons.geom), 1)
+               else null
+           end
+from (
+      select ST_Union(multipolygons.geom) as geom
+      from multipolygons
+      where name = '{$np}_background'
+     ) as polygons;
+
+-- Remove the points outside of the background polygon
+delete
+from points
+where not ST_Within(geom, (select ST_Union(multipolygons.geom) as geom
+                           from multipolygons
+                           where name = '{$np}_background'));
+
+-- Tag contours
+alter table contours add column type text;
+update contours
+set type = case
+            when elev % 100 = 0 then 'major'
+            when elev % 20 = 0 then 'medium'
+            else 'minor'
+           end;
 
 -- Remove the original background polygon
 delete from multipolygons where name = '{$np}_background';
@@ -93,7 +108,7 @@ select  case
         end as name,
         case
           when ST_Difference(boundary.geom, other_poly.geom) is not null then ST_Multi(ST_Difference(boundary.geom, other_poly.geom))
-          else ST_Multi(ST_Buffer(ST_Centroid(other_poly.geom), 0.1))
+          else ST_Multi(ST_Buffer(ST_Centroid(other_poly.geom), 0.01))
         end as geom
 from (
       select ST_Union(geom) as geom
@@ -133,7 +148,27 @@ from (with boundary_and_other_poly as (
           ST_Intersects(multipolygons.geom, boundary_and_other_poly.geom)) as diff
 where multipolygons.name = diff.name;
 
--- Insert points to each named multipolygon
+-- For some reason man_made='clearcut' tagged polygons end up in lines table as closed lines. Make multipolygons from those and insert into polygons table. Then delete lines
+insert into multipolygons(osm_id, osm_way_id, name, man_made, other_tags, geom)
+select osm_id, osm_id, name, man_made, other_tags, ST_Multi(ST_MakePolygon(geom))
+from lines
+where man_made = 'clearcut' and ST_IsClosed(geom);
+
+delete 
+from lines
+where man_made = 'clearcut';
+
+-- Make contour lines more rounder (Visually pleasing)
+
+
+-- Insert a point in the middle of culverts
+insert into points(name, other_tags, geom) 
+select name, other_tags,ST_PointN(ST_GeometryN(geom, 1), ST_NPoints(geom) / 2 + 1) AS midpoint
+from lines
+where waterway is not null and
+      INSTR(other_tags, '"tunnel"=>"culvert"') > 0;
+
+-- Insert points to each named multi-polygon
 insert into points(name, geom) 
     select name,ST_Centroid(geom)
     from multipolygons

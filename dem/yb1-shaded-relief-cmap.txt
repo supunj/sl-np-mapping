@@ -1,0 +1,15 @@
+#0    238 238 238  255  # Sea level (0m) - Light gray (#eeeeee)
+#1    50  50  50   255  # Very low terrain (1m) - Darker gray
+#25   100 100 100  255  # Low terrain (25m) - Medium gray
+#50   160 160 160  255  # Mid terrain (50m) - Lighter gray
+#75   200 200 200  255  # High terrain (75m) - Even lighter gray
+#100  230 230 230  255  # Very high terrain (100m) - Near white
+#125  255 255 255  255  # Max terrain (125m) - White
+
+0     74  171 210  255  # Sea level (0m) - Vibrant aqua-blue (#4aabd2) with full opacity
+1     50   50  50  200  # Very low terrain (1m) - Dark gray with some transparency
+25   100  100 100  220  # Low terrain (25m) - Medium gray with partial transparency
+50   160  160 160  240  # Mid terrain (50m) - Lighter gray with higher transparency
+75   200  200 200  255  # High terrain (75m) - Even lighter gray, fully opaque
+100  230  230 230  255  # Very high terrain (100m) - Near white, fully opaque
+125  255  255 255  255  # Max terrain (125m) - White, fully opaque

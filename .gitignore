@@ -1,5 +1,6 @@
 tmp/*
-*.xml
+*.aux.xml
 raster/*
 symbology-style.db
 db/*
+var/*

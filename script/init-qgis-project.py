@@ -1,7 +1,8 @@
-from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol
+from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol
 import csv
 import sys
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
 # from qgis.analysis import QgsNativeAlgorithms
 
 # Check if the database path and properties file path are provided
@@ -14,6 +15,7 @@ np = sys.argv[1]
 db_path = sys.argv[2]
 layers_file = sys.argv[3]
 new_project_path = sys.argv[4]
+symbol_path = sys.argv[5]
 
 # Initialize QGIS Application in headless mode (for standalone scripts)
 qgs = QgsApplication([], False)
@@ -21,6 +23,8 @@ qgs.initQgis()
 
 # New QGIS project
 project = QgsProject.instance()
+project.writeEntry('Paths', 'Absolute', False)  # Set paths to relative
+project.write(new_project_path)
 
 # Set up the URI for the SpatiaLite layer with the SQL query
 uri = QgsDataSourceUri()
@@ -43,11 +47,23 @@ with open(layers_file, mode='r', newline='') as file:
             if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
                 symbol = QgsFillSymbol.createSimple({'color': row[3], 'outline_color': row[4], 'outline_width': row[5]})
                 if float(row[5]) == 0: symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
-                layer.setOpacity(0.85)
+                #layer.setOpacity(0.85)
             elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                 symbol = QgsLineSymbol.createSimple({'color': row[3], 'width': row[5]})
             elif layer.geometryType() == QgsWkbTypes.PointGeometry:
-                symbol = QgsMarkerSymbol.createSimple({'name': 'circle', 'color': row[3], 'size': row[5]})
+                #symbol = QgsMarkerSymbol.createSimple({'name': 'circle', 'color': row[3], 'size': row[5]})
+                # Create an SVG marker symbol layer
+                svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path + "/" + row[0] + ".svg")
+
+                # Customize properties (optional)
+                colour = QColor(row[3])
+                svg_symbol_layer.setColor(colour)
+                svg_symbol_layer.setSize(float(row[5]))  # Set size of the symbol
+                svg_symbol_layer.setAngle(0)  # Set angle if needed
+
+                # Create a marker symbol and add the SVG layer to it
+                symbol = QgsMarkerSymbol()
+                symbol.changeSymbolLayer(0, svg_symbol_layer)
 
             layer.setRenderer(QgsSingleSymbolRenderer(symbol))
 
