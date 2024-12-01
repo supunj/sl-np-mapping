@@ -13,19 +13,39 @@ with background_split as (
 		  where INSTR(other_tags, '"natural"=>"coastline"')) as coastline
     where ST_Intersects(background.geom, coastline.geom)
 )
-select 
-    ST_GeometryN(background_collection, 2) as terrain,
-    ST_GeometryN(background_collection, 1) as ocean
-from background_split
-where ST_NumGeometries(background_collection) = 2;
+select geom,
+	 (case
+	   when (select ST_Contains((select ST_Union(geom) from sl), ST_PointOnSurface(geom)) from background_split) = 1 then 'terrain'
+	   else 'ocean'
+	  end) as type
+from (select ST_GeometryN(background_collection, 1) as geom
+      from background_split
+	where ST_NumGeometries(background_collection) = 2
+	union
+	select ST_GeometryN(background_collection, 2) as geom
+      from background_split
+	where ST_NumGeometries(background_collection) = 2) as polygon_part;
 
-insert into multipolygons(name, type, natural, other_tags, geom)
-                select '{$np}_ocean', 'multipolygon', 'water', '"water"=>"ocean"', ST_Multi(ocean)
-                from background_polygons;
-
-insert into multipolygons(name, type, place, geom)
-                select '{$np}_terrain', 'multipolygon', 'island', ST_Multi(terrain)
-                from background_polygons;
+insert into multipolygons(name, type, natural, place, other_tags, geom)
+				  select (case
+				            when type = 'terrain' then '{$np}_terrain'
+				            else '{$np}_ocean'
+				         end) as name,
+				         'multipolygon' as type, 
+				         (case
+						 when type = 'terrain' then null
+						 else 'water'
+					   end) as natural,
+                                 (case
+						 when type = 'terrain' then 'island'
+						 else null
+					   end) as place,
+					   (case
+						 when type = 'terrain' then null
+						 else '"water"=>"ocean"'
+					   end) as other_tags,
+					   ST_Multi(geom) as geom
+				  from background_polygons;
 
 -- Crop all ways to the background polygon
 update lines
@@ -89,7 +109,6 @@ where boundary is not 'national_park' and
       name is not '{$np}_terrain' and
       name is not '{$np}_ocean' and
 	    ST_IsValid(geom);
-
 
 -- Derive the forest cover
 drop table if exists forest_cover;
@@ -160,16 +179,34 @@ where man_made = 'clearcut';
 
 -- Make contour lines more rounder (Visually pleasing)
 
-
--- Insert a point in the middle of culverts
-insert into points(name, other_tags, geom) 
-select name, other_tags,ST_PointN(ST_GeometryN(geom, 1), ST_NPoints(geom) / 2 + 1) AS midpoint
-from lines
-where waterway is not null and
-      INSTR(other_tags, '"tunnel"=>"culvert"') > 0;
-
 -- Insert points to each named multi-polygon
 insert into points(name, geom) 
     select name,ST_Centroid(geom)
     from multipolygons
     where name is not NULL;
+
+-- Insert a point in the middle of each culverts
+insert into points(name, other_tags, geom)
+select culverts.name, culverts.other_tags, ST_Intersection(culverts.geom, highways.geom) as intersection_point
+from (select *
+	from lines
+	where waterway is not null and
+            INSTR(other_tags, '"tunnel"=>"culvert"') > 0) as culverts,
+	(select *
+	 from lines
+	 where highway is not null) as highways 
+where ST_Intersects(culverts.geom, highways.geom) and
+      GeometryType(ST_Intersection(culverts.geom, highways.geom)) = 'POINT';
+
+-- Insert a point in the middle of each bridges
+insert into points(name, other_tags, geom)
+select bridges.name, bridges.other_tags, ST_Intersection(bridges.geom, waterways.geom) as intersection_point
+from (select *
+	from lines
+	where highway is not null and
+            INSTR(other_tags, '"bridge"=>') > 0) as bridges,
+     (select *
+	from lines
+	where waterway is not null) as waterways	 
+where ST_Intersects(bridges.geom, waterways.geom) and
+      GeometryType(ST_Intersection(bridges.geom, waterways.geom)) = 'POINT';

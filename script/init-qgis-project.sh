@@ -16,4 +16,4 @@ fi
 
 # Generate QGIS project
 sed 's/{$np}/'$np'/g' $base_dir/qgis/layer/$np-qgis-layers.csv > $base_dir/tmp/$np-qgis-layers.csv
-python3 $base_dir/script/init-qgis-project.py $np $base_dir/db/$np.db $base_dir/tmp/$np-qgis-layers.csv  $base_dir/qgis/$np.qgz $base_dir/symbol
+python3 $base_dir/script/init-qgis-project.py $np $base_dir/db/$np.db $base_dir/tmp/$np-qgis-layers.csv $base_dir/var/$np-srtm-combined-transparent-geo-referenced-cropped.tiff $base_dir/qgis/$np.qgz $base_dir/symbol

@@ -1,8 +1,9 @@
-from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol
+from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol, QgsRasterLayer
 import csv
 import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
+from pathlib import Path
 # from qgis.analysis import QgsNativeAlgorithms
 
 # Check if the database path and properties file path are provided
@@ -14,8 +15,9 @@ if len(sys.argv) < 4:
 np = sys.argv[1]
 db_path = sys.argv[2]
 layers_file = sys.argv[3]
-new_project_path = sys.argv[4]
-symbol_path = sys.argv[5]
+hill_shade_raster_file = sys.argv[4]
+new_project_path = sys.argv[5]
+symbol_path = sys.argv[6]
 
 # Initialize QGIS Application in headless mode (for standalone scripts)
 qgs = QgsApplication([], False)
@@ -29,6 +31,17 @@ project.write(new_project_path)
 # Set up the URI for the SpatiaLite layer with the SQL query
 uri = QgsDataSourceUri()
 uri.setDatabase(db_path)
+
+# First add the raster layer with hill-shading so that it sits at the bottom
+hill_shade_raster_layer = QgsRasterLayer(hill_shade_raster_file, "hill_shade")
+
+# Check if the layer is valid
+if hill_shade_raster_layer.isValid():
+    # Add the raster layer to the current project
+    project.addMapLayer(hill_shade_raster_layer)
+    print("Raster layer added successfully.")
+else:
+    print("Failed to load the raster layer.")
 
 # Open and read the CSV file
 with open(layers_file, mode='r', newline='') as file:
@@ -51,21 +64,22 @@ with open(layers_file, mode='r', newline='') as file:
             elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                 symbol = QgsLineSymbol.createSimple({'color': row[3], 'width': row[5]})
             elif layer.geometryType() == QgsWkbTypes.PointGeometry:
-                #symbol = QgsMarkerSymbol.createSimple({'name': 'circle', 'color': row[3], 'size': row[5]})
-                # Create an SVG marker symbol layer
-                svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path + "/" + row[0] + ".svg")
+                if Path(symbol_path + "/" + row[0] + ".svg").is_file():
+                    # Create an SVG marker symbol layer
+                    svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path + "/" + row[0] + ".svg")
+                    svg_symbol_layer.setColor(QColor(row[3]))
+                    svg_symbol_layer.setSize(float(row[5]))
+                    svg_symbol_layer.setAngle(0)
 
-                # Customize properties (optional)
-                colour = QColor(row[3])
-                svg_symbol_layer.setColor(colour)
-                svg_symbol_layer.setSize(float(row[5]))  # Set size of the symbol
-                svg_symbol_layer.setAngle(0)  # Set angle if needed
-
-                # Create a marker symbol and add the SVG layer to it
-                symbol = QgsMarkerSymbol()
-                symbol.changeSymbolLayer(0, svg_symbol_layer)
-
+                    # Create a marker symbol and add the SVG layer to it
+                    symbol = QgsMarkerSymbol()
+                    symbol.changeSymbolLayer(0, svg_symbol_layer)
+                else:
+                    symbol = QgsMarkerSymbol.createSimple({'name': 'circle', 'color': row[3], 'size': row[5]})                             
+            
             layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+            # Set opacity
+            layer.renderer().symbol().setOpacity(float(row[6]))
 
             # Add the layer to the new project
             project.addMapLayer(layer)

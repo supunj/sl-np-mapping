@@ -30,8 +30,6 @@ $base_dir/tool/osmosis-0.49.2/bin/osmosis \
         	--bounding-polygon file=$base_dir/poly/$np.poly completeWays=yes \
         	--write-xml $base_dir/tmp/$np-cleansed-phase-1.osm
 
-#            --used-node \
-
 osmium extract \
 			--polygon $base_dir/poly/$np.poly \
 			--set-bounds \
@@ -77,7 +75,7 @@ $base_dir/tool/osmosis-0.49.2/bin/osmosis \
 # Create the hgt file list for the use with  gdalwrap
 ls -1 $base_dir/dem/srtm/*.hgt > $base_dir/tmp/hgt-list.txt
 
-set -- $(echo $($base_dir/script/get-bbox-for-park-polygon.sh $np $base_dir) | awk -F '[|]+' '{print $1, $2, $3, $4}')
+set -- $(echo $($base_dir/script/get-bbox-for-polygon.sh $base_dir/poly/$np.geojson) | awk -F '[|]+' '{print $1, $2, $3, $4}')
 echo "$1 $2 $3 $4" 
 
 # Extract only the elevation data for the given park polygon and write to a GeoTiff
@@ -85,6 +83,9 @@ gdalwarp -overwrite -te $1 $2 $3 $4 -tr 0.000025 0.000025 -ot Float64 -r cubicsp
 
 # Create the SpatiaLite db
 $base_dir/script/init-db.sh $np $base_dir
+
+# Generate hill-shading
+$base_dir/script/init-shaded-relief.sh $np $base_dir
 
 # Generate the QGIS project
 $base_dir/script/init-qgis-project.sh $np $base_dir
