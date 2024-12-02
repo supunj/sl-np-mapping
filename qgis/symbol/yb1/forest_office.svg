@@ -1,0 +1,4 @@
+<svg width="580" height="580">
+  <path fill="param(fill)" fill-opacity="param(fill-opacity)" d="M 231.847656 472.574219 L 231.847656 31.804688 L 209.667969 31.804688 L 209.667969 472.367188 C 175.652344 475.015625 150.246094 491.132812 150.246094 511.238281 C 150.246094 533.257812 180.703125 550.507812 219.585938 550.507812 C 258.460938 550.507812 288.917969 533.257812 288.917969 511.238281 C 288.917969 491.597656 264.675781 475.765625 231.847656 472.574219 Z M 231.847656 472.574219 " stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
+  <path fill="param(fill)" fill-opacity="param(fill-opacity)" d="M 235.246094 29.492188 L 233.722656 207.628906 L 429.75 210.332031 Z M 235.246094 29.492188 " stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
+</svg>

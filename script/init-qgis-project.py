@@ -69,6 +69,8 @@ with open(layers_file, mode='r', newline='') as file:
                     svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path + "/" + row[0] + ".svg")
                     svg_symbol_layer.setColor(QColor(row[3]))
                     svg_symbol_layer.setSize(float(row[5]))
+                    svg_symbol_layer.setStrokeWidth(0.2)
+                    svg_symbol_layer.setStrokeColor(QColor("#ffffff"))
                     svg_symbol_layer.setAngle(0)
 
                     # Create a marker symbol and add the SVG layer to it
