@@ -55,4 +55,4 @@ while IFS='|' read layer_name column2; do
 
 done < "$base_dir/tmp/$np-qgis-layers.csv"
 
-python3 $base_dir/script/init-qgis-project.py $np $base_dir/db/$np.db $base_dir/tmp/$np-qgis-layers.csv $base_dir/var/$np-srtm-combined-transparent-geo-referenced-cropped.tiff $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np
+python3 $base_dir/script/init-qgis-project.py $np $base_dir/db/$np.db $base_dir/tmp/$np-qgis-layers.csv $base_dir/var/$np-srtm-combined-cropped-halo-geo-referenced.tiff $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np

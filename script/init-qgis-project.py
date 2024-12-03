@@ -1,8 +1,8 @@
-from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol, QgsRasterLayer
+from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol, QgsRasterLayer, QgsTextFormat, QgsTextBufferSettings, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling
 import csv
 import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QFont
 from pathlib import Path
 # from qgis.analysis import QgsNativeAlgorithms
 
@@ -82,6 +82,30 @@ with open(layers_file, mode='r', newline='') as file:
             layer.setRenderer(QgsSingleSymbolRenderer(symbol))
             # Set opacity
             layer.renderer().symbol().setOpacity(float(row[6]))
+
+            # Set up text format
+            text_format = QgsTextFormat()
+            text_format.setFont(QFont("Monaco"))
+            text_format.setSize(10)
+            text_format.setColor(QColor(row[3]))
+
+            # Optional: Add text buffer (outline around text)
+            buffer_settings = QgsTextBufferSettings()
+            buffer_settings.setEnabled(True)
+            buffer_settings.setColor(QColor("white"))
+            buffer_settings.setSize(0.75)
+            text_format.setBuffer(buffer_settings)
+
+            # Set up label settings
+            label_settings = QgsPalLayerSettings()
+            label_settings.fieldName = 'name'
+            label_settings.setFormat(text_format)
+            label_settings.placement = QgsPalLayerSettings.OutsidePolygons
+
+            # Set the labeling layer to the vector layer
+            labeling_layer = QgsVectorLayerSimpleLabeling(label_settings)
+            layer.setLabelsEnabled(True)
+            layer.setLabeling(labeling_layer)
 
             # Add the layer to the new project
             project.addMapLayer(layer)

@@ -82,12 +82,14 @@ where not ST_Within(geom, (select ST_Union(multipolygons.geom) as geom
 
 -- Tag contours
 alter table contours add column type text;
+alter table contours add column name text;
 update contours
 set type = case
             when elev % 100 = 0 then 'major'
             when elev % 20 = 0 then 'medium'
             else 'minor'
-           end;
+           end,
+    name = cast(elev as text);
 
 -- Remove the original background polygon
 delete from multipolygons where name = '{$np}_background';
@@ -177,7 +179,8 @@ delete
 from lines
 where man_made = 'clearcut';
 
--- Make contour lines more rounder (Visually pleasing)
+-- Set the elevation as the contour name
+
 
 -- Insert points to each named multi-polygon
 insert into points(name, geom) 
