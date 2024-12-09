@@ -10,10 +10,10 @@ base_dir=$2
 rm $base_dir/tmp/*
 
 # Experimental enhancing of the hill-shading background image
-ogr2ogr -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom $base_dir/tmp/$np-map-extent.db $base_dir/poly/$np-boundary-polygon.geojson
+ogr2ogr -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -nln $np"_poly" $base_dir/tmp/$np-map-extent.db $base_dir/poly/$np.geojson
 sed 's/{$np}/'$np'/g' $base_dir/script/create-shaded-relief-extent.sql > $base_dir/tmp/create-shaded-relief-extent.sql
 spatialite $base_dir/tmp/$np-map-extent.db < $base_dir/tmp/create-shaded-relief-extent.sql
-ogr2ogr -f GeoJSON $base_dir/tmp/$np-shaded-relief-map-extent.geojson $base_dir/tmp/$np-map-extent.db $np_boundary_polygon
+ogr2ogr -f GeoJSON $base_dir/tmp/$np-shaded-relief-map-extent.geojson $base_dir/tmp/$np-map-extent.db $np"_poly"
 
 # Full extent of the map polygon
 map_extent_poly=$base_dir/tmp/$np-shaded-relief-map-extent.geojson

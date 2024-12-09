@@ -4,10 +4,10 @@ np=$1
 size=$2
 
 # Project root
-base_dir=$2
+base_dir=$3
 
 # Clean-up the tmp
-rm $base_dir/tmp/*
+#rm $base_dir/tmp/*
 
 # inkscape to plain
 inkscape --export-plain-svg=$base_dir/tmp/$np-$size-plain.svg $base_dir/inkscape/$np-$size-inkscape.svg

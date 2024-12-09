@@ -16,6 +16,7 @@ rock|multipolygons|natural = 'bare_rock'|#495057|transparent|0.0|0.8
 industrial|multipolygons|landuse = 'industrial'|#9f86c0|transparent|0.0|0.8
 parking|multipolygons|amenity = 'parking'|#b8b8ff|transparent|0.0|0.8
 building|multipolygons|building = 'yes'|#b56576|transparent|0.0|1
+admin_boundary|sl_admin|geom is not null|black|transparent|0.125|1
 minor_contour|contours|type = 'minor'|#f2e9e4|transparent|0.125|1
 medium_contour|contours|type = 'medium'|#808080|transparent|0.25|1
 major_contour|contours|type = 'major'|#9a8c98|transparent|0.5|1
@@ -47,3 +48,4 @@ shop|points|"INSTR(other_tags, '""shop""=>""yes""') > 0"|#f15bb5||8|1
 tree|points|"INSTR(other_tags, '""landmark""=>""yes""') > 0 and INSTR(other_tags, '""natural""=>""tree""') > 0 "|#3b6064||6|1
 culvert|points|"INSTR(other_tags, '""tunnel""=>""culvert""') > 0"|#00509d||6|1
 bridge|points|"INSTR(other_tags, '""bridge""=>') > 0"|#00509d||6|1
+barrier|points|barrier in ('lift_gate', 'gate')|#00509d||6|1

@@ -73,6 +73,19 @@ from (
       where name = '{$np}_background'
      ) as polygons;
 
+-- Crop admin boundaries to buffered background polygon so that they extend away from the map features
+update sl_admin
+set geom = case
+               when ST_GeometryType(ST_Intersection(sl_admin.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(sl_admin.geom, polygons.geom)
+               when ST_GeometryType(ST_Intersection(sl_admin.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(sl_admin.geom, polygons.geom), 1)
+               else null
+           end
+from (
+      select ST_Multi(ST_Buffer(ST_Union(multipolygons.geom), ST_Perimeter(ST_Union(multipolygons.geom)) * 0.001 / (2 * ST_Area(geom)))) as geom
+      from multipolygons
+      where name = '{$np}_background'
+     ) as polygons;
+
 -- Remove the points outside of the background polygon
 delete
 from points
