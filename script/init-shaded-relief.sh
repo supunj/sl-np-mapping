@@ -6,6 +6,10 @@ np=$1
 # Project root
 base_dir=$2
 
+# Create runtime folders if they don't exist
+mkdir -p $base_dir/tmp
+mkdir -p $base_dir/var
+
 # Clean-up the tmp
 rm $base_dir/tmp/*
 
