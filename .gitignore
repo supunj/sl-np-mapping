@@ -5,3 +5,4 @@ symbology-style.db
 db/*
 var/*
 misc/*
+conf/sl-np-mapping.yaml

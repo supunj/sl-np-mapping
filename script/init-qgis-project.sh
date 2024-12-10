@@ -7,7 +7,15 @@ base_dir=$2
 
 symbol_dir=$base_dir/qgis/symbol/$np
 
-#Download if map does not exists
+# Config params
+sed -e 's|{\$HOME}|'$(printf '%s' "$HOME" | sed 's|/|\\/|g')'|g' \
+    -e 's|{\$base_dir}|'$(printf '%s' "$base_dir" | sed 's|/|\\/|g')'|g' $base_dir/conf/sl-np-mapping.yaml > $base_dir/tmp/sl-np-mapping.yaml
+rsvg_convert_bin=$(yq -r '.tool.rsvg_convert.path' $base_dir/tmp/sl-np-mapping.yaml)
+xmlstarlet_bin=$(yq -r '.tool.xmlstarlet.path' $base_dir/tmp/sl-np-mapping.yaml)
+svgo_bin=$(yq -r '.tool.svgo.path' $base_dir/tmp/sl-np-mapping.yaml)
+python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
+
+# This can't be run unless data and db is not available
 if ! [ -f "$base_dir/db/$np.db" ]; then
 	echo "No SpatiaLite layers. Please run 'init-db.sh' first"
     exit 1
@@ -34,10 +42,10 @@ while IFS='|' read layer_name column2; do
     fi
 
     # Re-size the svg - source svg needs to have the same width and the height
-    rsvg-convert $svg -w 580 -h 580 -f svg -o $base_dir/tmp/$layer_name.svg
+    "$rsvg_convert_bin" $svg -w 580 -h 580 -f svg -o $base_dir/tmp/$layer_name.svg
 
     # Add QGIS related parameters to the svg so that the colours can be changed
-    xmlstarlet ed -N ns="http://www.w3.org/2000/svg" \
+    "$xmlstarlet_bin" ed -N ns="http://www.w3.org/2000/svg" \
                 -u "//ns:path/@fill" -v "param(fill)" \
                 -u "//ns:path/@fill-opacity" -v "param(fill-opacity)" \
                 -u "//ns:path/@stroke" -v "param(outline)" \
@@ -51,8 +59,8 @@ while IFS='|' read layer_name column2; do
                 $base_dir/tmp/$layer_name.svg > $base_dir/tmp/$layer_name-attr-add.svg
 
     # Optimise the svg
-    svgo --config=$base_dir/conf/svgo.config.js --input $base_dir/tmp/$layer_name-attr-add.svg --output $symbol_dir/$layer_name.svg
+    "$svgo_bin" --config=$base_dir/conf/svgo.config.js --input $base_dir/tmp/$layer_name-attr-add.svg --output $symbol_dir/$layer_name.svg
 
 done < "$base_dir/tmp/$np-qgis-layers.csv"
 
-python3 $base_dir/script/init-qgis-project.py $np $base_dir/db/$np.db $base_dir/tmp/$np-qgis-layers.csv $base_dir/var/$np-srtm-combined-cropped-halo-geo-referenced.tiff $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np
+"$python3_bin" $base_dir/tool/generate-qgis-project.py $np $base_dir/db/$np.db $base_dir/tmp/$np-qgis-layers.csv $base_dir/var/$np-srtm-combined-cropped-halo-geo-referenced.tiff $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np

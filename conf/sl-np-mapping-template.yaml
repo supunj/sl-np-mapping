@@ -1,0 +1,42 @@
+tool:
+  poly2geojson:
+    path: {$HOME}/.cargo/bin/poly2geojson
+  osmosis:
+    path: {$base_dir}/tool/osmosis-0.49.2/bin/osmosis
+  osmium:
+    path: osmium
+  gdal:
+    gdalwarp:
+      path: gdalwarp
+    ogrinfo:
+      path: ogrinfo
+    ogr2ogr:
+      path: ogr2ogr
+    gdal_contour:
+      path: gdal_contour
+    gdalinfo:
+      path: gdalinfo
+    gdaldem:
+      path: gdaldem
+    gdal_translate:
+      path: gdal_translate
+  python:
+    python3:
+      path: python3
+  spatialite:
+    path: spatialite
+  rsvg_convert:
+    path: rsvg-convert
+  xmlstarlet:
+    path: xmlstarlet
+  svgo:
+    path: svgo
+  imagemagick:
+    convert:
+      path: convert
+    composite:
+      path: composite
+  qrencode:
+    path: qrencode
+  inkscape:
+    path: inkscape

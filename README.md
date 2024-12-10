@@ -1,2 +1,5 @@
 # Sri Lankan National Park Maps
-TBC
+
+Pre-requisites
+
+1. chmod +x ./script/init-*.sh
