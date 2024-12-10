@@ -1,11 +1,10 @@
 #!/bin/sh
 
 # Project root
-base_dir=$2
+base_dir=$1
 
 # Create runtime folders if they don't exist
 mkdir -p $base_dir/tmp
-mkdir -p $base_dir/var
 
 # Config params
 sed -e 's|{\$HOME}|'$(printf '%s' "$HOME" | sed 's|/|\\/|g')'|g' \

@@ -21,7 +21,7 @@ osmium_bin=$(yq -r '.tool.osmium.path' $base_dir/tmp/sl-np-mapping.yaml)
 			--clean uid --clean user --clean changeset \
 			-O \
 			-o $base_dir/tmp/$np-contours.osm \
-			$base_dir/data/sl-contours.osm.pbf
+			$base_dir/var/sl-contours.osm.pbf
 
 "$osmosis_bin" \
             --read-xml file=$base_dir/tmp/$np-contours.osm \
