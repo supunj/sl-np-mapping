@@ -110,6 +110,7 @@ Whatever is here can be used without any restrictions but attributions will be a
             qgis_layers --> define_qgis_layers
             define_qgis_layers --> qgis_layer_definitions
             qgis_layer_definitions --> generate_qgis_project
+            hill_shade_raster --> generate_qgis_project
             generate_qgis_project --> refine_qgis_project
             refine_qgis_project --> final_map
             final_map --> stop
