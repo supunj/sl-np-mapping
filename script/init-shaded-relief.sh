@@ -24,6 +24,7 @@ gdaldem_bin=$(yq -r '.tool.gdal.gdaldem.path' $base_dir/tmp/sl-np-mapping.yaml)
 gdal_translate_bin=$(yq -r '.tool.gdal.gdal_translate.path' $base_dir/tmp/sl-np-mapping.yaml)
 composite_bin=$(yq -r '.tool.imagemagick.composite.path' $base_dir/tmp/sl-np-mapping.yaml)
 convert_bin=$(yq -r '.tool.imagemagick.convert.path' $base_dir/tmp/sl-np-mapping.yaml)
+boundary_glow_colour=$(yq -r '.tool.imagemagick.convert.boundary_glow_colour' $base_dir/tmp/sl-np-mapping.yaml)
 
 # Experimental enhancing of the hill-shading background image
 "$ogr2ogr_bin" -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -nln $np"_poly" $base_dir/tmp/$np-map-extent.db $base_dir/poly/$np.geojson
@@ -70,7 +71,7 @@ echo "$1 $2 $3 $4"
 # Add a fading glow to the boundary for 
 "$convert_bin" $base_dir/tmp/$np-srtm-combined-cropped.tiff \(  +clone \
               -channel A  -blur 0x200.5 -level 0,80% +channel \
-              +level-colors "#606c38" \
+              +level-colors "$boundary_glow_colour" \
             \) -compose DstOver -composite $base_dir/tmp/$np-srtm-combined-cropped-halo.tiff
 
 # Re-attach the geo information to the image

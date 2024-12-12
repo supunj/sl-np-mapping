@@ -34,6 +34,7 @@ tool:
   imagemagick:
     convert:
       path: convert
+      boundary_glow_colour: "#606c38"
     composite:
       path: composite
   qrencode:
