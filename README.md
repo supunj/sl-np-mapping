@@ -2,7 +2,7 @@
 
 ## Why?
 
-This project exists due to few different reasons. My long term hobby of creating custom maps for my Garmin devices was probably the original motivation. My being a long time contributor to [OpenStreetMap](https://www.openstreetmap.org) was another. I was also looking for an excuse to learn a bit about GIS. Finally, receiving a request to create a map for a small National Park in the Eastern Province completed the check-list. I created that map using OSM data and did the styling in [Inkscape](https://inkscape.org) but eventually ended up scripting about 70% of the process of generating a printable map from acquisition, cleansing, enrichment of data to the generation the [QGIS](https://qgis.org) project with vector and raster layers.
+This project exists due to few different reasons. My long term hobby of creating custom maps for my Garmin devices was probably the original motivation. My being a long time contributor to [OpenStreetMap](https://www.openstreetmap.org) was another. I was also looking for an excuse to learn a bit about GIS. Finally, receiving a request to create a map for a small National Park in the Eastern Province completed the check-list. I created that map using OSM data and did the styling in [Inkscape](https://inkscape.org) but eventually ended up scripting about 70% of the process of generating a printable map from acquisition, cleansing, enrichment of data to the generation of the [QGIS](https://qgis.org) project with vector and raster layers.
 
 ![alt text](image/qgis.png)
 
