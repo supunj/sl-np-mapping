@@ -20,7 +20,7 @@ spatialite_bin=$(yq -r '.tool.spatialite.path' $base_dir/tmp/sl-np-mapping.yaml)
 
 #Download if map does not exists
 if ! [ -f "$base_dir/var/$np-cleansed-merged.osm" ] || ! [ -f "$base_dir/var/$np-srtm.tiff" ] ; then
-	echo "No OSM or elevation data. Please run 'init-park.sh' first"
+	echo "No OSM or elevation data. Please run 'init-data.sh' first"
     exit 1
 fi
 
