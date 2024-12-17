@@ -11,7 +11,7 @@ Whatever is here can be used without any restrictions but attributions will be a
 ## Limitations
 
 1. Only supports OSM data in v6 XML format or in PBF format
-2. Park boundary should be a closed way tagged as ['boundary=national_park'](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park) - This can be changed but will require some re-factoring time.
+2. Park boundary should be a closed way tagged as ['boundary=national_park'](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park) - This can be changed but will require some refactoring time.
 3. The boundary should contain a unique name
 4. Elevation data are in USGS SRTM format
 
@@ -63,6 +63,8 @@ Whatever is here can be used without any restrictions but attributions will be a
             update_db@{ shape: rect, label: "Consolidate data and \n Update DB" }
             spatialite@{ shape: cyl, label: "SpatiaLite" }
             refine_data@{ shape: rect, label: "Refine data" }
+            define_cmap_for_hill_shade@{ shape: trap-t, label: "Define colour map \n for shaded relief" }
+            cmap_for_hill_shade@{ shape: doc, label: "Colour map (-cmap.txt)" }
             generate_shaded_relief@{ shape: rect, label: "Generate shaded relief" }
             hill_shade_raster@{ shape: doc, label: "Hill-shade (.tiff)" }
             define_qgis_layers@{ shape: trap-t, label: "Define QGIS layers" }
@@ -93,7 +95,9 @@ Whatever is here can be used without any restrictions but attributions will be a
             update_db --> refine_data
             spatialite --> refine_data
             refine_data --> spatialite
-            refine_data --> generate_shaded_relief
+            refine_data --> define_cmap_for_hill_shade
+            define_cmap_for_hill_shade --> cmap_for_hill_shade
+            define_cmap_for_hill_shade --> generate_shaded_relief
             elevation_data --> generate_shaded_relief
             generate_shaded_relief --> hill_shade_raster
             generate_shaded_relief --> define_qgis_layers
@@ -122,11 +126,13 @@ Whatever is here can be used without any restrictions but attributions will be a
 
    ![alt text](image/park_polygon.png)
 
+   Make sure to change the second line, which is the polygon name to the park name. Typically the original value there would be `1`.
+
 5. `./script/init-data.sh <park_name> $(pwd)` - Acquire and filter OSM data for the given parkThis produces following outputs.
    - `$base_dir/var/sri-lanka-latest.osm.pbf`
-   - `$base_dir/poly/sri-lanka.geojson`
-   - `$base_dir/poly/$np.geojson`
-   - `$base_dir/poly/$np-boundary-polygon.geojson`
+   - `$base_dir/var/sri-lanka.geojson`
+   - `$base_dir/var/$np.geojson`
+   - `$base_dir/var/$np-boundary-polygon.geojson`
    - `$base_dir/var/sl-coastline.osm`
    - `$base_dir/var/sl-admin.osm`
    - `$base_dir/var/$np-cleansed-merged.osm`
@@ -134,11 +140,13 @@ Whatever is here can be used without any restrictions but attributions will be a
 
 6. `./script/init-db.sh yb1 $(pwd)` - Insert all the data collected to a SpatiaLite DB. SpatiaLite makes it possible to store the data without having to host a database server and also provides decent support for spatial data handling. This produces the file `$base_dir/db/$np.db`. During this process the vector data will be cleansed, massaged and enriched even more. 
 
-7. `./script/init-shaded-relief.sh yb1 $(pwd)` - This generates the hill-shade background raster in GeoTIFF format with some effects for eye-candy.
+7. Define the [colour map](https://gdal.org/en/stable/programs/gdaldem.html) for the shaded relief for the park and place it in `$base_dir\dem`. The park name should be prefixed.
+
+8. `./script/init-shaded-relief.sh yb1 $(pwd)` - This generates the hill-shade background raster in GeoTIFF format with some effects for eye-candy.
 
     ![alt text](image/hill_shade_raster.png)
 
-8. Define QGIS layers along with desired symbology. This is done in the file `$base_dir/qgis/layer/$np-qgis-layers.csv`. Below is the format of the CSV.
+9. Define QGIS layers along with desired symbology. This is done in the file `$base_dir/qgis/layer/$np-qgis-layers.csv`. Below is the format of the CSV.
 
     |Layer Name|Table|Query (Where clause)|Fill Colour|Stroke Colour|Size(Stroke or Symbol)|Opacity|
     |---|---|---|---|---|---|---|
@@ -150,10 +158,10 @@ Whatever is here can be used without any restrictions but attributions will be a
     junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#9d4edd||8|1
     locality|points|place = 'locality'|#233d4d||6|1
 
-9. Create SVG symbols for POIs in the folder `$base_dir/symbol`. These will be converted to QGIS friendly SVG format in the next step and be placed in the folder `$base_dir/qgis/symbol/$np` for each park. If you use 3rd party SVGs, please make sure to make appropriate attributions. The file name should be as same as the respective QGIS layer name in the CSV file.
+10. Create SVG symbols for POIs in the folder `$base_dir/symbol`. These will be converted to QGIS friendly SVG format in the next step and be placed in the folder `$base_dir/qgis/symbol/$np` for each park. If you use 3rd party SVGs, please make sure to make appropriate attributions. The file name should be as same as the respective QGIS layer name in the CSV file.
 
-10. `./script/init-qgis-project.sh yb1 $(pwd)` - This will put everything together and generate a QGIS project that you can start working on
+11. `./script/init-qgis-project.sh yb1 $(pwd)` - This will put everything together and generate a QGIS project that you can start working on
 
     ![alt text](image/qgis_project.png)
 
-11. `./script/init-park.sh yb1 $(pwd)` - This will run all the above scripts all at once.
+12. `./script/init-park.sh yb1 $(pwd)` - This will run all the above scripts all at once.

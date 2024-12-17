@@ -123,7 +123,8 @@ from multipolygons
 where boundary is not 'national_park' and 
       name is not '{$np}_terrain' and
       name is not '{$np}_ocean' and
-	    ST_IsValid(geom);
+      natural is not 'wood' and -- Need to drop natural=wood polygons as these would normally cover the park boundary in it's entirety
+	ST_IsValid(geom);
 
 -- Derive the forest cover
 drop table if exists forest_cover;

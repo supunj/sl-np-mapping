@@ -16,7 +16,7 @@ osmosis_bin=$(yq -r '.tool.osmosis.path' $base_dir/tmp/sl-np-mapping.yaml)
 osmium_bin=$(yq -r '.tool.osmium.path' $base_dir/tmp/sl-np-mapping.yaml)
 
 "$osmium_bin" extract \
-			--polygon $base_dir/poly/$np-boundary-polygon.geojson \
+			--polygon $base_dir/var/$np-boundary-polygon.geojson \
 			--strategy simple \
 			--clean uid --clean user --clean changeset \
 			-O \

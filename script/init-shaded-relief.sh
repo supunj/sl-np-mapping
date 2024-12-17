@@ -27,7 +27,7 @@ convert_bin=$(yq -r '.tool.imagemagick.convert.path' $base_dir/tmp/sl-np-mapping
 boundary_glow_colour=$(yq -r '.tool.imagemagick.convert.boundary_glow_colour' $base_dir/tmp/sl-np-mapping.yaml)
 
 # Experimental enhancing of the hill-shading background image
-"$ogr2ogr_bin" -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -nln $np"_poly" $base_dir/tmp/$np-map-extent.db $base_dir/poly/$np.geojson
+"$ogr2ogr_bin" -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -nln $np"_poly" $base_dir/tmp/$np-map-extent.db $base_dir/var/$np.geojson
 sed 's/{$np}/'$np'/g' $base_dir/script/create-shaded-relief-extent.sql > $base_dir/tmp/create-shaded-relief-extent.sql
 "$spatialite_bin" $base_dir/tmp/$np-map-extent.db < $base_dir/tmp/create-shaded-relief-extent.sql
 "$ogr2ogr_bin" -f GeoJSON $base_dir/tmp/$np-shaded-relief-map-extent.geojson $base_dir/tmp/$np-map-extent.db $np"_poly"
@@ -66,7 +66,7 @@ echo "$1 $2 $3 $4"
 "$gdal_translate_bin" -a_srs EPSG:4326 -a_ullr $1 $4 $3 $2 $base_dir/tmp/$np-srtm-combined.tiff $base_dir/tmp/$np-srtm-combined-geo-referenced.tiff
 
 # Cut out the exact park boundary polygon
-"$gdalwarp_bin" -overwrite -cutline $base_dir/poly/$np-boundary-polygon.geojson -dstalpha -cblend 0 $base_dir/tmp/$np-srtm-combined-geo-referenced.tiff $base_dir/tmp/$np-srtm-combined-cropped.tiff
+"$gdalwarp_bin" -overwrite -cutline $base_dir/var/$np-boundary-polygon.geojson -dstalpha -cblend 0 $base_dir/tmp/$np-srtm-combined-geo-referenced.tiff $base_dir/tmp/$np-srtm-combined-cropped.tiff
 
 # Add a fading glow to the boundary for 
 "$convert_bin" $base_dir/tmp/$np-srtm-combined-cropped.tiff \(  +clone \

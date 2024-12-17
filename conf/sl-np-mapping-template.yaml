@@ -1,3 +1,16 @@
+park:
+  lahugala:
+    boundary_name: "Lahugala Kitulana National Park"
+    boundary_tag: "type=boundary"
+  kumana:
+    boundary_name: "Kumana National Park"
+    boundary_tag: "type=boundary"
+  yb1:
+    boundary_name: "Yala National Park - Block 1"
+    boundary_tag: "type=boundary"
+  galoya:
+    boundary_name: "Gal Oya Valley National Park"
+    boundary_tag: "type=boundary"    
 tool:
   poly2geojson:
     path: {$HOME}/.cargo/bin/poly2geojson

@@ -17,6 +17,8 @@ osmium_bin=$(yq -r '.tool.osmium.path' $base_dir/tmp/sl-np-mapping.yaml)
 gdalwarp_bin=$(yq -r '.tool.gdal.gdalwarp.path' $base_dir/tmp/sl-np-mapping.yaml)
 poly2geojson_bin=$(yq -r '.tool.poly2geojson.path' $base_dir/tmp/sl-np-mapping.yaml)
 python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
+np_boundary_name=$(yq -r '.park.'$np'.boundary_name' $base_dir/tmp/sl-np-mapping.yaml)
+np_boundary_tag=$(yq -r '.park.'$np'.boundary_tag' $base_dir/tmp/sl-np-mapping.yaml)
 
 # Clean-up the tmp
 rm $base_dir/tmp/*
@@ -29,8 +31,8 @@ if ! [ -f "$base_dir/var/sri-lanka-latest.osm.pbf" ]; then
 fi
 
 # Create the geojson and osm from the extract poly files for later use
-"$poly2geojson_bin" < $base_dir/poly/sri-lanka.poly > $base_dir/poly/sri-lanka.geojson
-"$poly2geojson_bin" < $base_dir/poly/$np.poly > $base_dir/poly/$np.geojson
+"$poly2geojson_bin" < $base_dir/poly/sri-lanka.poly > $base_dir/var/sri-lanka.geojson
+"$poly2geojson_bin" < $base_dir/poly/$np.poly > $base_dir/var/$np.geojson
 
 # Get the national park
 "$osmosis_bin" \
@@ -53,26 +55,18 @@ fi
 			--strategy complete_ways \
 			--clean uid --clean user --clean changeset \
 			-O \
-			-o $base_dir/map/$np-cleansed.osm \
+			-o $base_dir/tmp/$np-cleansed.osm \
 			$base_dir/tmp/$np-cleansed-phase-1.osm
-
-# Extract the exact park boundary to geojson for later use
-case "$np" in
-    "lahugala") name="Lahugala Kitulana National Park";;
-    "kumana") name="Kumana National Park";;
-    "yb1") name="Yala National Park - Block 1";;
-    *) break;;
-esac
 
 "$osmium_bin" tags-filter \
 			-O \
 			-o $base_dir/tmp/$np-boundary-polygon.osm \
-			$base_dir/map/$np-cleansed.osm \
+			$base_dir/tmp/$np-cleansed.osm \
 			"boundary=national_park" \
-  			"n/name=$name" \
-  			"r/type=boundary"
+  			"n/name=$np_boundary_name" \
+  			"r/$np_boundary_tag"
 
-"$osmium_bin" export --geometry-types=polygon $base_dir/tmp/$np-boundary-polygon.osm -O -o $base_dir/poly/$np-boundary-polygon.geojson
+"$osmium_bin" export --geometry-types=polygon $base_dir/tmp/$np-boundary-polygon.osm -O -o $base_dir/var/$np-boundary-polygon.geojson
 
 # Create the background polygon from the .poly file
 "$python3_bin" $base_dir/tool/poly-to-osm.py $np $base_dir/poly/$np.poly $base_dir/tmp/$np-background.osm
@@ -104,7 +98,7 @@ esac
 
 # Merge OSM data, contours and the background polygon
 "$osmosis_bin" \
-            --read-xml file=$base_dir/map/$np-cleansed.osm \
+            --read-xml file=$base_dir/tmp/$np-cleansed.osm \
 			--read-xml file=$base_dir/tmp/$np-background.osm \
 			--sort \
 			--merge \
@@ -114,7 +108,7 @@ esac
 # Create the hgt file list for the use with  gdalwrap
 ls -1 $base_dir/dem/srtm/*.hgt > $base_dir/tmp/hgt-list.txt
 
-set -- $(echo $($base_dir/script/get-bbox-for-polygon.sh $base_dir/poly/$np.geojson $base_dir) | awk -F '[|]+' '{print $1, $2, $3, $4}')
+set -- $(echo $($base_dir/script/get-bbox-for-polygon.sh $base_dir/var/$np.geojson $base_dir) | awk -F '[|]+' '{print $1, $2, $3, $4}')
 echo "$1 $2 $3 $4" 
 
 # Extract only the elevation data for the given park polygon and write to a GeoTiff
