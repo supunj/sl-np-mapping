@@ -1,4 +1,4 @@
-from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol, QgsRasterLayer, QgsTextFormat, QgsTextBufferSettings, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling
+from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol, QgsRasterLayer, QgsTextFormat, QgsTextBufferSettings, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling, QgsSimpleLineSymbolLayer
 import csv
 import sys
 from PyQt5.QtCore import Qt
@@ -62,7 +62,11 @@ with open(layers_file, mode='r', newline='') as file:
                 if float(row[5]) == 0: symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
                 #layer.setOpacity(0.85)
             elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-                symbol = QgsLineSymbol.createSimple({'color': row[3], 'width': row[5]})
+                symbol = QgsLineSymbol.createSimple({'color': row[4], 'width': float(row[5])*1.5})
+                inner_line = QgsSimpleLineSymbolLayer()
+                inner_line.setColor(QColor(row[3]))
+                inner_line.setWidth(float(row[5]))
+                symbol.appendSymbolLayer(inner_line)
             elif layer.geometryType() == QgsWkbTypes.PointGeometry:
                 if Path(symbol_path + "/" + row[0] + ".svg").is_file():
                     # Create an SVG marker symbol layer

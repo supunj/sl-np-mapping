@@ -1,9 +1,10 @@
 terrain|multipolygons|name = '{$np}_terrain' and place = 'island'|#aec3b0|transparent|0.0|0
+other_forest|multipolygons|natural = 'wood'|#add19e|transparent|0|1
 forest_cover|forest_cover||#a3b18a|transparent|0.5|0.2
 forest_clearing|multipolygons|man_made='clearcut'|#8e9aaf|transparent|0.0|0.8
 sea|multipolygons|"name = '{$np}_ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#4aabd2|transparent|0.0|1
 beach|multipolygons|natural = 'beach'|#ffd166|transparent|0.0|0.8
-farmland|multipolygons|landuse = 'farmland'|#bfd8bd|transparent|0.0|0.8
+farmland|multipolygons|landuse = 'farmland' or landuse = 'orchard'|#eef0d5|#c7c9ae|0.125|0.8
 scrub|multipolygons|natural = 'scrub'|#d4e09b|transparent|0.0|0.8
 basin|multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""basin""') > 0"|#73d2de|transparent|0.0|1
 lagoon|multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""lagoon""') > 0"|#00b9a9|transparent|0.0|1
@@ -13,22 +14,27 @@ tank|multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""reserv
 pond|multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""pond""') > 0"|#00a8e8|transparent|0.0|1
 waterhole|multipolygons|amenity = 'watering_place'|#62b6cb|transparent|0.0|1
 rock|multipolygons|natural = 'bare_rock'|#495057|transparent|0.0|0.8
-industrial|multipolygons|landuse = 'industrial'|#9f86c0|transparent|0.0|0.8
+industrial|multipolygons|landuse = 'industrial' or landuse = 'aquaculture'|#9f86c0|transparent|0.0|0.8
+dam|multipolygons|"INSTR(other_tags, '""waterway""=>""dam""') > 0"|#adadad|#444444|0.0|1
 parking|multipolygons|amenity = 'parking'|#b8b8ff|transparent|0.0|0.8
+residential_area|multipolygons|landuse = 'residential'|#e0dfdf|#b9b9b9|0.125|1
 building|multipolygons|building = 'yes'|#b56576|transparent|0.0|1
 admin_boundary|sl_admin|geom is not null|black|transparent|0.125|1
-minor_contour|contours|type = 'minor'|#f2e9e4|transparent|0.125|1
-medium_contour|contours|type = 'medium'|#808080|transparent|0.25|1
-major_contour|contours|type = 'major'|#9a8c98|transparent|0.5|1
+minor_contour|sl_contour|type = 'minor'|#f2e9e4|transparent|0.125|1
+medium_contour|sl_contour|type = 'medium'|#808080|transparent|0.25|1
+major_contour|sl_contour|type = 'major'|#9a8c98|transparent|0.5|1
+power_line|lines|"INSTR(other_tags, '""power""=>""line""') > 0"|#888|transparent|0.125|1
 intermittent_waterway|lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (INSTR(other_tags, '""intermittent""=>""yes""') > 0 or INSTR(other_tags, '""seasonal ""=>""yes""') > 0)"|#0582ca|transparent|0.25|1
-waterway|lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and INSTR(other_tags, '""intermittent""=>""yes""') = 0 and INSTR(other_tags, '""seasonal ""=>""yes""') = 0"|#0582ca|transparent|0.25|1
+waterway|lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (other_tags is null or (INSTR(other_tags, '""intermittent""=>""yes""') = 0 and INSTR(other_tags, '""seasonal ""=>""yes""') = 0))"|#0582ca|transparent|0.25|1
 river|lines|waterway = 'river'|#007ea7|transparent|1.5|1
-track|lines|highway = 'track'|#5e503f|transparent|0.5|1
-dam|lines|waterway = 'dam'|#242423|transparent|0.5|1
+track|lines|highway = 'track'|#996600|transparent|0.5|1
+embankment|lines|waterway = 'dam' or man_made = 'embankment'|#242423|transparent|0.5|1
 path|lines|highway = 'path' or highway = 'footway' or highway = 'steps'|#8b8c89|transparent|0.3|1
-other_road|lines|highway = 'residential' or highway = 'unclassified' or highway = 'service'|#b36a5e|transparent|0.7|1
-tertiary_road|lines|highway = 'tertiary'|#b23a48|transparent|0.9|1
-secondary_road|lines|highway = 'secondary'|#db7c26|transparent|1.0|1
+other_road|lines|highway = 'residential' or highway = 'unclassified' or highway = 'service' or highway = 'living_street'|#ffffff|#bbb|0.7|1
+tertiary_road|lines|highway = 'tertiary'|#ffffff|#8f8f8f|0.9|1
+secondary_road|lines|highway = 'secondary'|#f7fabf|#707d05|1.0|1
+primary_road|lines|highway = 'primary'|#fcd6a4|#a06b00|1.0|1
+trunk_road|lines|highway = 'trunk'|#f9b29c|#c84e2f|1.0|1
 coastline|lines|"INSTR(other_tags, '""natural""=>""coastline""') > 0"|#e09f3e|transparent|1.0|1
 boundary|multipolygons|boundary = 'national_park' and type = 'boundary'|transparent|#585123|0.5|1
 ford|points|"INSTR(other_tags, '""ford""=>""yes""') > 0"|#00509d||4|1

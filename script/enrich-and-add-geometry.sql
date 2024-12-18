@@ -15,7 +15,7 @@ with background_split as (
 )
 select geom,
 	 (case
-	   when (select ST_Contains((select ST_Union(geom) from sl), ST_PointOnSurface(geom)) from background_split) = 1 then 'terrain'
+	   when (select ST_Contains((select ST_Union(geom) from sl_landmass), ST_PointOnSurface(geom)) from background_split) = 1 then 'terrain'
 	   else 'ocean'
 	  end) as type
 from (select ST_GeometryN(background_collection, 1) as geom
@@ -61,10 +61,10 @@ from (
       ) as polygons;
 
 -- Crop contours to the background polygon
-update contours
+update sl_contour
 set geom = case
-               when ST_GeometryType(ST_Intersection(contours.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(contours.geom, polygons.geom)
-               when ST_GeometryType(ST_Intersection(contours.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(contours.geom, polygons.geom), 1)
+               when ST_GeometryType(ST_Intersection(sl_contour.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(sl_contour.geom, polygons.geom)
+               when ST_GeometryType(ST_Intersection(sl_contour.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(sl_contour.geom, polygons.geom), 1)
                else null
            end
 from (
@@ -94,9 +94,9 @@ where not ST_Within(geom, (select ST_Union(multipolygons.geom) as geom
                            where name = '{$np}_background'));
 
 -- Tag contours
-alter table contours add column type text;
-alter table contours add column name text;
-update contours
+alter table sl_contour add column type text;
+alter table sl_contour add column name text;
+update sl_contour
 set type = case
             when elev % 100 = 0 then 'major'
             when elev % 20 = 0 then 'medium'
@@ -106,6 +106,18 @@ set type = case
 
 -- Remove the original background polygon
 delete from multipolygons where name = '{$np}_background';
+
+-- Crop and update the 'natural=wood' polygons if they intersect with the boundary. This is for better styling. 
+update multipolygons
+set geom = ST_CollectionExtract(case
+					   when ST_Difference(geom, boundary.geom_b) is not null then ST_Multi(ST_Difference(geom, boundary.geom_b))
+					   else ST_Multi(ST_Buffer(ST_Centroid(geom), 0.01))
+					  end,3)
+from (select ST_Union(geom) as geom_b
+	from multipolygons
+	where boundary = 'national_park') as boundary
+where natural = 'wood' and
+      ST_Intersects(geom, boundary.geom_b);
 
 -- Create a view with all feature polygons. This will be used to create the forest cover
 drop table if exists feature_polygons;

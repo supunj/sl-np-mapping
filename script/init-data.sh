@@ -17,6 +17,7 @@ osmium_bin=$(yq -r '.tool.osmium.path' $base_dir/tmp/sl-np-mapping.yaml)
 gdalwarp_bin=$(yq -r '.tool.gdal.gdalwarp.path' $base_dir/tmp/sl-np-mapping.yaml)
 poly2geojson_bin=$(yq -r '.tool.poly2geojson.path' $base_dir/tmp/sl-np-mapping.yaml)
 python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
+gdal_contour_bin=$(yq -r '.tool.gdal.gdal_contour.path' $base_dir/tmp/sl-np-mapping.yaml)
 np_boundary_name=$(yq -r '.park.'$np'.boundary_name' $base_dir/tmp/sl-np-mapping.yaml)
 np_boundary_tag=$(yq -r '.park.'$np'.boundary_tag' $base_dir/tmp/sl-np-mapping.yaml)
 
@@ -113,3 +114,6 @@ echo "$1 $2 $3 $4"
 
 # Extract only the elevation data for the given park polygon and write to a GeoTiff
 "$gdalwarp_bin" -overwrite -te $1 $2 $3 $4 -tr 0.000025 0.000025 -ot Float64 -r cubicspline --optfile $base_dir/tmp/hgt-list.txt $base_dir/var/$np-srtm.tiff
+
+# Generate contours and keep them in a .shp file 
+"$gdal_contour_bin" -a elev -i 10 -nln contour $base_dir/var/$np-srtm.tiff $base_dir/var/sl-contour.shp
