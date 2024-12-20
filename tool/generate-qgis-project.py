@@ -16,8 +16,9 @@ np = sys.argv[1]
 db_path = sys.argv[2]
 layers_file = sys.argv[3]
 hill_shade_raster_file = sys.argv[4]
-new_project_path = sys.argv[5]
-symbol_path = sys.argv[6]
+park_outer_glow_raster_file = sys.argv[5]
+new_project_path = sys.argv[6]
+symbol_path = sys.argv[7]
 
 # Initialize QGIS Application in headless mode (for standalone scripts)
 qgs = QgsApplication([], False)
@@ -32,14 +33,25 @@ project.write(new_project_path)
 uri = QgsDataSourceUri()
 uri.setDatabase(db_path)
 
-# First add the raster layer with hill-shading so that it sits at the bottom
+# First add the raster layer with park glow so that it sits at the bottom
+park_outer_glow_raster_layer = QgsRasterLayer(park_outer_glow_raster_file, "park_outer_glow")
+
+# Check if the layer is valid
+if park_outer_glow_raster_layer.isValid():
+    # Add the raster layer to the current project
+    project.addMapLayer(park_outer_glow_raster_layer)
+    print("Park glow layer added successfully.")
+else:
+    print("Failed to load the raster layer.")
+
+# Then add the raster layer with hill-shading
 hill_shade_raster_layer = QgsRasterLayer(hill_shade_raster_file, "hill_shade")
 
 # Check if the layer is valid
 if hill_shade_raster_layer.isValid():
     # Add the raster layer to the current project
     project.addMapLayer(hill_shade_raster_layer)
-    print("Raster layer added successfully.")
+    print("Hill-shade layer added successfully.")
 else:
     print("Failed to load the raster layer.")
 

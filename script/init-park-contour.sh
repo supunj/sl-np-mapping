@@ -18,7 +18,9 @@ osmium_bin=$(yq -r '.tool.osmium.path' $base_dir/tmp/sl-np-mapping.yaml)
 "$osmium_bin" extract \
 			--polygon $base_dir/var/$np-boundary-polygon.geojson \
 			--strategy simple \
-			--clean uid --clean user --clean changeset \
+			--clean uid \
+			--clean user \
+			--clean changeset \
 			-O \
 			-o $base_dir/tmp/$np-contours.osm \
 			$base_dir/var/sl-contours.osm.pbf

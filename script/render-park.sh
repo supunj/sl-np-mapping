@@ -18,13 +18,23 @@ svgo_bin=$(yq -r '.tool.svgo.path' $base_dir/tmp/sl-np-mapping.yaml)
 inkscape_bin=$(yq -r '.tool.inkscape.path' $base_dir/tmp/sl-np-mapping.yaml)
 
 # inkscape to plain
-"$inkscape_bin" --export-plain-svg=$base_dir/tmp/$np-$size-plain.svg $base_dir/inkscape/$np-$size-inkscape.svg
+"$inkscape_bin" \
+                --export-plain-svg=$base_dir/tmp/$np-$size-plain.svg \
+                $base_dir/inkscape/$np-$size-inkscape.svg
 
 # svg optimise
-"$svgo_bin" $base_dir/tmp/$np-$size-plain.svg -o $base_dir/render/$np-$size-plain-optimised.svg
+"$svgo_bin" \
+            $base_dir/tmp/$np-$size-plain.svg \
+            -o $base_dir/render/$np-$size-plain-optimised.svg
 
 # svg to pdf
-"$inkscape_bin" $base_dir/render/$np-$size-plain-optimised.svg --export-dpi=600 --export-text-to-path --export-pdf=$base_dir/render/$np-$size-plain-optimised.pdf
+"$inkscape_bin" \
+                $base_dir/render/$np-$size-plain-optimised.svg \
+                --export-dpi=600 \
+                --export-text-to-path \
+                --export-pdf=$base_dir/render/$np-$size-plain-optimised.pdf
 
 # Convert to png to preserve the filter effects
-"$rsvg_convert_bin" $base_dir/render/$np-$size-plain-optimised.svg -o $base_dir/render/$np-$size-plain-optimised.png
+"$rsvg_convert_bin" \
+                $base_dir/render/$np-$size-plain-optimised.svg \
+                -o $base_dir/render/$np-$size-plain-optimised.png

@@ -31,16 +31,48 @@ rm $base_dir/db/$np.db
 # "$gdal_contour_bin" -a elev -i 10 -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -lco COMPRESS_GEOM=YES -nln contours $base_dir/var/$np-srtm.tiff $base_dir/db/$np.db
 
 # then insert the geometries from the OSM file
-"$ogr2ogr_bin" -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -lco COMPRESS_GEOM=YES $base_dir/db/$np.db $base_dir/var/$np-cleansed-merged.osm
+"$ogr2ogr_bin" \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                $base_dir/db/$np.db \
+                $base_dir/var/$np-cleansed-merged.osm
 
 # Add the contours
-"$ogr2ogr_bin" -update -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -lco COMPRESS_GEOM=YES -nln sl_contour $base_dir/db/$np.db $base_dir/var/sl-contour.shp
+"$ogr2ogr_bin" \
+                -update \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                -nln sl_contour \
+                $base_dir/db/$np.db \
+                $base_dir/var/sl-contour.shp
 
 # Insert the coastline
-"$ogr2ogr_bin" -update -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -lco COMPRESS_GEOM=YES -nln sl_landmass $base_dir/db/$np.db $base_dir/var/sl-coastline.osm multipolygons
+"$ogr2ogr_bin" \
+                -update \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                -nln sl_landmass \
+                $base_dir/db/$np.db \
+                $base_dir/var/sl-coastline.osm \
+                multipolygons
 
 # Insert admin features
-"$ogr2ogr_bin" -update -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -lco COMPRESS_GEOM=YES -nln sl_admin $base_dir/db/$np.db $base_dir/var/sl-admin.osm lines
+"$ogr2ogr_bin" \
+                -update \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                -nln sl_admin \
+                $base_dir/db/$np.db \
+                $base_dir/var/sl-admin.osm \
+                lines
 
 # Refine and clean the data set
 sed 's/{$np}/'$np'/g' $base_dir/script/enrich-and-add-geometry.sql > $base_dir/tmp/enrich-and-add-geometry.sql

@@ -46,7 +46,12 @@ while IFS='|' read layer_name column2; do
     fi
 
     # Re-size the svg - source svg needs to have the same width and the height
-    "$rsvg_convert_bin" $svg -w 580 -h 580 -f svg -o $base_dir/tmp/$layer_name.svg
+    "$rsvg_convert_bin" \
+                        $svg \
+                        -w 580 \
+                        -h 580 \
+                        -f svg \
+                        -o $base_dir/tmp/$layer_name.svg
 
     # Add QGIS related parameters to the svg so that the colours can be changed
     "$xmlstarlet_bin" ed -N ns="http://www.w3.org/2000/svg" \
@@ -63,8 +68,16 @@ while IFS='|' read layer_name column2; do
                 $base_dir/tmp/$layer_name.svg > $base_dir/tmp/$layer_name-attr-add.svg
 
     # Optimise the svg
-    "$svgo_bin" --config=$base_dir/conf/svgo.config.js --input $base_dir/tmp/$layer_name-attr-add.svg --output $symbol_dir/$layer_name.svg
+    "$svgo_bin" \
+                --config=$base_dir/conf/svgo.config.js \
+                --input $base_dir/tmp/$layer_name-attr-add.svg \
+                --output $symbol_dir/$layer_name.svg
 
 done < "$base_dir/tmp/$np-qgis-layers.csv"
 
-"$python3_bin" $base_dir/tool/generate-qgis-project.py $np $base_dir/db/$np.db $base_dir/tmp/$np-qgis-layers.csv $base_dir/var/$np-srtm-combined-cropped-halo-geo-referenced.tiff $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np
+"$python3_bin" $base_dir/tool/generate-qgis-project.py \
+                                                    $np $base_dir/db/$np.db \
+                                                    $base_dir/tmp/$np-qgis-layers.csv \
+                                                    $base_dir/var/$np-hillshade-park-polygon.tiff \
+                                                    $base_dir/var/$np-park-polygon-glow.tiff \
+                                                    $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np

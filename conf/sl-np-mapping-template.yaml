@@ -1,36 +1,27 @@
-park:
-  lahugala:
-    boundary_name: "Lahugala Kitulana National Park"
-    boundary_tag: "type=boundary"
-  kumana:
-    boundary_name: "Kumana National Park"
-    boundary_tag: "type=boundary"
-  yb1:
-    boundary_name: "Yala National Park - Block 1"
-    boundary_tag: "type=boundary"
-  galoya:
-    boundary_name: "Gal Oya Valley National Park"
-    boundary_tag: "type=boundary"    
 tool:
   poly2geojson:
-    path: {$HOME}/.cargo/bin/poly2geojson
+    path: "{$HOME}/.cargo/bin/poly2geojson"
   osmosis:
-    path: {$base_dir}/tool/osmosis-0.49.2/bin/osmosis
+    path: "{$base_dir}/tool/osmosis-0.49.2/bin/osmosis"
   osmium:
     path: osmium
   gdal:
     gdalwarp:
       path: gdalwarp
+      tr: &default_tr "0.000025 0.000025"
     ogrinfo:
       path: ogrinfo
     ogr2ogr:
       path: ogr2ogr
     gdal_contour:
       path: gdal_contour
+      elevation_interval: &default_elevation_interval 10
     gdalinfo:
       path: gdalinfo
     gdaldem:
       path: gdaldem
+      factor: &default_dem_factor 1
+      scale: &default_dem_scale 10000
     gdal_translate:
       path: gdal_translate
   python:
@@ -47,10 +38,75 @@ tool:
   imagemagick:
     convert:
       path: convert
-      boundary_glow_colour: "#606c38"
+      glow_colour: &default_glow_colour "#606c38"
+      glow_blur: &default_glow_blur "0x200.5"
+      glow_level: &default_glow_level "0,80%"
+      crop_tile_width: &default_crop_tile_width 512
+      crop_tile_height: &default_crop_tile_height 512
+      limit_param: "-limit map 10GiB"
     composite:
       path: composite
+      dissolve: &default_dissolve "30%"
+    montage:
+      path: montage
   qrencode:
     path: qrencode
   inkscape:
     path: inkscape
+park:
+  lahugala:
+    boundary_name: "Lahugala Kitulana National Park"
+    boundary_tag: "type=boundary"
+    gdalwarp_hillshade_tr: *default_tr
+    gdaldem_hillshade_factor: *default_dem_factor
+    gdaldem_hillshade_scale: *default_dem_scale
+    composite_hillshade_dissolve: *default_dissolve
+    convert_boundary_glow_colour: *default_glow_colour
+    convert_boundary_glow_blur: *default_glow_blur
+    convert_boundary_glow_level: *default_glow_level
+    elevation_interval: *default_elevation_interval
+    convert_crop_tile_width: 100000
+    convert_crop_tile_height: 100000
+    park_glow_raster_reduce_by_px: 0
+  kumana:
+    boundary_name: "Kumana National Park"
+    boundary_tag: "type=boundary"
+    gdalwarp_hillshade_tr: *default_tr
+    gdaldem_hillshade_factor: *default_dem_factor
+    gdaldem_hillshade_scale: *default_dem_scale
+    composite_hillshade_dissolve: *default_dissolve
+    convert_boundary_glow_colour: *default_glow_colour
+    convert_boundary_glow_blur: *default_glow_blur
+    convert_boundary_glow_level: *default_glow_level
+    elevation_interval: *default_elevation_interval
+    convert_crop_tile_width: 100000
+    convert_crop_tile_height: 100000
+    park_glow_raster_reduce_by_px: 0
+  yb1:
+    boundary_name: "Yala National Park - Block 1"
+    boundary_tag: "type=boundary"
+    gdalwarp_hillshade_tr: *default_tr
+    gdaldem_hillshade_factor: *default_dem_factor
+    gdaldem_hillshade_scale: *default_dem_scale
+    composite_hillshade_dissolve: *default_dissolve
+    convert_boundary_glow_colour: *default_glow_colour
+    convert_boundary_glow_blur: *default_glow_blur
+    convert_boundary_glow_level: *default_glow_level
+    elevation_interval: *default_elevation_interval
+    convert_crop_tile_width: 100000
+    convert_crop_tile_height: 100000
+    park_glow_raster_reduce_by_px: 0
+  galoya:
+    boundary_name: "Gal Oya Valley National Park"
+    boundary_tag: "type=boundary"
+    gdalwarp_hillshade_tr: *default_tr
+    gdaldem_hillshade_factor: *default_dem_factor
+    gdaldem_hillshade_scale: *default_dem_scale
+    composite_hillshade_dissolve: *default_dissolve
+    convert_boundary_glow_colour: *default_glow_colour
+    convert_boundary_glow_blur: *default_glow_blur
+    convert_boundary_glow_level: *default_glow_level
+    elevation_interval: *default_elevation_interval
+    convert_crop_tile_width: *default_crop_tile_width
+    convert_crop_tile_height: *default_crop_tile_height
+    park_glow_raster_reduce_by_px: 5000
