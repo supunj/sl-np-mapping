@@ -1,9 +1,29 @@
-from qgis.core import QgsApplication, QgsProject, QgsVectorLayer, QgsDataSourceUri, QgsFillSymbol, QgsLineSymbol, QgsSingleSymbolRenderer, QgsWkbTypes, QgsMarkerSymbol, QgsSvgMarkerSymbolLayer, QgsMarkerSymbol, QgsRasterLayer, QgsTextFormat, QgsTextBufferSettings, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling, QgsSimpleLineSymbolLayer
+from qgis.core import (
+    QgsApplication,
+    QgsProject,
+    QgsVectorLayer,
+    QgsDataSourceUri,
+    QgsFillSymbol,
+    QgsLineSymbol,
+    QgsSingleSymbolRenderer,
+    QgsWkbTypes,
+    QgsMarkerSymbol,
+    QgsSvgMarkerSymbolLayer,
+    QgsMarkerSymbol,
+    QgsRasterLayer,
+    QgsTextFormat,
+    QgsTextBufferSettings,
+    QgsPalLayerSettings,
+    QgsVectorLayerSimpleLabeling,
+    QgsSimpleLineSymbolLayer,
+    QgsCoordinateReferenceSystem
+)
 import csv
 import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
 from pathlib import Path
+
 # from qgis.analysis import QgsNativeAlgorithms
 
 # Check if the database path and properties file path are provided
@@ -19,6 +39,7 @@ hill_shade_raster_file = sys.argv[4]
 park_outer_glow_raster_file = sys.argv[5]
 new_project_path = sys.argv[6]
 symbol_path = sys.argv[7]
+coordinate_reference_system = sys.argv[8]
 
 # Initialize QGIS Application in headless mode (for standalone scripts)
 qgs = QgsApplication([], False)
@@ -26,7 +47,9 @@ qgs.initQgis()
 
 # New QGIS project
 project = QgsProject.instance()
-project.writeEntry('Paths', 'Absolute', False)  # Set paths to relative
+crs = QgsCoordinateReferenceSystem(coordinate_reference_system)
+project.setCrs(crs)
+project.writeEntry("Paths", "Absolute", False)  # Set paths to relative
 project.write(new_project_path)
 
 # Set up the URI for the SpatiaLite layer with the SQL query
@@ -34,7 +57,9 @@ uri = QgsDataSourceUri()
 uri.setDatabase(db_path)
 
 # First add the raster layer with park glow so that it sits at the bottom
-park_outer_glow_raster_layer = QgsRasterLayer(park_outer_glow_raster_file, "park_outer_glow")
+park_outer_glow_raster_layer = QgsRasterLayer(
+    park_outer_glow_raster_file, "park_outer_glow"
+)
 
 # Check if the layer is valid
 if park_outer_glow_raster_layer.isValid():
@@ -56,9 +81,9 @@ else:
     print("Failed to load the raster layer.")
 
 # Open and read the CSV file
-with open(layers_file, mode='r', newline='') as file:
-    reader = csv.reader(file, delimiter='|')
-    
+with open(layers_file, mode="r", newline="") as file:
+    reader = csv.reader(file, delimiter="|")
+
     # Loop through each row in the CSV file
     for row in reader:
         print()  # Print the row, or perform other operations as needed
@@ -70,11 +95,16 @@ with open(layers_file, mode='r', newline='') as file:
         # Check if the layer is valid
         if layer.isValid():
             if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-                symbol = QgsFillSymbol.createSimple({'color': row[3], 'outline_color': row[4], 'outline_width': row[5]})
-                if float(row[5]) == 0: symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
-                #layer.setOpacity(0.85)
+                symbol = QgsFillSymbol.createSimple(
+                    {"color": row[3], "outline_color": row[4], "outline_width": row[5]}
+                )
+                if float(row[5]) == 0:
+                    symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+                # layer.setOpacity(0.85)
             elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-                symbol = QgsLineSymbol.createSimple({'color': row[4], 'width': float(row[5])*1.5})
+                symbol = QgsLineSymbol.createSimple(
+                    {"color": row[4], "width": float(row[5]) * 1.5}
+                )
                 inner_line = QgsSimpleLineSymbolLayer()
                 inner_line.setColor(QColor(row[3]))
                 inner_line.setWidth(float(row[5]))
@@ -82,7 +112,9 @@ with open(layers_file, mode='r', newline='') as file:
             elif layer.geometryType() == QgsWkbTypes.PointGeometry:
                 if Path(symbol_path + "/" + row[0] + ".svg").is_file():
                     # Create an SVG marker symbol layer
-                    svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path + "/" + row[0] + ".svg")
+                    svg_symbol_layer = QgsSvgMarkerSymbolLayer(
+                        symbol_path + "/" + row[0] + ".svg"
+                    )
                     svg_symbol_layer.setColor(QColor(row[3]))
                     svg_symbol_layer.setSize(float(row[5]))
                     svg_symbol_layer.setStrokeWidth(0.2)
@@ -93,8 +125,10 @@ with open(layers_file, mode='r', newline='') as file:
                     symbol = QgsMarkerSymbol()
                     symbol.changeSymbolLayer(0, svg_symbol_layer)
                 else:
-                    symbol = QgsMarkerSymbol.createSimple({'name': 'circle', 'color': row[3], 'size': row[5]})                             
-            
+                    symbol = QgsMarkerSymbol.createSimple(
+                        {"name": "circle", "color": row[3], "size": row[5]}
+                    )
+
             layer.setRenderer(QgsSingleSymbolRenderer(symbol))
             # Set opacity
             layer.renderer().symbol().setOpacity(float(row[6]))
@@ -114,7 +148,7 @@ with open(layers_file, mode='r', newline='') as file:
 
             # Set up label settings
             label_settings = QgsPalLayerSettings()
-            label_settings.fieldName = 'name'
+            label_settings.fieldName = "name"
             label_settings.setFormat(text_format)
             label_settings.placement = QgsPalLayerSettings.OutsidePolygons
 
@@ -127,7 +161,7 @@ with open(layers_file, mode='r', newline='') as file:
             project.addMapLayer(layer)
             print("Layer added to the new project.")
         else:
-            print("Layer failed to load.")  
+            print("Layer failed to load.")
 
 # ----This segment was used to invoke QGIS functions to do geometric manipulations. They were moved to Spatialite for flexibility. But keeping this segment in case it is needed in the future.----
 # # Load the input SpatiaLite layers
@@ -155,7 +189,7 @@ with open(layers_file, mode='r', newline='') as file:
 # #project.removeMapLayer(all_poly_sans_boundary)
 
 # print("Difference layer created successfully.")
-#...............................................................................................................................................................................................----
+# ...............................................................................................................................................................................................----
 
 # Save the project to the specified path
 project.write(new_project_path)

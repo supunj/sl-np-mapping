@@ -1,30 +1,50 @@
+-- First drop all forest polygons because we want the park polygon to be the object of attention
+delete
+from multipolygons
+where natural = 'wood';
+
 -- Split the background at the coastline into ocean polygon and the terrain polygon
 drop view if exists background_polygons;
 
 create view background_polygons as
-with background_split as (
-    select 
-        ST_Split(background.geom, coastline.geom) as background_collection
-    from (select ST_Union(geom) as geom
-		  from multipolygons
-		  where name = '{$np}_background') as background,
-        ( select ST_LineMerge(ST_Union(geom)) as geom
-		  from lines
-		  where INSTR(other_tags, '"natural"=>"coastline"')) as coastline
-    where ST_Intersects(background.geom, coastline.geom)
+with recursive background_split as (
+      select 1 as idx,
+             ST_Split(background.geom, coastline.geom) as geom_collection,
+		 background.geom as background_geom,
+		 coastline.geom as coastline_geom,
+		 (case
+			when coastline.geom is null and background.geom is not null then background.geom
+			else ST_GeometryN(ST_Split(background.geom, coastline.geom), 1)
+		 end) as geom,
+	       ST_NumGeometries(ST_Split(background.geom, coastline.geom)) as total_geoms
+      from (select ST_Union(geom) as geom
+		from multipolygons
+		where name = '{$np}_background') as background,
+           (select ST_LineMerge(ST_Union(geom)) as geom
+		from lines
+		where INSTR(other_tags, '"natural"=>"coastline"')) as coastline
+      where ST_Intersects(background.geom, coastline.geom)
+	
+	union all
+	
+	select idx + 1,
+		 geom_collection,
+		 background_geom,
+		 coastline_geom,
+		 (case
+				when coastline_geom is null and background_geom is not null then background_geom
+				else ST_GeometryN(geom_collection, idx + 1)
+			 end) as geom,
+             total_geoms
+      from background_split
+      where idx < total_geoms
 )
 select geom,
 	 (case
-	   when (select ST_Contains((select ST_Union(geom) from sl_landmass), ST_PointOnSurface(geom)) from background_split) = 1 then 'terrain'
+	   when ST_Contains((select ST_Union(geom) from sl_landmass), ST_PointOnSurface(geom)) = 1 then 'terrain'
 	   else 'ocean'
-	  end) as type
-from (select ST_GeometryN(background_collection, 1) as geom
-      from background_split
-	where ST_NumGeometries(background_collection) = 2
-	union
-	select ST_GeometryN(background_collection, 2) as geom
-      from background_split
-	where ST_NumGeometries(background_collection) = 2) as polygon_part;
+	 end) as type
+from background_split;
 
 insert into multipolygons(name, type, natural, place, other_tags, geom)
 				  select (case
@@ -45,7 +65,8 @@ insert into multipolygons(name, type, natural, place, other_tags, geom)
 						 else '"water"=>"ocean"'
 					   end) as other_tags,
 					   ST_Multi(geom) as geom
-				  from background_polygons;
+				  from background_polygons
+                          where geom is not null;
 
 -- Crop all ways to the background polygon
 update lines

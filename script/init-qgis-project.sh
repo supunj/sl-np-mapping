@@ -18,6 +18,7 @@ rsvg_convert_bin=$(yq -r '.tool.rsvg_convert.path' $base_dir/tmp/sl-np-mapping.y
 xmlstarlet_bin=$(yq -r '.tool.xmlstarlet.path' $base_dir/tmp/sl-np-mapping.yaml)
 svgo_bin=$(yq -r '.tool.svgo.path' $base_dir/tmp/sl-np-mapping.yaml)
 python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
+coordinate_reference_system=$(yq -r '.park.'$np'.coordinate_reference_system' $base_dir/tmp/sl-np-mapping.yaml)
 
 # This can't be run unless data and db is not available
 if ! [ -f "$base_dir/db/$np.db" ]; then
@@ -80,4 +81,5 @@ done < "$base_dir/tmp/$np-qgis-layers.csv"
                                                     $base_dir/tmp/$np-qgis-layers.csv \
                                                     $base_dir/var/$np-hillshade-park-polygon.tiff \
                                                     $base_dir/var/$np-park-polygon-glow.tiff \
-                                                    $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np
+                                                    $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np \
+                                                    $coordinate_reference_system

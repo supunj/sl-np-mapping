@@ -1,4 +1,4 @@
-terrain|multipolygons|name = '{$np}_terrain' and place = 'island'|#aec3b0|transparent|0.0|0
+terrain|multipolygons|name = '{$np}_terrain' and place = 'island'|#aec3b0|transparent|0.0|0.8
 other_forest|multipolygons|natural = 'wood'|#add19e|transparent|0|1
 forest_cover|forest_cover||#a3b18a|transparent|0.5|0.2
 forest_clearing|multipolygons|man_made = 'clearcut' or man_made = 'excavation'|#8e9aaf|transparent|0.0|0.8

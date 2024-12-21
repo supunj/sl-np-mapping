@@ -1,3 +1,5 @@
+global:
+  coordinate_reference_system: &default_crs "EPSG:4326"
 tool:
   poly2geojson:
     path: "{$HOME}/.cargo/bin/poly2geojson"
@@ -55,6 +57,7 @@ tool:
     path: inkscape
 park:
   lahugala:
+    coordinate_reference_system: *default_crs
     boundary_name: "Lahugala Kitulana National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -69,6 +72,7 @@ park:
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
   kumana:
+    coordinate_reference_system: *default_crs
     boundary_name: "Kumana National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -83,6 +87,7 @@ park:
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
   yb1:
+    coordinate_reference_system: *default_crs
     boundary_name: "Yala National Park - Block 1"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -97,6 +102,7 @@ park:
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
   galoya:
+    coordinate_reference_system: *default_crs
     boundary_name: "Gal Oya Valley National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -106,7 +112,7 @@ park:
     convert_boundary_glow_colour: *default_glow_colour
     convert_boundary_glow_blur: *default_glow_blur
     convert_boundary_glow_level: *default_glow_level
-    elevation_interval: *default_elevation_interval
+    elevation_interval: 40
     convert_crop_tile_width: *default_crop_tile_width
     convert_crop_tile_height: *default_crop_tile_height
     park_glow_raster_reduce_by_px: 5000

@@ -23,12 +23,7 @@ if ! [ -f "$base_dir/var/$np-cleansed-merged.osm" ] || ! [ -f "$base_dir/var/$np
     exit 1
 fi
 
-# gdal_contour does not have an overwrite option
 rm $base_dir/db/$np.db
-
-# Generate contours and insert them to the park's db. We have to do this before inserting geometries from the OSM file
-# because gdal_contour does not support updating an existing DB but ogr2ogr does
-# "$gdal_contour_bin" -a elev -i 10 -f SQLite -dsco SPATIALITE=YES -lco GEOMETRY_NAME=geom -lco COMPRESS_GEOM=YES -nln contours $base_dir/var/$np-srtm.tiff $base_dir/db/$np.db
 
 # then insert the geometries from the OSM file
 "$ogr2ogr_bin" \
