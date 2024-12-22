@@ -98,6 +98,22 @@ fi
 			-o $base_dir/var/sl-admin.osm \
 			$base_dir/tmp/sl-admin-raw.osm
 
+# Surrounding forests
+"$osmosis_bin" \
+            --read-pbf file=$base_dir/var/sri-lanka-latest.osm.pbf \
+			--tf accept-relations natural="wood" \
+        	--bounding-polygon file=$base_dir/poly/$np.poly completeWays=yes \
+			completeRelations=yes \
+			--used-node \
+			--used-way \
+        	--write-xml $base_dir/tmp/$np-surrounding-forests-phase-1.osm
+
+"$osmium_bin" tags-filter \
+            -O \
+            -o $base_dir/var/$np-surrounding-forests.osm \
+            $base_dir/tmp/$np-surrounding-forests-phase-1.osm \
+            wr/natural=wood
+
 # Merge OSM data, contours and the background polygon
 "$osmosis_bin" \
             --read-xml file=$base_dir/tmp/$np-cleansed.osm \

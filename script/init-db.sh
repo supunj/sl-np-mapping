@@ -34,6 +34,18 @@ rm $base_dir/db/$np.db
                 $base_dir/db/$np.db \
                 $base_dir/var/$np-cleansed-merged.osm
 
+# Add surrounding forests
+"$ogr2ogr_bin" \
+                -update \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                -nln surrounding_forests_raw \
+                $base_dir/db/$np.db \
+                $base_dir/var/$np-surrounding-forests.osm \
+                multipolygons
+
 # Add the contours
 "$ogr2ogr_bin" \
                 -update \

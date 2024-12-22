@@ -3,6 +3,10 @@ delete
 from multipolygons
 where natural = 'wood';
 
+delete
+from surrounding_forests_raw
+where type is null;
+
 -- Split the background at the coastline into ocean polygon and the terrain polygon
 drop view if exists background_polygons;
 
@@ -125,20 +129,43 @@ set type = case
            end,
     name = cast(elev as text);
 
--- Remove the original background polygon
-delete from multipolygons where name = '{$np}_background';
+-- This table will hold the difference after cutting out the boundary
+drop table if exists surrounding_forests_diff;
 
--- Crop and update the 'natural=wood' polygons if they intersect with the boundary. This is for better styling. 
-update multipolygons
-set geom = ST_CollectionExtract(case
-					   when ST_Difference(geom, boundary.geom_b) is not null then ST_Multi(ST_Difference(geom, boundary.geom_b))
-					   else ST_Multi(ST_Buffer(ST_Centroid(geom), 0.01))
-					  end,3)
-from (select ST_Union(geom) as geom_b
-	from multipolygons
-	where boundary = 'national_park') as boundary
-where natural = 'wood' and
-      ST_Intersects(geom, boundary.geom_b);
+create table surrounding_forests_diff (
+  ogc_fid integer not null primary key autoincrement,
+  name text null
+);
+
+select AddGeometryColumn('surrounding_forests_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+
+insert into surrounding_forests_diff(name, geom)
+                                    with boundary as (
+                                          select ST_Union(geom) as geom_b
+                                          from multipolygons
+                                          where boundary = 'national_park'
+                                    )
+                                    select surrounding_forests_raw.name,
+                                           ST_Multi(ST_CollectionExtract(case
+                                                                              when ST_Difference(geom, boundary.geom_b) is not null then ST_Multi(ST_Difference(geom, boundary.geom_b))
+                                                                              else ST_Multi(ST_Buffer(ST_Centroid(geom), 0.01))
+                                                                         end,3)) as geom
+                                    from surrounding_forests_raw, boundary;
+                                    --where ST_Intersects(geom, boundary.geom_b);
+
+with background as (
+	select geom as geom_b
+	from multipolygons 
+	where name = '{$np}_background'
+)
+update surrounding_forests_diff
+set geom = ST_Multi(ST_Intersection(geom, background.geom_b))
+from background;
+
+-- Remove the original background polygon
+delete 
+from multipolygons 
+where name = '{$np}_background';
 
 -- Create a view with all feature polygons. This will be used to create the forest cover
 drop table if exists feature_polygons;
