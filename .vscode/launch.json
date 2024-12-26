@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",            
+            "args": [
+                "kumana",
+                "/mnt/data2/Workspace/new/sl-np-mapping/db/kumana.db",
+                "/mnt/data2/Workspace/new/sl-np-mapping/tmp/kumana-qgis-layers.csv",
+                "/mnt/data2/Workspace/new/sl-np-mapping/var/kumana-hillshade-park-polygon.tiff",
+                "/mnt/data2/Workspace/new/sl-np-mapping/var/kumana-park-polygon-glow.tiff",
+                "/mnt/data2/Workspace/new/sl-np-mapping/qgis/kumana.qgz",
+                "/mnt/data2/Workspace/new/sl-np-mapping/qgis/symbol/kumana",
+                "EPSG:4326"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

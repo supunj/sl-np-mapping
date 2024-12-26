@@ -1,4 +1,4 @@
--- First drop all forest polygons because we want the park polygon to be the object of attention
+-- First drop all forest polygons from the main polygons because we will process them separately later on
 delete
 from multipolygons
 where natural = 'wood';
@@ -72,6 +72,38 @@ insert into multipolygons(name, type, natural, place, other_tags, geom)
 				  from background_polygons
                           where geom is not null;
 
+-- This table will hold the difference after cutting out the boundary
+drop table if exists surrounding_forests_diff;
+
+create table surrounding_forests_diff (
+  ogc_fid integer not null primary key autoincrement,
+  name text null
+);
+
+select AddGeometryColumn('surrounding_forests_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+
+insert into surrounding_forests_diff(name, geom)
+                                    with boundary as (
+                                          select ST_Union(geom) as geom_b
+                                          from multipolygons
+                                          where boundary = 'national_park'
+                                    )
+                                    select surrounding_forests_raw.name,
+                                           ST_Multi(ST_CollectionExtract(case
+                                                                              when ST_Difference(geom, boundary.geom_b) is not null then ST_Multi(ST_Difference(geom, boundary.geom_b))
+                                                                              else ST_Multi(ST_Buffer(ST_Centroid(geom), 0.01))
+                                                                         end,3)) as geom
+                                    from surrounding_forests_raw, boundary;
+
+with background as (
+	select geom as geom_b
+	from multipolygons 
+	where name = '{$np}_background'
+)
+update surrounding_forests_diff
+set geom = ST_Multi(ST_Intersection(geom, background.geom_b))
+from background;
+
 -- Crop all ways to the background polygon
 update lines
 set geom = case
@@ -118,7 +150,7 @@ where not ST_Within(geom, (select ST_Union(multipolygons.geom) as geom
                            from multipolygons
                            where name = '{$np}_background'));
 
--- Tag contours
+-- Classify contours
 alter table sl_contour add column type text;
 alter table sl_contour add column name text;
 update sl_contour
@@ -127,40 +159,7 @@ set type = case
             when elev % 20 = 0 then 'medium'
             else 'minor'
            end,
-    name = cast(elev as text);
-
--- This table will hold the difference after cutting out the boundary
-drop table if exists surrounding_forests_diff;
-
-create table surrounding_forests_diff (
-  ogc_fid integer not null primary key autoincrement,
-  name text null
-);
-
-select AddGeometryColumn('surrounding_forests_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
-
-insert into surrounding_forests_diff(name, geom)
-                                    with boundary as (
-                                          select ST_Union(geom) as geom_b
-                                          from multipolygons
-                                          where boundary = 'national_park'
-                                    )
-                                    select surrounding_forests_raw.name,
-                                           ST_Multi(ST_CollectionExtract(case
-                                                                              when ST_Difference(geom, boundary.geom_b) is not null then ST_Multi(ST_Difference(geom, boundary.geom_b))
-                                                                              else ST_Multi(ST_Buffer(ST_Centroid(geom), 0.01))
-                                                                         end,3)) as geom
-                                    from surrounding_forests_raw, boundary;
-                                    --where ST_Intersects(geom, boundary.geom_b);
-
-with background as (
-	select geom as geom_b
-	from multipolygons 
-	where name = '{$np}_background'
-)
-update surrounding_forests_diff
-set geom = ST_Multi(ST_Intersection(geom, background.geom_b))
-from background;
+    name = cast(cast(elev as int) as text);
 
 -- Remove the original background polygon
 delete 
@@ -253,9 +252,6 @@ delete
 from lines
 where man_made = 'clearcut';
 
--- Set the elevation as the contour name
-
-
 -- Insert points to each named multi-polygon
 insert into points(name, geom) 
     select name,ST_Centroid(geom)
@@ -275,9 +271,9 @@ from (select *
 where ST_Intersects(culverts.geom, highways.geom) and
       GeometryType(ST_Intersection(culverts.geom, highways.geom)) = 'POINT';
 
--- Insert a point in the middle of each bridges
-insert into points(name, other_tags, geom)
-select bridges.name, bridges.other_tags, ST_Intersection(bridges.geom, waterways.geom) as intersection_point
+-- Insert a point in the middle of each bridges so that we can have a separate points layer for bridges
+insert into points(other_tags, geom)
+select bridges.other_tags, ST_Intersection(bridges.geom, waterways.geom) as intersection_point
 from (select *
 	from lines
 	where highway is not null and
@@ -287,3 +283,9 @@ from (select *
 	where waterway is not null) as waterways	 
 where ST_Intersects(bridges.geom, waterways.geom) and
       GeometryType(ST_Intersection(bridges.geom, waterways.geom)) = 'POINT';
+
+-- Transform 'waterway = dam' into a polygon so that they would show up in the dam layer
+insert into multipolygons(osm_id, name, type, other_tags, geom)
+select osm_id, name, 'multipolygon', other_tags || ',"waterway"=>"' || waterway || '"', ST_Multi(ST_Buffer(geom, 0.00001))
+from lines
+where waterway in ('dam', 'weir');
