@@ -19,13 +19,14 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsContrastEnhancement,
     QgsMultiBandColorRenderer,
+    QgsTextBackgroundSettings
 )
 import csv
 import sys
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSizeF
 from PyQt5.QtGui import QColor, QFont
 from pathlib import Path
-
+# from qgis.analysis import QgsNativeAlgorithms
 
 def setLabel(row, layer):
     # Add the label only if the font size is not 0
@@ -38,26 +39,56 @@ def setLabel(row, layer):
 
         # Add text buffer
         buffer_settings = QgsTextBufferSettings()
-        buffer_settings.setEnabled(True)
         buffer_settings.setColor(QColor("white"))
         buffer_settings.setSize(0.4)
-        text_format.setBuffer(buffer_settings)
-
-        # Set up label settings
+        
+        # Configure text background
+        background_settings = QgsTextBackgroundSettings()        
+        background_settings.setFillColor(QColor(row[9]))  # Set the background color
+        background_settings.setStrokeColor(QColor("transparent"))  # No borders
+        background_settings.setStrokeWidth(0)  # No borders
+        background_settings.setType(QgsTextBackgroundSettings.ShapeRectangle)  # Set shape to rectangle
+        background_settings.setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        background_settings.setSize(QSizeF(0.5, 0.5))  # Add padding to the width
+        background_settings.setRadii(QSizeF(1.0, 1.0))  # Radius for rounded corners
+                
         label_settings = QgsPalLayerSettings()
+
+        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+            label_settings.showAllLabels = True
+            label_settings.placement = QgsPalLayerSettings.AroundPoint
+            buffer_settings.setEnabled(False)            
+            # Override the label settings defined in the layers file
+            text_format.setColor(QColor("black"))
+            background_settings.setFillColor(QColor("white"))
+            background_settings.setOpacity(0.6)
+            background_settings.setEnabled(True)
+        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
+            label_settings.placement = QgsPalLayerSettings.Curved
+            buffer_settings.setEnabled(True)
+            background_settings.setEnabled(False)
+        elif layer.geometryType() == QgsWkbTypes.PointGeometry:
+            label_settings.showAllLabels = True
+            label_settings.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+            label_settings.dist = 5
+            buffer_settings.setEnabled(False)
+            background_settings.setEnabled(True)
+            
+            # Override the font colour based on the stroke colour
+            if row[4] == "" or row[4] == "transparent":
+                text_format.setColor(QColor("white"))
+            else:
+                text_format.setColor(QColor("black"))
+                
+        # Set the settings to the text format parent        
+        text_format.setBuffer(buffer_settings)
+        text_format.setBackground(background_settings)
+
+         # Set up label settings        
         label_settings.fieldName = "name"
         label_settings.setFormat(text_format)
         label_settings.MinScale = 0  # Minimum scale (0 for unlimited)
         label_settings.MaxScale = 1e10  # Maximum scale (large number for unlimited)
-
-        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-            label_settings.showAllLabels = True
-            label_settings.placement = QgsPalLayerSettings.OutsidePolygons
-        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-            label_settings.placement = QgsPalLayerSettings.Curved
-        elif layer.geometryType() == QgsWkbTypes.PointGeometry:
-            label_settings.showAllLabels = True
-            label_settings.placement = QgsPalLayerSettings.OutsidePolygons
 
         # Set the labeling layer to the vector layer
         labeling_layer = QgsVectorLayerSimpleLabeling(label_settings)
@@ -80,9 +111,21 @@ def setLayerContrastEnhancement(layer):
     else:
         print("Single band - to be implemented when needed.")
         
-def main():
-    # from qgis.analysis import QgsNativeAlgorithms
+def getSVGSymbolLayer(symbol_path, row):
+    svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path)
+    svg_symbol_layer.setColor(QColor(row[3]))
+    svg_symbol_layer.setSize(float(row[5]))
+    
+    if row[4] == "" or row[4] == "transparent":
+        svg_symbol_layer.setStrokeWidth(float(0.0))
+    else:
+        svg_symbol_layer.setStrokeWidth(float(0.25))
+        
+    svg_symbol_layer.setStrokeColor(QColor(row[4]))
+    svg_symbol_layer.setAngle(0)
+    return svg_symbol_layer
 
+def main():
     # Check if the database path and properties file path are provided
     if len(sys.argv) < 4:
         print("Inadequate parameters.")
@@ -172,17 +215,8 @@ def main():
                     symbol.appendSymbolLayer(inner_line)
                 elif layer.geometryType() == QgsWkbTypes.PointGeometry:
                     if Path(symbol_path + "/" + row[0] + ".svg").is_file():
-                        svg_symbol_layer = QgsSvgMarkerSymbolLayer(
-                            symbol_path + "/" + row[0] + ".svg"
-                        )
-                        svg_symbol_layer.setColor(QColor(row[3]))
-                        svg_symbol_layer.setSize(float(row[5]))
-                        svg_symbol_layer.setStrokeWidth(0.2)
-                        svg_symbol_layer.setStrokeColor(QColor("#ffffff"))
-                        svg_symbol_layer.setAngle(0)
-
                         symbol = QgsMarkerSymbol()
-                        symbol.changeSymbolLayer(0, svg_symbol_layer)
+                        symbol.changeSymbolLayer(0, getSVGSymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
                     else:
                         symbol = QgsMarkerSymbol.createSimple(
                             {"name": "circle", "color": row[3], "size": row[5]}

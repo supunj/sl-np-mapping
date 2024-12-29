@@ -41,8 +41,8 @@ tool:
     convert:
       path: convert
       glow_colour: &default_glow_colour "#606c38"
-      glow_blur: &default_glow_blur "0x200.5"
-      glow_level: &default_glow_level "0,80%"
+      glow_blur: &default_glow_blur "900x300"
+      glow_level: &default_glow_level "0%,100%,1.0"
       crop_tile_width: &default_crop_tile_width 512
       crop_tile_height: &default_crop_tile_height 512
       limit_param: "-limit map 10GiB"
