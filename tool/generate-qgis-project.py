@@ -207,11 +207,12 @@ def main():
                         symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
                 elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                     symbol = QgsLineSymbol.createSimple(
-                        {"color": row[4], "width": float(row[5]) * 1.5}
+                        {"color": row[4], "width": float(row[5]) * 1.5, "capstyle": "round"}
                     )
                     inner_line = QgsSimpleLineSymbolLayer()
                     inner_line.setColor(QColor(row[3]))
                     inner_line.setWidth(float(row[5]))
+                    inner_line.setPenCapStyle(Qt.RoundCap) # Set round end caps for lines
                     symbol.appendSymbolLayer(inner_line)
                 elif layer.geometryType() == QgsWkbTypes.PointGeometry:
                     if Path(symbol_path + "/" + row[0] + ".svg").is_file():

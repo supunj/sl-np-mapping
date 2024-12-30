@@ -101,7 +101,7 @@ fi
 # Surrounding forests
 "$osmosis_bin" \
             --read-pbf file=$base_dir/var/sri-lanka-latest.osm.pbf \
-			--tf accept-relations natural="wood" \
+			--tf accept-relations natural="wood" landuse="forest" \
         	--bounding-polygon file=$base_dir/poly/$np.poly completeWays=yes \
 			completeRelations=yes \
 			--used-node \

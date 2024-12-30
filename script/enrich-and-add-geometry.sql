@@ -1,7 +1,7 @@
 -- First drop all forest polygons from the main polygons because we will process them separately later on
 delete
 from multipolygons
-where natural = 'wood';
+where natural = 'wood' or landuse = 'forest';
 
 delete
 from surrounding_forests_raw
@@ -19,7 +19,7 @@ with recursive background_split as (
 		 (case
 			when coastline.geom is null and background.geom is not null then background.geom
 			else ST_GeometryN(ST_Split(background.geom, coastline.geom), 1)
-		 end) as geom,
+		  end) as geom,
 	       ST_NumGeometries(ST_Split(background.geom, coastline.geom)) as total_geoms
       from (select ST_Union(geom) as geom
 		from multipolygons
@@ -107,9 +107,9 @@ from background;
 -- Crop all ways to the background polygon
 update lines
 set geom = case
-            when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(lines.geom, polygons.geom)
-            when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(lines.geom, polygons.geom), 1)
-            else null
+                  when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(lines.geom, polygons.geom)
+                  when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(lines.geom, polygons.geom), 1)
+                  else null
            end
 from (
       select ST_Union(geom) as geom
@@ -182,7 +182,8 @@ from multipolygons
 where boundary is not 'national_park' and 
       name is not '{$np}_terrain' and
       name is not '{$np}_ocean' and
-      natural is not 'wood' and -- Need to drop natural=wood polygons as these would normally cover the park boundary in it's entirety
+      natural is not 'wood' and 
+      landuse is not 'forest' and -- Need to drop natural=wood and landuse = forest polygons as these would normally cover the park boundary in it's entirety
 	ST_IsValid(geom);
 
 -- Derive the forest cover

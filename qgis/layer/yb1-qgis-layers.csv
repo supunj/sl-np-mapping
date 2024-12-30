@@ -27,7 +27,7 @@ major_contour|sl_contour|type = 'major'|#9a8c98|transparent|0.5|1|Lato|10|Black
 power_line|lines|"INSTR(other_tags, '""power""=>""line""') > 0"|#888|transparent|0.125|1|Lato|0|Black
 intermittent_waterway|lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (INSTR(other_tags, '""intermittent""=>""yes""') > 0 or INSTR(other_tags, '""seasonal ""=>""yes""') > 0)"|#357798|transparent|0.25|1|Lato|10|Black
 waterway|lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (other_tags is null or (INSTR(other_tags, '""intermittent""=>""yes""') = 0 and INSTR(other_tags, '""seasonal ""=>""yes""') = 0))"|#357798|transparent|0.25|1|Lato|10|Black
-river|lines|waterway = 'river'|#18364E|#ffffff|1.5|1|Lato|10|Black
+river|lines|waterway = 'river'|#aed9e0|#18364E|1.5|1|Lato|10|Black
 embankment|lines|"man_made = 'embankment' or INSTR(other_tags, '""embankment""=>') > 0"|#cb997e|#242423|1.5|1|Lato|0|Black
 track|lines|highway = 'track'|#996600|transparent|0.5|1|Lato|10|Black
 path|lines|highway = 'path' or highway = 'footway' or highway = 'steps'|#8b8c89|transparent|0.3|1|Lato|10|Black
