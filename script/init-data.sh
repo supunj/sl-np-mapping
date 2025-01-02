@@ -114,6 +114,25 @@ fi
             $base_dir/tmp/$np-surrounding-forests-phase-1.osm \
             wr/natural=wood
 
+# Surrounding protected areas
+"$osmosis_bin" \
+            --read-pbf file=$base_dir/var/sri-lanka-latest.osm.pbf \
+			--tf accept-relations type="boundary" \
+			--tf accept-relations boundary="protected_area,national_park" \
+        	--bounding-polygon file=$base_dir/poly/$np.poly \
+			completeWays=yes \
+			completeRelations=yes \
+			--used-node \
+			--used-way \
+        	--write-xml $base_dir/tmp/$np-surrounding-protected-areas-phase-1.osm
+
+"$osmium_bin" tags-filter \
+            -O \
+            -o $base_dir/var/$np-surrounding-protected-areas.osm \
+            $base_dir/tmp/$np-surrounding-protected-areas-phase-1.osm \
+            wr/type=boundary \
+			wr/boundary=*
+
 # Merge OSM data, contours and the background polygon
 "$osmosis_bin" \
             --read-xml file=$base_dir/tmp/$np-cleansed.osm \

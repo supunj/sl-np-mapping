@@ -46,6 +46,18 @@ rm $base_dir/db/$np.db
                 $base_dir/var/$np-surrounding-forests.osm \
                 multipolygons
 
+# Add surrounding protected areas
+"$ogr2ogr_bin" \
+                -update \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                -nln surrounding_protected_areas_raw \
+                $base_dir/db/$np.db \
+                $base_dir/var/$np-surrounding-protected-areas.osm \
+                multipolygons
+
 # Add the contours
 "$ogr2ogr_bin" \
                 -update \

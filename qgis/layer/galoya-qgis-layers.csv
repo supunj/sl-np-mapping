@@ -44,7 +44,7 @@ buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') >
 hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|Black|8|1|Lato|10|#fe7f2d
 campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|8|1|Lato|10|#4c956c
 bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0"|#c8553d|transparent|8|1|Lato|10|#c8553d
-scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0"|#da627d|transparent|8|1|Lato|10|#da627d
+scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#da627d|transparent|8|1|Lato|10|#da627d
 junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#6a4c93|transparent|6|1|Lato|8|#6a4c93
 forest_office|points|"INSTR(other_tags, '""office""=>""forestry""') > 0 or INSTR(other_tags, '""office""=>""research""') > 0"|Black|transparent|6|1|Lato|10|Black
 toilet|points|"INSTR(other_tags, '""amenity""=>""toilets""') > 0"|Black|transparent|6|1|Lato|0|Black
@@ -57,3 +57,6 @@ culvert|points|"INSTR(other_tags, '""tunnel""=>""culvert""') > 0"|#00509d|White|
 bridge|points|"INSTR(other_tags, '""bridge""=>') > 0"|#00509d|White|6|1|Lato|10|Black
 barrier|points|barrier in ('lift_gate', 'gate')|Black|transparent|6|1|Lato|10|Black
 peak|points|"INSTR(other_tags, '""natural""=>""peak""') > 0"|#d4a276|White|8|1|Lato|10|#d4a276
+cave|points|"INSTR(other_tags, '""natural""=>""cave_entrance""') > 0"|#403d39|transparent|8|1|Lato|10|#403d39
+protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|8|1|Lato|10|#31572c
+protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|8|1|Lato|10|#0353a4

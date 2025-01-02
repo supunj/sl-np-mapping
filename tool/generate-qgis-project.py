@@ -19,7 +19,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsContrastEnhancement,
     QgsMultiBandColorRenderer,
-    QgsTextBackgroundSettings
+    QgsTextBackgroundSettings,
+    QgsProperty
 )
 import csv
 import sys
@@ -53,6 +54,13 @@ def setLabel(row, layer):
         background_settings.setRadii(QSizeF(1.0, 1.0))  # Radius for rounded corners
                 
         label_settings = QgsPalLayerSettings()
+        label_settings.dataDefinedProperties().setProperty(QgsPalLayerSettings.Size,
+                                                          QgsProperty.fromExpression(
+                                                                f"""
+                                                                {row[8]} * (1 + (10000 / @map_scale))
+                                                                """
+                                                            )
+                                                        )
 
         if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
             label_settings.showAllLabels = True

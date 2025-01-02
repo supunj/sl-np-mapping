@@ -72,28 +72,28 @@ insert into multipolygons(name, type, natural, place, other_tags, geom)
 				  from background_polygons
                           where geom is not null;
 
--- This table will hold the difference after cutting out the boundary
+-- Surrounding forests - this table will hold the difference after cutting out the boundary
 drop table if exists surrounding_forests_diff;
 
 create table surrounding_forests_diff (
   ogc_fid integer not null primary key autoincrement,
-  name text null
+  name text null,
+  other_tags text null
 );
 
 select AddGeometryColumn('surrounding_forests_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
 
-insert into surrounding_forests_diff(name, geom)
+insert into surrounding_forests_diff(name, other_tags, geom)
                                     with boundary as (
                                           select ST_Union(geom) as geom_b
                                           from multipolygons
                                           where boundary = 'national_park'
                                     )
                                     select surrounding_forests_raw.name,
-                                           ST_Multi(ST_CollectionExtract(case
-                                                                              when ST_Difference(geom, boundary.geom_b) is not null then ST_Multi(ST_Difference(geom, boundary.geom_b))
-                                                                              else ST_Multi(ST_Buffer(ST_Centroid(geom), 0.01))
-                                                                         end,3)) as geom
-                                    from surrounding_forests_raw, boundary;
+                                           surrounding_forests_raw.other_tags,
+                                           ST_Multi(ST_CollectionExtract(ST_Multi(ST_Difference(geom, boundary.geom_b)), 3)) as geom
+                                    from surrounding_forests_raw, boundary
+                                    where ST_Difference(geom, boundary.geom_b) is not null;
 
 with background as (
 	select geom as geom_b
@@ -103,6 +103,49 @@ with background as (
 update surrounding_forests_diff
 set geom = ST_Multi(ST_Intersection(geom, background.geom_b))
 from background;
+
+-- Surrounding protected areas - this table will hold the difference after cutting out the boundary
+drop table if exists surrounding_protected_areas_diff;
+
+create table surrounding_protected_areas_diff (
+  ogc_fid integer not null primary key autoincrement,
+  name text null,
+  other_tags text null
+);
+
+select AddGeometryColumn('surrounding_protected_areas_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+
+insert into surrounding_protected_areas_diff(name, other_tags, geom)
+                                                with boundary as (
+                                                      select ST_Union(geom) as geom_b
+                                                      from multipolygons
+                                                      where boundary = 'national_park'
+                                                )
+                                                select surrounding_protected_areas_raw.name,
+                                                       surrounding_protected_areas_raw.other_tags,
+                                                       ST_Multi(ST_CollectionExtract(ST_Multi(ST_Difference(geom, boundary.geom_b)), 3)) as geom
+                                                from surrounding_protected_areas_raw, boundary
+                                                where ST_Difference(geom, boundary.geom_b) is not null;
+
+with background as (
+	select geom as geom_b
+	from multipolygons 
+	where name = '{$np}_background'
+)
+update surrounding_protected_areas_diff
+set geom = ST_Multi(ST_Intersection(geom, background.geom_b))
+from background;
+
+-- We don't need entire polygons...instead we insert a POI on the surface of the polygon 
+insert into points(name, other_tags, geom)
+select name,
+	 case
+		when INSTR(other_tags, '"maritime"=>"yes"') > 0 then ifnull(other_tags, '') || ',"protected_area"=>"marine"'
+		else ifnull(other_tags, '') || ',"protected_area"=>"terrestrial"'
+	 end,
+	 ST_StartPoint(GEOSMaximumInscribedCircle(geom, 0)) as visual_center
+from surrounding_protected_areas_diff
+where name is not null;
 
 -- Crop all ways to the background polygon
 update lines
@@ -149,17 +192,6 @@ from points
 where not ST_Within(geom, (select ST_Union(multipolygons.geom) as geom
                            from multipolygons
                            where name = '{$np}_background'));
-
--- Classify contours
-alter table sl_contour add column type text;
-alter table sl_contour add column name text;
-update sl_contour
-set type = case
-            when elev % 100 = 0 then 'major'
-            when elev % 20 = 0 then 'medium'
-            else 'minor'
-           end,
-    name = cast(cast(elev as int) as text);
 
 -- Remove the original background polygon
 delete 
@@ -243,6 +275,17 @@ from (with boundary_and_other_poly as (
           ST_Intersects(multipolygons.geom, boundary_and_other_poly.geom)) as diff
 where multipolygons.name = diff.name;
 
+-- Classify contours
+alter table sl_contour add column type text;
+alter table sl_contour add column name text;
+update sl_contour
+set type = case
+            when elev % 100 = 0 then 'major'
+            when elev % 20 = 0 then 'medium'
+            else 'minor'
+           end,
+    name = cast(cast(elev as int) as text);
+
 -- For some reason man_made='clearcut' tagged polygons end up in lines table as closed lines. Make multipolygons from those and insert into polygons table. Then delete lines
 insert into multipolygons(osm_id, osm_way_id, name, man_made, other_tags, geom)
 select osm_id, osm_id, name, man_made, other_tags, ST_Multi(ST_MakePolygon(geom))
@@ -254,10 +297,10 @@ from lines
 where man_made = 'clearcut';
 
 -- Insert points to each named multi-polygon
-insert into points(name, geom) 
-    select name,ST_Centroid(geom)
-    from multipolygons
-    where name is not NULL;
+-- insert into points(name, geom) 
+--     select name,ST_Centroid(geom)
+--     from multipolygons
+--     where name is not NULL;
 
 -- Insert a point in the middle of each culverts
 insert into points(name, other_tags, geom)
