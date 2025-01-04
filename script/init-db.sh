@@ -18,7 +18,7 @@ ogr2ogr_bin=$(yq -r '.tool.gdal.ogr2ogr.path' $base_dir/tmp/sl-np-mapping.yaml)
 spatialite_bin=$(yq -r '.tool.spatialite.path' $base_dir/tmp/sl-np-mapping.yaml)
 
 # Check if the data has been acquired
-if ! [ -f "$base_dir/var/$np-cleansed-merged.osm" ] || ! [ -f "$base_dir/var/$np-srtm.tiff" ] ; then
+if ! [ -f "$base_dir/var/$np-cleansed.osm" ] || ! [ -f "$base_dir/var/$np-srtm.tiff" ] ; then
 	echo "No OSM or elevation data. Please run 'init-data.sh' first"
     exit 1
 fi
@@ -32,7 +32,19 @@ rm $base_dir/db/$np.db
                 -lco GEOMETRY_NAME=geom \
                 -lco COMPRESS_GEOM=YES \
                 $base_dir/db/$np.db \
-                $base_dir/var/$np-cleansed-merged.osm
+                $base_dir/var/$np-cleansed.osm
+
+# Add background polygon
+"$ogr2ogr_bin" \
+                -update \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                -nln background \
+                $base_dir/db/$np.db \
+                $base_dir/var/$np-background.osm \
+                multipolygons
 
 # Add surrounding forests
 "$ogr2ogr_bin" \

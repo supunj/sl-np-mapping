@@ -57,21 +57,21 @@ fi
 			--strategy complete_ways \
 			--clean uid --clean user --clean changeset \
 			-O \
-			-o $base_dir/tmp/$np-cleansed.osm \
+			-o $base_dir/var/$np-cleansed.osm \
 			$base_dir/tmp/$np-cleansed-phase-1.osm
 
+# Create the background polygon from the .poly file
 "$osmium_bin" tags-filter \
 			-O \
 			-o $base_dir/tmp/$np-boundary-polygon.osm \
-			$base_dir/tmp/$np-cleansed.osm \
+			$base_dir/var/$np-cleansed.osm \
 			"boundary=national_park" \
   			"n/name=$np_boundary_name" \
   			"r/$np_boundary_tag"
 
 "$osmium_bin" export --geometry-types=polygon $base_dir/tmp/$np-boundary-polygon.osm -O -o $base_dir/var/$np-boundary-polygon.geojson
 
-# Create the background polygon from the .poly file
-"$python3_bin" $base_dir/tool/poly-to-osm.py $np $base_dir/poly/$np.poly $base_dir/tmp/$np-background.osm
+"$python3_bin" $base_dir/tool/poly-to-osm.py $np $base_dir/poly/$np.poly $base_dir/var/$np-background.osm
 
 # Extract the coastline and insert into SpatiaLite for later use
 "$osmosis_bin" \
@@ -134,13 +134,13 @@ fi
 			wr/boundary=*
 
 # Merge OSM data, contours and the background polygon
-"$osmosis_bin" \
-            --read-xml file=$base_dir/tmp/$np-cleansed.osm \
-			--read-xml file=$base_dir/tmp/$np-background.osm \
-			--sort \
-			--merge \
-        	--bounding-polygon file=$base_dir/poly/$np.poly completeWays=yes \
-        	--write-xml $base_dir/var/$np-cleansed-merged.osm
+# "$osmosis_bin" \
+#             --read-xml file=$base_dir/tmp/$np-cleansed.osm \
+# 			--read-xml file=$base_dir/tmp/$np-background.osm \
+# 			--sort \
+# 			--merge \
+#         	--bounding-polygon file=$base_dir/poly/$np.poly completeWays=yes \
+#         	--write-xml $base_dir/var/$np-cleansed-merged.osm
 
 # Create the hgt file list for the use with  gdalwrap
 ls -1 $base_dir/dem/srtm/*.hgt > $base_dir/tmp/hgt-list.txt

@@ -22,8 +22,7 @@ with recursive background_split as (
 		  end) as geom,
 	       ST_NumGeometries(ST_Split(background.geom, coastline.geom)) as total_geoms
       from (select ST_Union(geom) as geom
-		from multipolygons
-		where name = '{$np}_background') as background,
+            from background) as background,
            (select ST_LineMerge(ST_Union(geom)) as geom
 		from lines
 		where INSTR(other_tags, '"natural"=>"coastline"')) as coastline
@@ -95,14 +94,10 @@ insert into surrounding_forests_diff(name, other_tags, geom)
                                     from surrounding_forests_raw, boundary
                                     where ST_Difference(geom, boundary.geom_b) is not null;
 
-with background as (
-	select geom as geom_b
-	from multipolygons 
-	where name = '{$np}_background'
-)
 update surrounding_forests_diff
-set geom = ST_Multi(ST_Intersection(geom, background.geom_b))
-from background;
+set geom = ST_Multi(ST_Intersection(surrounding_forests_diff.geom, background.geom))
+from (select ST_Union(geom) as geom
+      from background) as background;
 
 -- Surrounding protected areas - this table will hold the difference after cutting out the boundary
 drop table if exists surrounding_protected_areas_diff;
@@ -127,14 +122,10 @@ insert into surrounding_protected_areas_diff(name, other_tags, geom)
                                                 from surrounding_protected_areas_raw, boundary
                                                 where ST_Difference(geom, boundary.geom_b) is not null;
 
-with background as (
-	select geom as geom_b
-	from multipolygons 
-	where name = '{$np}_background'
-)
 update surrounding_protected_areas_diff
-set geom = ST_Multi(ST_Intersection(geom, background.geom_b))
-from background;
+set geom = ST_Multi(ST_Intersection(surrounding_protected_areas_diff.geom, background.geom))
+from (select ST_Union(geom) as geom
+      from background) as background;
 
 -- We don't need entire polygons...instead we insert a POI on the surface of the polygon 
 insert into points(name, other_tags, geom)
@@ -148,55 +139,52 @@ from surrounding_protected_areas_diff
 where name is not null;
 
 -- Crop all ways to the background polygon
+-- update lines
+-- set geom = case
+--                   when ST_GeometryType(ST_Intersection(lines.geom, background.geom)) = 'LINESTRING' then ST_Intersection(lines.geom, background.geom)
+--                   when ST_GeometryType(ST_Intersection(lines.geom, background.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(lines.geom, background.geom), 1)
+--                   else null
+--            end
+-- from (select ST_Union(geom) as geom
+--       from background) as background;
+
 update lines
 set geom = case
-                  when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(lines.geom, polygons.geom)
-                  when ST_GeometryType(ST_Intersection(lines.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(lines.geom, polygons.geom), 1)
+                  when ST_GeometryType(ST_Intersection(lines.geom, background.geom)) = 'LINESTRING' then ST_Intersection(lines.geom, background.geom)
+                  when ST_GeometryType(ST_Intersection(lines.geom, background.geom)) = 'GEOMETRYCOLLECTION' then ST_Union(ST_Intersection(lines.geom, background.geom))
                   else null
            end
-from (
-      select ST_Union(geom) as geom
-      from multipolygons
-      where name = '{$np}_background'
-      ) as polygons;
+from (select ST_Union(geom) as geom
+      from background) as background
+where ST_Intersects(lines.geom, background.geom);
 
 -- Crop contours to the background polygon
 update sl_contour
 set geom = case
-               when ST_GeometryType(ST_Intersection(sl_contour.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(sl_contour.geom, polygons.geom)
-               when ST_GeometryType(ST_Intersection(sl_contour.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(sl_contour.geom, polygons.geom), 1)
+               when ST_GeometryType(ST_Intersection(sl_contour.geom, background.geom)) = 'LINESTRING' then ST_Intersection(sl_contour.geom, background.geom)
+               when ST_GeometryType(ST_Intersection(sl_contour.geom, background.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(sl_contour.geom, background.geom), 1)
                else null
            end
-from (
-      select ST_Union(multipolygons.geom) as geom
-      from multipolygons
-      where name = '{$np}_background'
-     ) as polygons;
+from (select ST_Union(geom) as geom
+      from background) as background;
 
 -- Crop admin boundaries to buffered background polygon so that they extend away from the map features
 update sl_admin
 set geom = case
-               when ST_GeometryType(ST_Intersection(sl_admin.geom, polygons.geom)) = 'LINESTRING' then ST_Intersection(sl_admin.geom, polygons.geom)
-               when ST_GeometryType(ST_Intersection(sl_admin.geom, polygons.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(sl_admin.geom, polygons.geom), 1)
+               when ST_GeometryType(ST_Intersection(sl_admin.geom, buffered_background.geom)) = 'LINESTRING' then ST_Intersection(sl_admin.geom, buffered_background.geom)
+               when ST_GeometryType(ST_Intersection(sl_admin.geom, buffered_background.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(sl_admin.geom, buffered_background.geom), 1)
                else null
            end
 from (
-      select ST_Multi(ST_Buffer(ST_Union(multipolygons.geom), ST_Perimeter(ST_Union(multipolygons.geom)) * 0.001 / (2 * ST_Area(geom)))) as geom
-      from multipolygons
-      where name = '{$np}_background'
-     ) as polygons;
+      select ST_Multi(ST_Buffer(ST_Union(geom), ST_Perimeter(ST_Union(geom)) * 0.001 / (2 * ST_Area(geom)))) as geom
+      from background
+     ) as buffered_background;
 
 -- Remove the points outside of the background polygon
 delete
 from points
-where not ST_Within(geom, (select ST_Union(multipolygons.geom) as geom
-                           from multipolygons
-                           where name = '{$np}_background'));
-
--- Remove the original background polygon
-delete 
-from multipolygons 
-where name = '{$np}_background';
+where not ST_Within(geom, (select ST_Union(geom) as geom
+                           from background));
 
 -- Create a view with all feature polygons. This will be used to create the forest cover
 drop table if exists feature_polygons;

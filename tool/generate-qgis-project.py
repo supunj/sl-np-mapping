@@ -52,12 +52,12 @@ def setLabel(row, layer):
         background_settings.setSizeType(QgsTextBackgroundSettings.SizeBuffer)
         background_settings.setSize(QSizeF(0.5, 0.5))  # Add padding to the width
         background_settings.setRadii(QSizeF(1.0, 1.0))  # Radius for rounded corners
-                
+        
         label_settings = QgsPalLayerSettings()
         label_settings.dataDefinedProperties().setProperty(QgsPalLayerSettings.Size,
                                                           QgsProperty.fromExpression(
                                                                 f"""
-                                                                {row[8]} * (1 + (10000 / @map_scale))
+                                                                {row[8]} * (1 + (5000 / @map_scale))
                                                                 """
                                                             )
                                                         )
@@ -135,7 +135,7 @@ def getSVGSymbolLayer(symbol_path, row):
 
 def main():
     # Check if the database path and properties file path are provided
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 8:
         print("Inadequate parameters.")
         sys.exit(1)
 
