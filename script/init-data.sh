@@ -36,19 +36,21 @@ fi
 "$poly2geojson_bin" < $base_dir/poly/sri-lanka.poly > $base_dir/var/sri-lanka.geojson
 "$poly2geojson_bin" < $base_dir/poly/$np.poly > $base_dir/var/$np.geojson
 
-# Get the national park
+# Get the national park features
 "$osmosis_bin" \
             --read-pbf file=$base_dir/var/sri-lanka-latest.osm.pbf \
         	--tf accept-nodes \
         	--tf accept-ways \
         	--tf accept-relations \
-        	--tf reject-relations boundary=administrative \
+			--tf reject-relations boundary=* \
+			--tf reject-ways boundary=* \
 			--tf reject-relations name="Sri Lanka" \
-			--tf reject-relations name="Yala Forest Cover" \
+			--tf reject-relations natural=wood landuse=forest \
+			--tf reject-ways natural=wood landuse=forest \
 			--tf reject-relations name="Yala National Park" \
 			--tf reject-relations name="Bay of Bengal" \
-			--tf reject-relations boundary=administrative \
-        	--bounding-polygon file=$base_dir/poly/$np.poly completeWays=yes \
+        	--bounding-polygon file=$base_dir/poly/$np.poly \
+			completeWays=yes \
         	--write-xml $base_dir/tmp/$np-cleansed-phase-1.osm
 
 "$osmium_bin" extract \
@@ -61,15 +63,25 @@ fi
 			$base_dir/tmp/$np-cleansed-phase-1.osm
 
 # Create the background polygon from the .poly file
-"$osmium_bin" tags-filter \
-			-O \
-			-o $base_dir/tmp/$np-boundary-polygon.osm \
-			$base_dir/var/$np-cleansed.osm \
-			"boundary=national_park" \
-  			"n/name=$np_boundary_name" \
-  			"r/$np_boundary_tag"
+"$osmosis_bin" \
+            --read-pbf file=$base_dir/var/sri-lanka-latest.osm.pbf \
+        	--tf accept-relations name="$np_boundary_name" \
+			--used-node \
+			--used-way \
+        	--bounding-polygon file=$base_dir/poly/$np.poly \
+			completeWays=yes \
+        	--write-xml $base_dir/tmp/$np-boundary-polygon-phase-1.osm
 
-"$osmium_bin" export --geometry-types=polygon $base_dir/tmp/$np-boundary-polygon.osm -O -o $base_dir/var/$np-boundary-polygon.geojson
+"$osmium_bin" extract \
+			--polygon $base_dir/poly/$np.poly \
+			--set-bounds \
+			--strategy complete_ways \
+			--clean uid --clean user --clean changeset \
+			-O \
+			-o $base_dir/var/$np-boundary-polygon.osm \
+			$base_dir/tmp/$np-boundary-polygon-phase-1.osm
+  			
+"$osmium_bin" export --geometry-types=polygon $base_dir/var/$np-boundary-polygon.osm -O -o $base_dir/var/$np-boundary-polygon.geojson
 
 "$python3_bin" $base_dir/tool/poly-to-osm.py $np $base_dir/poly/$np.poly $base_dir/var/$np-background.osm
 
@@ -132,15 +144,6 @@ fi
             $base_dir/tmp/$np-surrounding-protected-areas-phase-1.osm \
             wr/type=boundary \
 			wr/boundary=*
-
-# Merge OSM data, contours and the background polygon
-# "$osmosis_bin" \
-#             --read-xml file=$base_dir/tmp/$np-cleansed.osm \
-# 			--read-xml file=$base_dir/tmp/$np-background.osm \
-# 			--sort \
-# 			--merge \
-#         	--bounding-polygon file=$base_dir/poly/$np.poly completeWays=yes \
-#         	--write-xml $base_dir/var/$np-cleansed-merged.osm
 
 # Create the hgt file list for the use with  gdalwrap
 ls -1 $base_dir/dem/srtm/*.hgt > $base_dir/tmp/hgt-list.txt

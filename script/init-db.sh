@@ -34,6 +34,18 @@ rm $base_dir/db/$np.db
                 $base_dir/db/$np.db \
                 $base_dir/var/$np-cleansed.osm
 
+# Add park boundary
+"$ogr2ogr_bin" \
+                -update \
+                -f SQLite \
+                -dsco SPATIALITE=YES \
+                -lco GEOMETRY_NAME=geom \
+                -lco COMPRESS_GEOM=YES \
+                -nln park_boundary \
+                $base_dir/db/$np.db \
+                $base_dir/var/$np-boundary-polygon.osm \
+                multipolygons
+
 # Add background polygon
 "$ogr2ogr_bin" \
                 -update \

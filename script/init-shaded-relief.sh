@@ -65,7 +65,7 @@ ls -1 $base_dir/dem/srtm/*.hgt > $base_dir/tmp/hgt-list.txt
 set -- $(echo $($base_dir/script/get-bbox-for-polygon.sh $map_extent_poly $base_dir) | awk -F '[|]+' '{print $1, $2, $3, $4}')
 echo "$1 $2 $3 $4"
 
-# Extract only the elevation data for the given park polygon and write to a GeoTiff
+# Extract only the elevation data for the given park bounding box and write to a GeoTiff
 "$gdalwarp_bin" \
               -te $1 $2 $3 $4 \
               -tr $gdalwarp_hillshade_tr \
