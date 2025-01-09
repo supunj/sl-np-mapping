@@ -316,11 +316,11 @@ where man_made = 'clearcut';
 insert into points(name, other_tags, geom)
 select culverts.name, culverts.other_tags, ST_Intersection(culverts.geom, highways.geom) as intersection_point
 from (select *
-	from lines
+	from cropped_lines
 	where waterway is not null and
             INSTR(other_tags, '"tunnel"=>"culvert"') > 0) as culverts,
 	(select *
-	 from lines
+	 from cropped_lines
 	 where highway is not null) as highways 
 where ST_Intersects(culverts.geom, highways.geom) and
       GeometryType(ST_Intersection(culverts.geom, highways.geom)) = 'POINT';
@@ -329,11 +329,11 @@ where ST_Intersects(culverts.geom, highways.geom) and
 insert into points(other_tags, geom)
 select bridges.other_tags, ST_Intersection(bridges.geom, waterways.geom) as intersection_point
 from (select *
-	from lines
+	from cropped_lines
 	where highway is not null and
             INSTR(other_tags, '"bridge"=>') > 0) as bridges,
      (select *
-	from lines
+	from cropped_lines
 	where waterway is not null) as waterways	 
 where ST_Intersects(bridges.geom, waterways.geom) and
       GeometryType(ST_Intersection(bridges.geom, waterways.geom)) = 'POINT';
@@ -341,5 +341,5 @@ where ST_Intersects(bridges.geom, waterways.geom) and
 -- Transform 'waterway = dam' into a polygon so that they would show up in the dam layer
 insert into cropped_multipolygons(osm_id, name, type, other_tags, geom)
 select osm_id, name, 'multipolygon', other_tags || ',"waterway"=>"' || waterway || '"', ST_Multi(ST_Buffer(geom, 0.00001))
-from lines
+from cropped_lines
 where waterway in ('dam', 'weir');

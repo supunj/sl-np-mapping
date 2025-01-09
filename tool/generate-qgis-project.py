@@ -20,7 +20,8 @@ from qgis.core import (
     QgsContrastEnhancement,
     QgsMultiBandColorRenderer,
     QgsTextBackgroundSettings,
-    QgsProperty
+    QgsProperty,
+    QgsSVGFillSymbolLayer
 )
 import csv
 import sys
@@ -119,7 +120,7 @@ def setLayerContrastEnhancement(layer):
     else:
         print("Single band - to be implemented when needed.")
         
-def getSVGSymbolLayer(symbol_path, row):
+def createSVGPOISymbolLayer(symbol_path, row):
     svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path)
     svg_symbol_layer.setColor(QColor(row[3]))
     svg_symbol_layer.setSize(float(row[5]))
@@ -132,6 +133,21 @@ def getSVGSymbolLayer(symbol_path, row):
     svg_symbol_layer.setStrokeColor(QColor(row[4]))
     svg_symbol_layer.setAngle(0)
     return svg_symbol_layer
+
+def createSVGBackgroundSymbolLayer(symbol_path, row):
+    svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path)
+    svg_symbol_layer.setColor(QColor("White"))
+    svg_symbol_layer.setSize(float(row[5]))
+    svg_symbol_layer.setStrokeWidth(float(0.0))
+    return svg_symbol_layer
+
+def createSVGFillSymbolLayer(symbol_path, row):
+    svg_fill_symbol_layer = QgsSVGFillSymbolLayer(symbol_path)
+    svg_fill_symbol_layer.setSvgFillColor(QColor(row[11]))
+    svg_fill_symbol_layer.setPatternWidth(float(row[12]))
+    svg_fill_symbol_layer.setSvgStrokeColor(QColor(row[11]))    
+    svg_fill_symbol_layer.setSvgStrokeWidth(float(0.0))
+    return svg_fill_symbol_layer
 
 def main():
     # Check if the database path and properties file path are provided
@@ -213,6 +229,9 @@ def main():
                     )
                     if float(row[5]) == 0:
                         symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+                        
+                    if Path(symbol_path + "/" + row[0] + ".svg").exists():
+                        symbol.appendSymbolLayer(createSVGFillSymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
                 elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                     symbol = QgsLineSymbol.createSimple(
                         {"color": row[4], "width": float(row[5]) * 1.5, "capstyle": "round"}
@@ -225,7 +244,11 @@ def main():
                 elif layer.geometryType() == QgsWkbTypes.PointGeometry:
                     if Path(symbol_path + "/" + row[0] + ".svg").is_file():
                         symbol = QgsMarkerSymbol()
-                        symbol.changeSymbolLayer(0, getSVGSymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
+                        if row[10] == "yes":
+                            symbol.changeSymbolLayer(0, createSVGBackgroundSymbolLayer("/usr/share/qgis/svg/backgrounds/background_square_rounded.svg", row))
+                            symbol.appendSymbolLayer(createSVGPOISymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
+                        else:
+                            symbol.changeSymbolLayer(0, createSVGPOISymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
                     else:
                         symbol = QgsMarkerSymbol.createSimple(
                             {"name": "circle", "color": row[3], "size": row[5]}

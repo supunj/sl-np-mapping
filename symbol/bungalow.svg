@@ -1,9 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg width="580px" height="580px" enable-background="new 0 0 580 580" version="1.1" viewBox="0 0 580 580" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+<path d="m66.275 1.7676c-41.335 0-64.572 21.372-64.572 65.037v450.12c0 40.844 20.896 62.229 62.193 62.229h452.02c41.307 0 62.229-20.315 62.229-62.229v-450.12c0-42.602-20.922-65.037-63.52-65.037-3e-3 0-448.5-0.143-448.35 0zm223.72 82.559 231.88 200.38h-46.375v210.97h-135.95v-152.74h-95.932v152.74h-139.13v-210.97h-46.375l231.88-200.38z"/>
 
-<defs>
-</defs>
-<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
-	<path d="M 89.132 43.062 l -42.05 -42.05 c -1.15 -1.15 -3.014 -1.15 -4.164 0 l -42.05 42.05 c -1.855 1.855 -0.541 5.026 2.082 5.026 h 6.335 c 1.626 0 2.944 1.318 2.944 2.944 v 31.874 c 0 1.626 1.318 2.944 2.944 2.944 h 19.249 V 61.811 c 0 -1.97 1.597 -3.566 3.566 -3.566 h 17.59 V 85.85 h 19.249 c 1.626 0 2.944 -1.318 2.944 -2.944 V 51.032 c 0 -1.626 1.318 -2.944 2.944 -2.944 h 6.335 C 89.673 48.088 90.986 44.917 89.132 43.062 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(181,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-	<path d="M 55.578 58.245 l -11.11 2.932 c -2.384 0.629 -4.045 2.785 -4.045 5.251 V 89.85 l 15.155 -4 V 58.245 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(150,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-</g>
 </svg>

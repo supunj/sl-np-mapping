@@ -116,3 +116,18 @@ park:
     convert_crop_tile_width: *default_crop_tile_width
     convert_crop_tile_height: *default_crop_tile_height
     park_glow_raster_reduce_by_px: 5000
+  hp:
+    coordinate_reference_system: *default_crs
+    boundary_name: "Horton Plains National Park"
+    boundary_tag: "type=boundary"
+    gdalwarp_hillshade_tr: *default_tr
+    gdaldem_hillshade_factor: *default_dem_factor
+    gdaldem_hillshade_scale: *default_dem_scale
+    composite_hillshade_dissolve: *default_dissolve
+    convert_boundary_glow_colour: *default_glow_colour
+    convert_boundary_glow_blur: *default_glow_blur
+    convert_boundary_glow_level: *default_glow_level
+    elevation_interval: 40
+    convert_crop_tile_width: *default_crop_tile_width
+    convert_crop_tile_height: *default_crop_tile_height
+    park_glow_raster_reduce_by_px: 5000
