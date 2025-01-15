@@ -3,6 +3,5 @@ tmp/*
 raster/*
 symbology-style.db
 var/*
-misc/*
 conf/sl-np-mapping.yaml
 .fuse_hidden*
