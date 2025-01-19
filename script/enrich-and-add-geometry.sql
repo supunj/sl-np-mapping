@@ -69,7 +69,7 @@ select CreateSpatialIndex('background_multipolygons', 'geom');
 insert into background_multipolygons(name, type, natural, place, other_tags, geom)
 				  select (case
 				            when type = 'terrain' then '{$np}_terrain'
-				            else '{$np}_ocean'
+				            else 'Indian Ocean'
 				         end) as name,
 				         'multipolygon' as type, 
 				         (case
@@ -200,7 +200,7 @@ update cropped_sl_contour
       set geom = ST_Multi(ST_GeomFromText(geom_tmp, 4326));
 alter table cropped_sl_contour drop column geom_tmp;
 
--- Crop admin boundaries to buffered background polygon so that they extend away from the map features
+-- Crop admin boundaries to buffered background polygon so that they extend away from the map features. After that delete the lines with null geometries.
 update sl_admin
 set geom = case
                when ST_GeometryType(ST_Intersection(sl_admin.geom, buffered_background.geom)) = 'LINESTRING' then ST_Intersection(sl_admin.geom, buffered_background.geom)
@@ -211,6 +211,10 @@ from (
       select ST_Multi(ST_Buffer(ST_Union(geom), ST_Perimeter(ST_Union(geom)) * 0.001 / (2 * ST_Area(geom)))) as geom
       from background
      ) as buffered_background;
+
+delete
+from sl_admin
+where geom is null;
 
 -- Remove the points outside of the background polygon
 delete
@@ -292,7 +296,7 @@ from (with boundary_and_other_poly as (
            end as geom
     from boundary_and_other_poly, background_multipolygons
     where (background_multipolygons.name is '{$np}_terrain' or
-          background_multipolygons.name is '{$np}_ocean') and
+          background_multipolygons.name is 'Indian Ocean') and
           ST_Intersects(background_multipolygons.geom, boundary_and_other_poly.geom)) as diff
 where background_multipolygons.name = diff.name;
 

@@ -21,7 +21,10 @@ from qgis.core import (
     QgsMultiBandColorRenderer,
     QgsTextBackgroundSettings,
     QgsProperty,
-    QgsSVGFillSymbolLayer
+    QgsSVGFillSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsMarkerLineSymbolLayer,
+    QgsSymbolLayer
 )
 import csv
 import sys
@@ -41,24 +44,26 @@ def setLabel(row, layer):
 
         # Add text buffer
         buffer_settings = QgsTextBufferSettings()
-        buffer_settings.setColor(QColor("white"))
+        buffer_settings.setColor(QColor("#eeeeee"))
         buffer_settings.setSize(0.4)
+        buffer_settings.setEnabled(False)  # Disable buffer by default
         
         # Configure text background
         background_settings = QgsTextBackgroundSettings()        
-        background_settings.setFillColor(QColor(row[9]))  # Set the background color
+        background_settings.setFillColor(QColor(row[3]))  # Set the default background color
         background_settings.setStrokeColor(QColor("transparent"))  # No borders
         background_settings.setStrokeWidth(0)  # No borders
         background_settings.setType(QgsTextBackgroundSettings.ShapeRectangle)  # Set shape to rectangle
         background_settings.setSizeType(QgsTextBackgroundSettings.SizeBuffer)
-        background_settings.setSize(QSizeF(0.5, 0.5))  # Add padding to the width
+        background_settings.setSize(QSizeF(0.5, 0.5))  # Add padding
         background_settings.setRadii(QSizeF(1.0, 1.0))  # Radius for rounded corners
+        background_settings.setEnabled(False) # Disable background by default
         
         label_settings = QgsPalLayerSettings()
         label_settings.dataDefinedProperties().setProperty(QgsPalLayerSettings.Size,
                                                           QgsProperty.fromExpression(
                                                                 f"""
-                                                                {row[8]} * (1 + (5000 / @map_scale))
+                                                                {row[8]} - 3 + 6 * exp(-0.00001 * @map_scale)
                                                                 """
                                                             )
                                                         )
@@ -66,38 +71,41 @@ def setLabel(row, layer):
         if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
             label_settings.showAllLabels = True
             label_settings.placement = QgsPalLayerSettings.AroundPoint
-            buffer_settings.setEnabled(False)            
+            buffer_settings.setEnabled(False)
             # Override the label settings defined in the layers file
-            text_format.setColor(QColor("black"))
-            background_settings.setFillColor(QColor("white"))
+            #text_format.setColor(QColor("black"))
+            background_settings.setFillColor(QColor("#eeeeee"))
             background_settings.setOpacity(0.6)
             background_settings.setEnabled(True)
         elif layer.geometryType() == QgsWkbTypes.LineGeometry:
             label_settings.placement = QgsPalLayerSettings.Curved
             buffer_settings.setEnabled(True)
-            background_settings.setEnabled(False)
         elif layer.geometryType() == QgsWkbTypes.PointGeometry:
             label_settings.showAllLabels = True
             label_settings.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
             label_settings.dist = 5
             buffer_settings.setEnabled(False)
-            background_settings.setEnabled(True)
+            
+            if row[10] == "yes+": # Enable background for the label as well
+                # text_format.setColor(QColor("#eeeeee"))
+                background_settings.setEnabled(True)
+                buffer_settings.setEnabled(False) # Disable buffer for the label
             
             # Override the font colour based on the stroke colour
-            if row[4] == "" or row[4] == "transparent":
-                text_format.setColor(QColor("white"))
-            else:
-                text_format.setColor(QColor("black"))
-                
-        # Set the settings to the text format parent        
+            # if row[4] == "" or row[4] == "transparent":
+            #     text_format.setColor(QColor("#eeeeee"))
+            # else:
+            #     text_format.setColor(QColor("black"))
+            
+        # Set the settings to the text format parent
         text_format.setBuffer(buffer_settings)
         text_format.setBackground(background_settings)
 
          # Set up label settings        
         label_settings.fieldName = "name"
         label_settings.setFormat(text_format)
-        label_settings.MinScale = 0  # Minimum scale (0 for unlimited)
-        label_settings.MaxScale = 1e10  # Maximum scale (large number for unlimited)
+        label_settings.MinScale = 0  # 0 for unlimited
+        label_settings.MaxScale = 1e10  # large number for unlimited
 
         # Set the labeling layer to the vector layer
         labeling_layer = QgsVectorLayerSimpleLabeling(label_settings)
@@ -120,7 +128,7 @@ def setLayerContrastEnhancement(layer):
     else:
         print("Single band - to be implemented when needed.")
         
-def createSVGPOISymbolLayer(symbol_path, row):
+def createSVGPOISymbolLayer(symbol_path, row, print_scale):
     svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path)
     svg_symbol_layer.setColor(QColor(row[3]))
     svg_symbol_layer.setSize(float(row[5]))
@@ -132,21 +140,42 @@ def createSVGPOISymbolLayer(symbol_path, row):
         
     svg_symbol_layer.setStrokeColor(QColor(row[4]))
     svg_symbol_layer.setAngle(0)
+    svg_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertySize,
+                                                    QgsProperty.fromExpression(
+                                                        f"""
+                                                        {row[5]} - 3 + 6 * exp(-0.0001 * @map_scale)
+                                                        """
+                                                    )
+                                                )
     return svg_symbol_layer
 
-def createSVGBackgroundSymbolLayer(symbol_path, row):
+def createSVGBackgroundSymbolLayer(symbol_path, row, print_scale):
     svg_symbol_layer = QgsSvgMarkerSymbolLayer(symbol_path)
-    svg_symbol_layer.setColor(QColor("White"))
+    svg_symbol_layer.setColor(QColor(row[9]))
     svg_symbol_layer.setSize(float(row[5]))
     svg_symbol_layer.setStrokeWidth(float(0.0))
+    svg_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertySize,
+                                                    QgsProperty.fromExpression(
+                                                        f"""
+                                                        {row[5]} - 3 + 6 * exp(-0.0001 * @map_scale)
+                                                        """
+                                                    )
+                                                )
     return svg_symbol_layer
 
-def createSVGFillSymbolLayer(symbol_path, row):
+def createSVGFillSymbolLayer(symbol_path, row, print_scale):
     svg_fill_symbol_layer = QgsSVGFillSymbolLayer(symbol_path)
     svg_fill_symbol_layer.setSvgFillColor(QColor(row[11]))
     svg_fill_symbol_layer.setPatternWidth(float(row[12]))
     svg_fill_symbol_layer.setSvgStrokeColor(QColor(row[11]))    
     svg_fill_symbol_layer.setSvgStrokeWidth(float(0.0))
+    svg_fill_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertyWidth,
+                                                    QgsProperty.fromExpression(
+                                                        f"""
+                                                        {row[12]} - 3 + 6 * exp(-0.0001 * @map_scale)
+                                                        """
+                                                    )
+                                                )
     return svg_fill_symbol_layer
 
 def main():
@@ -164,6 +193,7 @@ def main():
     new_project_path = sys.argv[6]
     symbol_path = sys.argv[7]
     coordinate_reference_system = sys.argv[8]
+    print_scale = sys.argv[9]
 
     # Initialize QGIS Application in headless mode (for standalone scripts)
     qgs = QgsApplication([], False)
@@ -209,7 +239,8 @@ def main():
         print("Failed to load the raster layer.")
 
     with open(layers_file, mode="r", newline="") as file:
-        reader = csv.reader(file, delimiter="|")
+        # Read the file from the bottom to the top so that natural layer order is preserved
+        reader = csv.reader(file.readlines()[::-1], delimiter="|")
 
         for row in reader:
             uri.setDataSource("", row[1], "geom", row[2], "ogc_fid")
@@ -231,7 +262,7 @@ def main():
                         symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
                         
                     if Path(symbol_path + "/" + row[0] + ".svg").exists():
-                        symbol.appendSymbolLayer(createSVGFillSymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
+                        symbol.appendSymbolLayer(createSVGFillSymbolLayer(symbol_path + "/" + row[0] + ".svg", row, print_scale))
                 elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                     symbol = QgsLineSymbol.createSimple(
                         {"color": row[4], "width": float(row[5]) * 1.5, "capstyle": "round"}
@@ -241,19 +272,34 @@ def main():
                     inner_line.setWidth(float(row[5]))
                     inner_line.setPenCapStyle(Qt.RoundCap) # Set round end caps for lines
                     symbol.appendSymbolLayer(inner_line)
+                    
+                    if row[0] == "embankment":
+                        marker_symbol_layer = QgsSimpleMarkerSymbolLayer()
+                        marker_symbol_layer.setSize(3)
+                        marker_symbol_layer.setColor(QColor("red"))
+                        marker_symbol_layer.setStrokeColor(QColor("black"))
+                        marker_symbol_layer.setStrokeWidth(0.5)
+                        marker_symbol_layer.setShape(QgsSimpleMarkerSymbolLayer.Line)
+                        marker_symbol_layer.setAngle(180) # Rotate the line to make it vertical
+                        marker_symbol = QgsMarkerSymbol()
+                        marker_symbol.changeSymbolLayer(0, marker_symbol_layer)
+                        marker_line_symbol_layer = QgsMarkerLineSymbolLayer()
+                        marker_line_symbol_layer.setSubSymbol(marker_symbol)
+                        marker_line_symbol_layer.setInterval(3)
+                        symbol.changeSymbolLayer(0, marker_line_symbol_layer)
                 elif layer.geometryType() == QgsWkbTypes.PointGeometry:
                     if Path(symbol_path + "/" + row[0] + ".svg").is_file():
                         symbol = QgsMarkerSymbol()
-                        if row[10] == "yes":
-                            symbol.changeSymbolLayer(0, createSVGBackgroundSymbolLayer("/usr/share/qgis/svg/backgrounds/background_square_rounded.svg", row))
-                            symbol.appendSymbolLayer(createSVGPOISymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
+                        if row[10] == "yes" or row[10] == "yes+": # Enable background for the symbol
+                            symbol.changeSymbolLayer(0, createSVGBackgroundSymbolLayer("/usr/share/qgis/svg/backgrounds/background_square_rounded.svg", row, print_scale))
+                            symbol.appendSymbolLayer(createSVGPOISymbolLayer(symbol_path + "/" + row[0] + ".svg", row, print_scale))
                         else:
-                            symbol.changeSymbolLayer(0, createSVGPOISymbolLayer(symbol_path + "/" + row[0] + ".svg", row))
+                            symbol.changeSymbolLayer(0, createSVGPOISymbolLayer(symbol_path + "/" + row[0] + ".svg", row, print_scale))
                     else:
                         symbol = QgsMarkerSymbol.createSimple(
                             {"name": "circle", "color": row[3], "size": row[5]}
                         )
-
+                
                 layer.setRenderer(QgsSingleSymbolRenderer(symbol))
                 layer.renderer().symbol().setOpacity(float(row[6]))
 

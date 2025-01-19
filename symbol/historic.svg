@@ -1,23 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px"
-	 height="580px" viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<g id="Layer_2">
-	<g id="g1327">
-		<path id="path1329" fill="#111111" stroke="#EEEEEE" stroke-width="3.408" d="M66.275,1.768
-			c-41.335,0-64.571,21.371-64.571,65.036v450.123c0,40.844,20.894,62.229,62.192,62.229H515.92
-			c41.307,0,62.229-20.316,62.229-62.229V66.804c0-42.601-20.923-65.036-63.522-65.036C514.624,1.768,66.133,1.625,66.275,1.768z"/>
-	</g>
-</g>
-<g id="svg2" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" sodipodi:docname="waste_bin.svg" sodipodi:version="0.32" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
-	<g>
-		<rect x="55.256" y="398.034" fill="#FFFFFF" width="449.235" height="18.023"/>
-		<rect x="37.547" y="434.142" fill="#FFFFFF" width="504.906" height="18.023"/>
-		<path fill="#FFFFFF" d="M92.132,362.066l-18.814,0.003l0.003,18.023l255.424-0.041l2.922,4.173l5.961-4.175l108.805-0.018
-			l-0.002-18.023l-86.307,0.014l-98.964-141.293l-2.347,1.644l-3.975-44.208l70.319,5.539l2.83-35.934L74.875,127.831l-2.831,35.934
-			l20.06,1.581L92.132,362.066z M128.15,168.185l36.046,2.839l0.026,191.031l-36.046,0.006L128.15,168.185z M200.241,173.863
-			l18.147,1.43l16.789,186.75l-34.91,0.006L200.241,173.863z M264.777,288.725l51.344,73.306l-44.753,0.007L264.777,288.725z"/>
-	</g>
-</g>
+<svg width="580px" height="580px" enable-background="new 0 0 580 580" version="1.1" viewBox="0 0 580 580" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+
+<path d="m66.275 1.7676c-41.335 0-64.572 21.372-64.572 65.037v450.12c0 40.844 20.895 62.229 62.193 62.229h452.02c41.307 0 62.229-20.316 62.229-62.229v-450.12c0-42.601-20.923-65.037-63.521-65.037-3e-3 0-448.49-0.143-448.35 0zm8.5996 126.06 253.11 19.939-2.8301 35.934-70.318-5.5391 3.9746 44.209 2.3477-1.6445 98.963 141.29 86.309-0.01367 0.00195 18.023-108.8 0.01758-5.9609 4.1758-2.9238-4.1738-255.42 0.04102-0.001953-18.023 18.814-0.00195-0.029296-196.72-20.059-1.5801 2.8301-35.936zm53.275 40.355 0.02539 193.88 36.047-0.00586-0.02735-191.03-36.045-2.8379zm72.09 5.6777 0.02735 188.19 34.91-0.00586-16.789-186.75-18.148-1.4297zm64.537 114.86 6.5898 73.312 44.754-0.00586-51.344-73.307zm-209.52 109.31h449.23v18.023h-449.23v-18.023zm-17.709 36.109h504.91v18.021h-504.91v-18.021z"/>
 </svg>

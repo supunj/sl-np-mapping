@@ -19,6 +19,7 @@ xmlstarlet_bin=$(yq -r '.tool.xmlstarlet.path' $base_dir/tmp/sl-np-mapping.yaml)
 svgo_bin=$(yq -r '.tool.svgo.path' $base_dir/tmp/sl-np-mapping.yaml)
 python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
 coordinate_reference_system=$(yq -r '.park.'$np'.coordinate_reference_system' $base_dir/tmp/sl-np-mapping.yaml)
+print_scale=$(yq -r '.park.'$np'.print_scale' $base_dir/tmp/sl-np-mapping.yaml)
 
 # This can't be run unless data and db is not available
 if ! [ -f "$base_dir/db/$np.db" ]; then
@@ -77,9 +78,12 @@ while IFS='|' read layer_name column2; do
 done < "$base_dir/tmp/$np-qgis-layers.csv"
 
 "$python3_bin" $base_dir/tool/generate-qgis-project.py \
-                                                    $np $base_dir/db/$np.db \
+                                                    $np \
+                                                    $base_dir/db/$np.db \
                                                     $base_dir/tmp/$np-qgis-layers.csv \
                                                     $base_dir/var/$np-hillshade-park-polygon.tiff \
                                                     $base_dir/var/$np-park-polygon-glow.tiff \
-                                                    $base_dir/qgis/$np.qgz $base_dir/qgis/symbol/$np \
-                                                    $coordinate_reference_system
+                                                    $base_dir/qgis/$np.qgz \
+                                                    $base_dir/qgis/symbol/$np \
+                                                    $coordinate_reference_system \
+                                                    $print_scale

@@ -1,3 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" height="19" width="19"><title>mountain.svg</title><rect fill="none" x="0" y="0" width="19" height="19"></rect><path fill="#000" transform="translate(2 2)" d="M7.5,2C7.2,2,7.1,2.2,6.9,2.4
-	l-5.8,9.5C1,12,1,12.2,1,12.3C1,12.8,1.4,13,1.7,13h11.6c0.4,0,0.7-0.2,0.7-0.7c0-0.2,0-0.2-0.1-0.4L8.2,2.4C8,2.2,7.8,2,7.5,2z
-	 M7.5,3.5L10.8,9H10L8.5,7.5L7.5,9l-1-1.5L5,9H4.1L7.5,3.5z"></path></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="576.45" height="577.45" version="1.1" viewBox="0 0 576.45 577.45" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <title>mountain.svg</title>
+ <path d="m64.57 0.063556c-41.335 0-64.57 21.37-64.57 65.035v450.12c0 40.844 20.893 62.229 62.191 62.229h452.03c41.307 0 62.229-20.316 62.229-62.229v-450.12c0-42.601-20.923-65.035-63.521-65.035-3e-3 0-448.5-0.143-448.35 0zm223.65 89.939c10.839 0 18.065 7.2249 25.291 14.451l205.95 343.25c3.6131 7.2263 3.6133 7.2269 3.6133 14.453 0 18.066-10.838 25.293-25.291 25.293h-419.13c-10.839 0-25.291-7.2273-25.291-25.293 0-3.6131 1.5e-4 -10.84 3.6133-14.453l209.56-343.25c7.2263-7.2263 10.84-14.451 21.68-14.451zm0 54.197-122.85 198.72h32.52l54.197-54.195 36.131 54.195 36.131-54.195 54.197 54.195h28.904z" stroke-width="36.131"/>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:title>mountain.svg</dc:title>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+</svg>
