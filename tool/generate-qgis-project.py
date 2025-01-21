@@ -72,8 +72,6 @@ def setLabel(row, layer):
             label_settings.showAllLabels = True
             label_settings.placement = QgsPalLayerSettings.AroundPoint
             buffer_settings.setEnabled(False)
-            # Override the label settings defined in the layers file
-            #text_format.setColor(QColor("black"))
             background_settings.setFillColor(QColor("#eeeeee"))
             background_settings.setOpacity(0.6)
             background_settings.setEnabled(True)
@@ -90,12 +88,6 @@ def setLabel(row, layer):
                 # text_format.setColor(QColor("#eeeeee"))
                 background_settings.setEnabled(True)
                 buffer_settings.setEnabled(False) # Disable buffer for the label
-            
-            # Override the font colour based on the stroke colour
-            # if row[4] == "" or row[4] == "transparent":
-            #     text_format.setColor(QColor("#eeeeee"))
-            # else:
-            #     text_format.setColor(QColor("black"))
             
         # Set the settings to the text format parent
         text_format.setBuffer(buffer_settings)
@@ -239,6 +231,9 @@ def main():
         print("Failed to load the raster layer.")
 
     with open(layers_file, mode="r", newline="") as file:
+        # Skip the first row (header)
+        next(file)
+        
         # Read the file from the bottom to the top so that natural layer order is preserved
         reader = csv.reader(file.readlines()[::-1], delimiter="|")
 
@@ -246,7 +241,7 @@ def main():
             uri.setDataSource("", row[1], "geom", row[2], "ogc_fid")
 
             # Create a new vector layer from the URI
-            layer = QgsVectorLayer(uri.uri(), row[0], "spatialite")
+            layer = QgsVectorLayer(uri.uri(), row[13], "spatialite")
 
             # Check if the layer is valid
             if layer.isValid():
@@ -276,8 +271,8 @@ def main():
                     if row[0] == "embankment":
                         marker_symbol_layer = QgsSimpleMarkerSymbolLayer()
                         marker_symbol_layer.setSize(3)
-                        marker_symbol_layer.setColor(QColor("red"))
-                        marker_symbol_layer.setStrokeColor(QColor("black"))
+                        # marker_symbol_layer.setColor(QColor("red"))
+                        marker_symbol_layer.setStrokeColor(QColor("#333533"))
                         marker_symbol_layer.setStrokeWidth(0.5)
                         marker_symbol_layer.setShape(QgsSimpleMarkerSymbolLayer.Line)
                         marker_symbol_layer.setAngle(180) # Rotate the line to make it vertical

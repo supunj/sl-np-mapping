@@ -45,8 +45,6 @@ fi
 			--tf reject-relations boundary=* \
 			--tf reject-ways boundary=* \
 			--tf reject-relations name="Sri Lanka" \
-			--tf reject-relations natural=wood landuse=forest \
-			--tf reject-ways natural=wood landuse=forest \
 			--tf reject-relations name="Yala National Park" \
 			--tf reject-relations name="Bay of Bengal" \
         	--bounding-polygon file=$base_dir/poly/$np.poly \

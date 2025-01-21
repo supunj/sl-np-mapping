@@ -1,63 +1,65 @@
-protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|7|1|Lato|10|#0353a4|no||
-protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|7|1|Lato|10|#31572c|no||
-cave|points|"INSTR(other_tags, '""natural""=>""cave_entrance""') > 0"|#403d39|transparent|7|1|Lato|8|#403d39|no||
-peak|points|"INSTR(other_tags, '""natural""=>""peak""') > 0"|#6c584c|#eeeeee|7|1|Lato|8|#eeeeee|yes+||
-barrier|points|"barrier in ('lift_gate', 'gate')"|Black|transparent|5|1|Lato|6|Black|no||
-bridge|points|"INSTR(other_tags, '""bridge""=>') > 0"|#00509d|#eeeeee|5|1|Lato|6|Black|no||
-culvert|points|"INSTR(other_tags, '""tunnel""=>""culvert""') > 0"|#00509d|#eeeeee|5|1|Lato|0|Black|no||
-tree|points|"INSTR(other_tags, '""landmark""=>""yes""') > 0 and INSTR(other_tags, '""natural""=>""tree""') > 0 "|#3b6064|transparent|6|1|Lato|6|#3b6064|no||
-shop|points|"INSTR(other_tags, '""shop""=>') > 0"|Black|transparent|4|1|Lato|0|Black|no||
-locality|points|"place = 'locality' or place = 'hamlet'"|Black|transparent|6|1|Lato|8|Black|no||
-village|points|"place = 'village'"|Black|transparent|7|1|Lato|10|Black|no||
-hotel|points|"INSTR(other_tags, '""tourism""=>""hotel""') > 0 or INSTR(other_tags, '""tourism""=>""guest_house""') > 0 "|Black|transparent|6|1|Lato|0|Black|no||
-toilet|points|"INSTR(other_tags, '""amenity""=>""toilets""') > 0"|Black|transparent|6|1|Lato|0|Black|no||
-forest_office|points|"INSTR(other_tags, '""office""=>""forestry""') > 0 or INSTR(other_tags, '""office""=>""research""') > 0"|Black|transparent|6|1|Lato|6|Black|no||
-junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#6a4c93|transparent|5|1|Lato|6|#6a4c93|no||
-scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#da627d|transparent|7|1|Lato|8|#eeeeee|yes+||
-bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0"|#c8553d|transparent|7|1|Lato|8|#eeeeee|yes+||
-campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|8|#eeeeee|yes+||
-hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|8|#eeeeee|yes+||
-buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|8|#774936|yes+||
-historic|points|"INSTR(other_tags, '""historic""=>""ruins""') > 0"|#242423|transparent|7|1|Lato|8|#eeeeee|yes+||
-ford|points|"INSTR(other_tags, '""ford""=>""yes""') > 0"|#00509d|#eeeeee|4|1|Lato|0|Black|no||
-boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|Black|no||
-coastline|cropped_lines|"INSTR(other_tags, '""natural""=>""coastline""') > 0"|#e09f3e|transparent|0|1|Lato|0|Black|no||
-embankment|cropped_lines|"man_made = 'embankment' or INSTR(other_tags, '""embankment""=>') > 0"|#cb997e|#242423|1.5|1|Lato|0|Black|no||
-trunk_road|cropped_lines|"highway = 'trunk'"|#f9b29c|#c84e2f|1.0|1|Lato|8|Black|no||
-primary_road|cropped_lines|"highway = 'primary'"|#fcd6a4|#a06b00|1.0|1|Lato|8|Black|no||
-secondary_road|cropped_lines|"highway = 'secondary'"|#f7fabf|#707d05|1.0|1|Lato|8|Black|no||
-tertiary_road|cropped_lines|"highway = 'tertiary'"|#ffffff|#8f8f8f|0.9|1|Lato|6|Black|no||
-other_road|cropped_lines|"highway = 'residential' or highway = 'unclassified' or highway = 'service' or highway = 'living_street'"|#ffffff|#bbb|0.7|1|Lato|6|Black|no||
-path|cropped_lines|"highway = 'path' or highway = 'footway' or highway = 'steps'"|#8b8c89|transparent|0.3|1|Lato|6|Black|no||
-track|cropped_lines|"highway = 'track'"|#996600|transparent|0.5|1|Lato|6|Black|no||
-power_line|cropped_lines|"INSTR(other_tags, '""power""=>""line""') > 0"|#888|transparent|0.125|1|Lato|0|Black|no||
-fence|cropped_lines|"barrier = 'fence'"|#adb5bd|transparent|0.125|1|Lato|0|Black|no||
-major_contour|cropped_sl_contour|"type = 'major'"|#9a8c98|transparent|0.5|1|Lato|6|Black|no||
-medium_contour|cropped_sl_contour|"type = 'medium'"|#808080|transparent|0.25|1|Lato|6|Black|no||
-minor_contour|cropped_sl_contour|"type = 'minor'"|#f2e9e4|transparent|0.125|1|Lato|6|Black|no||
-admin_boundary|sl_admin|"geom is not null"|black|transparent|0.125|1|Lato|8|Black|no||
-building|cropped_multipolygons|"building = 'yes'"|#b56576|transparent|0.0|1|Lato|8|Black|no||
-dam|cropped_multipolygons|"INSTR(other_tags, '""waterway""=>""dam""') > 0 or INSTR(other_tags, '""waterway""=>""weir""')"|#adadad|#444444|0.0|1|Lato|8|Black|no||
-river_area|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""river""') > 0"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no||
-river|cropped_lines|"waterway = 'river'"|#aed9e0|#18364E|1.5|1|Lato|8|#18364E|no||
-waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (other_tags is null or (INSTR(other_tags, '""intermittent""=>""yes""') = 0 and INSTR(other_tags, '""seasonal ""=>""yes""') = 0))"|#18364E|#aed9e0|0.3|1|Lato|6|#18364E|no||
-intermittent_waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (INSTR(other_tags, '""intermittent""=>""yes""') > 0 or INSTR(other_tags, '""seasonal ""=>""yes""') > 0)"|#18364E|#aed9e0|0.3|1|Lato|6|#18364E|no||
-residential_area|cropped_multipolygons|"landuse = 'residential' or place = 'isolated_dwelling'"|#e0dfdf|#b9b9b9|0.125|1|Lato|0|Black|no||
-parking|cropped_multipolygons|"amenity = 'parking'"|#b8b8ff|transparent|0.0|0.8|Lato|0|Black|no||
-industrial|cropped_multipolygons|"landuse = 'industrial' or landuse = 'aquaculture'"|#9f86c0|transparent|0.0|0.8|Lato|6|Black|no||
-rock|cropped_multipolygons|"natural = 'bare_rock'"|#495057|transparent|0.0|0.8|Lato|8|Black|no|#d9d9d9|30
-waterhole|cropped_multipolygons|"amenity = 'watering_place'"|#aed9e0|#18364E|0.125|1|Lato|8|#18364E|no||10
-pond|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""pond""') > 0"|#aed9e0|#18364E|0.125|1|Lato|8|#18364E|no||10
-reservoir|cropped_multipolygons|"natural = 'water' and (INSTR(other_tags, '""water""=>""reservoir""') > 0 or INSTR(other_tags, '""water""=>""lake""') > 0)"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#18364E|12
-wetland|cropped_multipolygons|"natural = 'wetland'"|#17c3b2|#028090|0.25|1|Lato|8|#028090|no|#18364E|15
-lagoon|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""lagoon""') > 0"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#eeeeee|12
-basin|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""basin""') > 0"|#eeeeee|transparent|0.25|1|Lato|8|#18364E|no|#18364E|6
-grassland|cropped_multipolygons|"natural = 'grassland'"|#90be6d|#386641|0.25|1|Lato|8|Black|no|#386641|15
-scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0.25|0.8|Lato|8|#386641|no|#354f52|15
-farmland|cropped_multipolygons|"landuse = 'farmland' or landuse = 'orchard' or place = 'farm' or landuse = 'plant_nursery'"|#eef0d5|#606c38|0.25|0.8|Lato|8|#606c38|no|#606c38|15
-beach|cropped_multipolygons|"natural = 'beach' or  natural = 'sand'"|#ffd166|transparent|0.0|0.8|Lato|0|Black|no|#7f5539|20
-sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0.0|1|Lato|10|Black|no|#eeeeee|20
-forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'excavation'"|#8e9aaf|transparent|0.0|0.8|Lato|0|Black|no||
-forest_cover|forest_cover||#a3b18a|transparent|0.5|0.3|Lato|0|Black|no||
-other_forest|surrounding_forests_diff||#add19e|transparent|0|1|Lato|0|Black|no||
-terrain|background_multipolygons|"name = '{$np}_terrain' and place = 'island'"|#bcb8b1|transparent|0.0|0.8|Lato|0|Black|no||
+Layer ID|Table|"Where Clause"|Fill / Inner Line / Symbol / Label Colour|Border / Outer Line / Symbol Border Colour|Border / Line / Symbol Size|Opacity|Font Name|Font Size|Font / Symbol Background Colour|Symbol / Label Background (yes = Only Symbol, yes+ = Both Label and the Symbol, no = No Background) |SVG Fill Colour (Only for Polygons)|SVG Fill Size (Only for Polygons)|Layer Name
+protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|7|1|Lato|10|#0353a4|no|||Marine Reserve
+protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|7|1|Lato|10|#31572c|no|||Forest Reserve
+waterfall|points|"INSTR(other_tags, '""waterway""=>""waterfall""') > 0"|#18364E|transparent|7|1|Lato|8|#eeeeee|yes+|||Waterfall
+cave|points|"INSTR(other_tags, '""natural""=>""cave_entrance""') > 0"|#403d39|transparent|7|1|Lato|8|#403d39|no|||Cave
+peak|points|"INSTR(other_tags, '""natural""=>""peak""') > 0"|#6c584c|#eeeeee|7|1|Lato|8|#eeeeee|yes+|||Mountain Peak
+barrier|points|"barrier in ('lift_gate', 'gate', 'toll_booth')"|#333533|transparent|5|1|Lato|6|#333533|no|||Entrance
+bridge|points|"INSTR(other_tags, '""bridge""=>') > 0"|#00509d|#eeeeee|5|1|Lato|6|#333533|no|||Bridge
+culvert|points|"INSTR(other_tags, '""tunnel""=>""culvert""') > 0"|#00509d|#eeeeee|5|1|Lato|0|#333533|no|||Culvert
+tree|points|"INSTR(other_tags, '""landmark""=>""yes""') > 0 and INSTR(other_tags, '""natural""=>""tree""') > 0 "|#3b6064|transparent|6|1|Lato|6|#3b6064|no|||Tree
+shop|points|"INSTR(other_tags, '""shop""=>') > 0"|#333533|transparent|4|1|Lato|0|#333533|no|||Shop
+locality|points|"place = 'locality' or place = 'hamlet'"|#333533|transparent|6|1|Lato|8|#333533|no|||Locality
+village|points|"place = 'village'"|#333533|transparent|7|1|Lato|10|#333533|no|||Village
+hotel|points|"INSTR(other_tags, '""tourism""=>""hotel""') > 0 or INSTR(other_tags, '""tourism""=>""guest_house""') > 0 "|#333533|transparent|6|1|Lato|0|#333533|no|||Lodging
+toilet|points|"INSTR(other_tags, '""amenity""=>""toilets""') > 0"|#333533|transparent|6|1|Lato|0|#333533|no|||Toilet
+forest_office|points|"INSTR(other_tags, '""office""=>""forestry""') > 0 or INSTR(other_tags, '""office""=>""research""') > 0"|#333533|transparent|6|1|Lato|6|#333533|no|||Ranger Office
+junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#6a4c93|transparent|5|1|Lato|6|#6a4c93|no|||Junction
+scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#da627d|transparent|7|1|Lato|8|#eeeeee|yes+|||Scenic Area
+bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0"|#c8553d|transparent|7|1|Lato|8|#eeeeee|yes+|||Circuit Bungalow
+campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|8|#eeeeee|yes+|||Camping Site
+hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|8|#eeeeee|yes+|||Hindu Temple
+buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|8|#774936|yes+|||Buddhist Temple
+historic|points|"INSTR(other_tags, '""historic""=>""ruins""') > 0"|#242423|transparent|7|1|Lato|8|#eeeeee|yes+|||Historic Place / Ruins
+ford|points|"INSTR(other_tags, '""ford""=>""yes""') > 0"|#00509d|#eeeeee|4|1|Lato|0|#333533|no|||Ford
+boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|#333533|no|||Park Boundary
+coastline|cropped_lines|"INSTR(other_tags, '""natural""=>""coastline""') > 0"|#e09f3e|transparent|0|1|Lato|0|#333533|no|||Coastline
+embankment|cropped_lines|"man_made = 'embankment' or INSTR(other_tags, '""embankment""=>') > 0"|#cb997e|#242423|1.5|1|Lato|0|#333533|no|||Embankment
+trunk_road|cropped_lines|"highway = 'trunk'"|#f9b29c|#c84e2f|1.0|1|Lato|8|#333533|no|||Trunk Road
+primary_road|cropped_lines|"highway = 'primary'"|#fcd6a4|#a06b00|1.0|1|Lato|8|#333533|no|||Primary Road
+secondary_road|cropped_lines|"highway = 'secondary'"|#f7fabf|#707d05|1.0|1|Lato|8|#333533|no|||Secondary Road
+tertiary_road|cropped_lines|"highway = 'tertiary'"|#eeeeee|#8f8f8f|0.9|1|Lato|6|#333533|no|||Tertiary Road
+other_road|cropped_lines|"highway = 'residential' or highway = 'unclassified' or highway = 'service' or highway = 'living_street'"|#eeeeee|#bbb|0.7|1|Lato|6|#333533|no|||Other Roads
+path|cropped_lines|"highway = 'path' or highway = 'footway' or highway = 'steps'"|#fa8072|#eeeeee|0.4|1|Lato|6|#333533|no|||Foot Path / Trek
+track|cropped_lines|"highway = 'track'"|#996600|#eeeeee|0.5|1|Lato|6|#333533|no|||Track
+power_line|cropped_lines|"INSTR(other_tags, '""power""=>""line""') > 0"|#888|transparent|0.125|1|Lato|0|#333533|no|||Powerline
+fence|cropped_lines|"barrier = 'fence'"|#adb5bd|transparent|0.125|1|Lato|0|#333533|no|||Fence
+major_contour|cropped_sl_contour|"type = 'major'"|#9a8c98|transparent|0.5|1|Lato|6|#333533|no|||Contour - Major
+medium_contour|cropped_sl_contour|"type = 'medium'"|#808080|transparent|0.25|1|Lato|6|#333533|no|||Contour - Medium
+minor_contour|cropped_sl_contour|"type = 'minor'"|#f2e9e4|transparent|0.125|1|Lato|6|#333533|no|||Contour - Minor
+admin_boundary|sl_admin|"geom is not null"|#333533|transparent|0.125|1|Lato|8|#333533|no|||District / Provincial Boundary
+building|cropped_multipolygons|"building = 'yes'"|#b56576|transparent|0.0|1|Lato|8|#333533|no|||Building
+dam|cropped_multipolygons|"INSTR(other_tags, '""waterway""=>""dam""') > 0 or INSTR(other_tags, '""waterway""=>""weir""')"|#adadad|#444444|0.0|1|Lato|8|#333533|no|||Dam
+river_area|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""river""') > 0"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|||River Area
+river|cropped_lines|"waterway = 'river'"|#aed9e0|#18364E|1.5|1|Lato|8|#18364E|no|||River
+waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (other_tags is null or (INSTR(other_tags, '""intermittent""=>""yes""') = 0 and INSTR(other_tags, '""seasonal ""=>""yes""') = 0))"|#18364E|#aed9e0|0.3|1|Lato|6|#18364E|no|||Waterway
+intermittent_waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (INSTR(other_tags, '""intermittent""=>""yes""') > 0 or INSTR(other_tags, '""seasonal ""=>""yes""') > 0)"|#18364E|#aed9e0|0.3|1|Lato|6|#18364E|no|||Seasonal Waterway
+residential_area|cropped_multipolygons|"landuse = 'residential' or place = 'isolated_dwelling'"|#e0dfdf|#b9b9b9|0.125|1|Lato|0|#333533|no|||Residential Area
+parking|cropped_multipolygons|"amenity = 'parking'"|#b8b8ff|transparent|0.0|0.8|Lato|0|#333533|no|||Parking Lot
+industrial|cropped_multipolygons|"landuse = 'industrial' or landuse = 'aquaculture'"|#9f86c0|transparent|0.0|0.8|Lato|6|#333533|no|||Industrial Area
+rock|cropped_multipolygons|"natural = 'bare_rock'"|#495057|transparent|0.0|0.8|Lato|8|#333533|no|#d9d9d9|30|Rocky Outcrop
+waterhole|cropped_multipolygons|"amenity = 'watering_place'"|#aed9e0|#18364E|0.125|1|Lato|8|#18364E|no||10|Artificial Waterhole
+pond|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""pond""') > 0"|#aed9e0|#18364E|0.125|1|Lato|8|#18364E|no||10|Pond
+reservoir|cropped_multipolygons|"natural = 'water' and (INSTR(other_tags, '""water""=>""reservoir""') > 0 or INSTR(other_tags, '""water""=>""lake""') > 0)"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#18364E|12|Reservoir
+wetland|cropped_multipolygons|"natural = 'wetland'"|#17c3b2|#028090|0.25|1|Lato|8|#028090|no|#18364E|15|Wetland / Swamp
+lagoon|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""lagoon""') > 0"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#eeeeee|12|Lagoon
+basin|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""basin""') > 0"|#eeeeee|transparent|0.25|1|Lato|8|#18364E|no|#18364E|6|Basin
+grassland|cropped_multipolygons|"natural = 'grassland'"|#90be6d|#386641|0.25|1|Lato|8|#333533|no|#386641|15|Grassland
+scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0.25|0.8|Lato|8|#386641|no|#354f52|15|Scrub
+farmland|cropped_multipolygons|"landuse = 'farmland' or landuse = 'orchard' or place = 'farm' or landuse = 'plant_nursery'"|#eef0d5|#606c38|0.25|0.8|Lato|8|#606c38|no|#606c38|15|Farmland
+beach|cropped_multipolygons|"natural = 'beach' or  natural = 'sand'"|#ffd166|transparent|0.0|0.8|Lato|0|#333533|no|#7f5539|20|Sand / Beach
+sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0.0|1|Lato|10|#333533|no|#eeeeee|20|Ocean / Sea
+forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'excavation'"|#8e9aaf|transparent|0.0|0.8|Lato|0|#333533|no|||Forest Clearing
+forest_cover|forest_cover||#a3b18a|transparent|0.5|0.3|Lato|0|#333533|no|||Forest Cover
+other_forest|surrounding_forests_diff||#add19e|transparent|0|1|Lato|0|#333533|no|||Surrounding Forest
+terrain|background_multipolygons|"name = '{$np}_terrain' and place = 'island'"|#bcb8b1|transparent|0.0|0.8|Lato|0|#333533|no|||Terrain

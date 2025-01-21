@@ -133,7 +133,7 @@ park:
     convert_boundary_glow_blur: *default_glow_blur
     convert_boundary_glow_level: *default_glow_level
     elevation_interval: 40
-    convert_crop_tile_width: *default_crop_tile_width
-    convert_crop_tile_height: *default_crop_tile_height
-    park_glow_raster_reduce_by_px: 5000
+    convert_crop_tile_width: 100000
+    convert_crop_tile_height: 100000
+    park_glow_raster_reduce_by_px: 0
     print_scale: *default_print_scale
