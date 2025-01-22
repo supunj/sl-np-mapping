@@ -67,6 +67,8 @@ Whatever is here can be used without any restrictions but attributions will be a
             cmap_for_hill_shade@{ shape: doc, label: "Colour map (-cmap.txt)" }
             generate_shaded_relief@{ shape: rect, label: "Generate shaded relief" }
             hill_shade_raster@{ shape: doc, label: "Hill-shade (.tiff)" }
+            generate_park_outer_glow@{ shape: rect, label: "Generate park's outer glow" }
+            outer_glow_raster@{ shape: doc, label: "Outer glow (.tiff)" }
             define_qgis_layers@{ shape: trap-t, label: "Define QGIS layers" }
             qgis_layer_definitions@{ shape: doc, label: "Layers (.csv)" }
             create_map_symbols@{ shape: trap-t, label: "Create SVG \n map symbols" }
@@ -100,7 +102,9 @@ Whatever is here can be used without any restrictions but attributions will be a
             define_cmap_for_hill_shade --> generate_shaded_relief
             elevation_data --> generate_shaded_relief
             generate_shaded_relief --> hill_shade_raster
-            generate_shaded_relief --> define_qgis_layers
+            generate_shaded_relief --> generate_park_outer_glow
+            generate_park_outer_glow --> outer_glow_raster
+            generate_park_outer_glow --> define_qgis_layers
             define_qgis_layers --> qgis_layer_definitions            
             define_qgis_layers --> create_map_symbols
             create_map_symbols --> map_symbols
@@ -115,50 +119,51 @@ Whatever is here can be used without any restrictions but attributions will be a
 1. Clone the repo
 2. Give shell scripts the execution permission
    ```
-   $ chmod +x ./script/init-*.sh
-   $ chmod +x ./script/get-bbox-for-polygon.sh
-   $ chmod +x ./script/render-park.sh
-   $ chmod +x ./script/generate-qr.sh
+   $ chmod +x ./script/*.sh
    ```
 3. Create the config - `cp ./conf/sl-np-mapping-template.yaml ./conf/sl-np-mapping.yaml`
    You can use `{$HOME}` and `{$base_dir}` can be used and variables in the config and they will be replaced by the environment variables `$HOME` and `$base_dir` respectively. The configurable items are self descriptive.
+
 4. Create the park polygon in JOSM and save it as a .poly file. The name of the file is quite important as you need to pass that to subsequent scripts.
 
    ![alt text](image/park_polygon.png)
 
    Make sure to change the second line, which is the polygon name to the park name. Typically the original value there would be `1`.
 
-5. `./script/init-data.sh <park_name> $(pwd)` - Acquire and filter OSM data for the given parkThis produces following outputs.
-   - `$base_dir/var/sri-lanka-latest.osm.pbf`
-   - `$base_dir/var/sri-lanka.geojson`
-   - `$base_dir/var/$np.geojson`
-   - `$base_dir/var/$np-boundary-polygon.geojson`
-   - `$base_dir/var/sl-coastline.osm`
-   - `$base_dir/var/sl-admin.osm`
-   - `$base_dir/var/$np-cleansed-merged.osm`
-   - `$base_dir/var/$np-srtm.tiff`
+5. `./script/init-data.sh <park_name> $(pwd)` - Acquire and filter OSM data for the given parkThis produces following output files.
+    - `$base_dir/var/$np-background.osm`
+    - `$base_dir/var/$np-boundary-polygon.geojson`
+    - `$base_dir/var/$np-boundary-polygon.osm`
+    - `$base_dir/var/$np-cleansed.osm`
+    - `$base_dir/var/$np.geojson`
+    - `$base_dir/var/$np-srtm.tiff`
+    - `$base_dir/var/$np-surrounding-forests.osm`
+    - `$base_dir/var/$np-surrounding-protected-areas.osm`
+    - `$base_dir/var/sl-admin.osm`
+    - `$base_dir/var/sl-coastline.osm`
+    - `$base_dir/var/sl-contour.dbf`
+    - `$base_dir/var/sl-contour.prj`
+    - `$base_dir/var/sl-contour.shp`
+    - `$base_dir/var/sl-contour.shx`
+    - `$base_dir/var/sri-lanka.geojson`
+    - `$base_dir/var/sri-lanka-latest.osm.pbf`
 
-6. `./script/init-db.sh yb1 $(pwd)` - Insert all the data collected to a SpatiaLite DB. SpatiaLite makes it possible to store the data without having to host a database server and also provides decent support for spatial data handling. This produces the file `$base_dir/db/$np.db`. During this process the vector data will be cleansed, massaged and enriched even more. 
+6. `./script/init-db.sh yb1 $(pwd)` - Insert all the data collected to a SpatiaLite DB. SpatiaLite makes it possible to store the data without having to host a database server and also provides decent support for spatial data handling. This produces the file `$base_dir/db/$np.db`. During this process the vector data will be cleansed, massaged and enriched even more. The SQL script for the latter is in the file `$base_dir/script/enrich-and-add-geometry.sql`. This script will produce following tables in the DB.
+
+    <img src="image/spatialite_tables.png" alt="Description" style="width: 50%; height: auto;">
 
 7. Define the [colour map](https://gdal.org/en/stable/programs/gdaldem.html) for the shaded relief for the park and place it in `$base_dir\dem`. The park name should be prefixed.
 
-8. `./script/init-shaded-relief.sh yb1 $(pwd)` - This generates the hill-shade background raster in GeoTIFF format with some effects for eye-candy.
+8. `./script/init-shaded-relief.sh yb1 $(pwd)` - This generates the hill-shade background raster and the park boundary glow in GeoTIFF format. The latter is for eye-candy and can be turned off in the QGIS project. The output files are,
+    - `$base_dir/var/$np-hill-shade.tiff`
+    - `$base_dir/var/$np-boundary-glow.tiff`
 
     ![alt text](image/hill_shade_raster.png)
+    ![alt text](image/park_glow_raster.png)
 
-9. Define QGIS layers along with desired symbology. This is done in the file `$base_dir/qgis/layer/$np-qgis-layers.csv`. Below is the format of the CSV.
+9. Define QGIS layers along with desired symbology. This is done in the file `$base_dir/qgis/layer/$np-qgis-layers.csv`. Below is the format of the CSV. The master template for this can be found in the file [$base/qgis/layer/master-qgis-layers.csv](./qgis/layer/master-qgis-layers.csv).
 
-    |Layer Name|Table|Query (Where clause)|Fill Colour|Stroke Colour|Size(Stroke or Symbol)|Opacity|
-    |---|---|---|---|---|---|---|
-    |terrain|multipolygons|name = '{$np}_terrain' and place = 'island'|#aec3b0|transparent|0.0|0|
-    minor_contour|contours|type = 'minor'|#f2e9e4|transparent|0.125|1
-    river|lines|waterway = 'river'|#007ea7|transparent|1.5|1
-    track|lines|highway = 'track'|#5e503f|transparent|0.5|1
-    bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0"|#c8553d||8|1
-    junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#9d4edd||8|1
-    locality|points|place = 'locality'|#233d4d||6|1
-
-10. Create SVG symbols for POIs in the folder `$base_dir/symbol`. These will be converted to QGIS friendly SVG format in the next step and be placed in the folder `$base_dir/qgis/symbol/$np` for each park. If you use 3rd party SVGs, please make sure to make appropriate attributions. The file name should be as same as the respective QGIS layer name in the CSV file.
+10. Create SVG symbols for POIs in the folder `$base_dir/symbol`. These will be converted to QGIS friendly SVG format in the next step and be placed in the folder `$base_dir/qgis/symbol/$np` for each park. If you use 3rd party SVGs, please make sure to make appropriate attributions. The file name should be as same as the respective QGIS layer ID in the CSV file. You can have park specific symbols by prefixing the file name with the park name.
 
 11. `./script/init-qgis-project.sh yb1 $(pwd)` - This will put everything together and generate a QGIS project that you can start working on
 
