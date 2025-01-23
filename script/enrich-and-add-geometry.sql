@@ -330,8 +330,13 @@ where ST_Intersects(culverts.geom, highways.geom) and
       GeometryType(ST_Intersection(culverts.geom, highways.geom)) = 'POINT';
 
 -- Insert a point in the middle of each bridges so that we can have a separate points layer for bridges
-insert into points(other_tags, geom)
-select bridges.other_tags, ST_Intersection(bridges.geom, waterways.geom) as intersection_point
+insert into points(name, other_tags, geom)
+select case
+		when bridges.name like '% Bridge%' then bridges.name
+		else ''
+	 end,
+       bridges.other_tags,
+       ST_Intersection(bridges.geom, waterways.geom) as intersection_point
 from (select *
 	from cropped_lines
 	where highway is not null and
@@ -347,3 +352,17 @@ insert into cropped_multipolygons(osm_id, name, type, other_tags, geom)
 select osm_id, name, 'multipolygon', other_tags || ',"waterway"=>"' || waterway || '"', ST_Multi(ST_Buffer(geom, 0.00001))
 from cropped_lines
 where waterway in ('dam', 'weir');
+
+-- Create a rectangle that represent the desired park canvas. This will be used in QGIS layout to calculate map extend.
+create table park_canvas (
+  ogc_fid integer not null primary key autoincrement,
+  name text null
+);
+select AddGeometryColumn('park_canvas', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+select CreateSpatialIndex('park_canvas', 'geom');
+
+insert into park_canvas(ogc_fid, name, geom)
+select 1 as ogc_fid,
+	 'Park Canvas' as name,
+	 ST_Multi(Envelope(Buffer(geom, 0))) as geom
+from background;

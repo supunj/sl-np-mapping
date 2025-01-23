@@ -1,4 +1,5 @@
 Layer ID|Table|"Where Clause"|Fill / Inner Line / Symbol / Label Colour|Border / Outer Line / Symbol Border Colour|Border / Line / Symbol Size|Opacity|Font Name|Font Size|Font / Symbol Background Colour|Symbol / Label Background (yes = Only Symbol, yes+ = Both Label and the Symbol, no = No Background) |SVG Fill Colour (Only for Polygons)|SVG Fill Size (Only for Polygons)|Layer Name
+boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|#333533|no|||Park Boundary
 protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|7|1|Lato|10|#0353a4|no|||Marine Reserve
 protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|7|1|Lato|10|#31572c|no|||Forest Reserve
 waterfall|points|"INSTR(other_tags, '""waterway""=>""waterfall""') > 0"|#18364E|transparent|7|1|Lato|8|#eeeeee|yes+|||Waterfall
@@ -22,7 +23,6 @@ hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 
 buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|8|#774936|yes+|||Buddhist Temple
 historic|points|"INSTR(other_tags, '""historic""=>""ruins""') > 0"|#242423|transparent|7|1|Lato|8|#eeeeee|yes+|||Historic Place / Ruins
 ford|points|"INSTR(other_tags, '""ford""=>""yes""') > 0"|#00509d|#eeeeee|4|1|Lato|0|#333533|no|||Ford
-boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|#333533|no|||Park Boundary
 coastline|cropped_lines|"INSTR(other_tags, '""natural""=>""coastline""') > 0"|#e09f3e|transparent|0|1|Lato|0|#333533|no|||Coastline
 embankment|cropped_lines|"man_made = 'embankment' or INSTR(other_tags, '""embankment""=>') > 0"|#cb997e|#242423|1.5|1|Lato|0|#333533|no|||Embankment
 trunk_road|cropped_lines|"highway = 'trunk'"|#f9b29c|#c84e2f|1.0|1|Lato|8|#333533|no|||Trunk Road
@@ -63,3 +63,4 @@ forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'exca
 forest_cover|forest_cover||#a3b18a|transparent|0.5|0.3|Lato|0|#333533|no|||Forest Cover
 other_forest|surrounding_forests_diff||#add19e|transparent|0|1|Lato|0|#333533|no|||Surrounding Forest
 terrain|background_multipolygons|"name = '{$np}_terrain' and place = 'island'"|#bcb8b1|transparent|0.0|0.8|Lato|0|#333533|no|||Terrain
+park_canvas|park_canvas||transparent|Black|0.5|1|Lato|0|#333533|no|||Park Canvas
