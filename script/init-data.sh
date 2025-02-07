@@ -49,6 +49,7 @@ fi
 			--tf reject-relations name="Bay of Bengal" \
         	--bounding-polygon file=$base_dir/poly/$np.poly \
 			completeWays=yes \
+			--buffer \
         	--write-xml $base_dir/tmp/$np-cleansed-phase-1.osm
 
 "$osmium_bin" extract \
@@ -68,6 +69,7 @@ fi
 			--used-way \
         	--bounding-polygon file=$base_dir/poly/$np.poly \
 			completeWays=yes \
+			--buffer \
         	--write-xml $base_dir/tmp/$np-boundary-polygon-phase-1.osm
 
 "$osmium_bin" extract \
@@ -90,6 +92,7 @@ fi
 			--tf accept-relations place=island \
 			--bounding-polygon file=$base_dir/poly/sri-lanka.poly \
 			--used-node \
+			--buffer \
 			--write-xml $base_dir/var/sl-coastline.osm
 
 # Admin boundaries
@@ -116,6 +119,7 @@ fi
 			completeRelations=yes \
 			--used-node \
 			--used-way \
+			--buffer \
         	--write-xml $base_dir/tmp/$np-surrounding-forests-phase-1.osm
 
 "$osmium_bin" tags-filter \
@@ -134,6 +138,7 @@ fi
 			completeRelations=yes \
 			--used-node \
 			--used-way \
+			--buffer \
         	--write-xml $base_dir/tmp/$np-surrounding-protected-areas-phase-1.osm
 
 "$osmium_bin" tags-filter \
