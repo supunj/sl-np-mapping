@@ -265,6 +265,11 @@ def main():
                     inner_line = QgsSimpleLineSymbolLayer()
                     inner_line.setColor(QColor(row[3]))
                     inner_line.setWidth(float(row[5]))
+                    match row[14]:
+                        case "dotted":
+                            inner_line.setPenStyle(Qt.DotLine)
+                        case "dash":
+                            inner_line.setPenStyle(Qt.DashLine)
                     inner_line.setPenCapStyle(Qt.RoundCap) # Set round end caps for lines
                     symbol.appendSymbolLayer(inner_line)
                     
