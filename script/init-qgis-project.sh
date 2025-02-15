@@ -19,7 +19,7 @@ xmlstarlet_bin=$(yq -r '.tool.xmlstarlet.path' $base_dir/tmp/sl-np-mapping.yaml)
 svgo_bin=$(yq -r '.tool.svgo.path' $base_dir/tmp/sl-np-mapping.yaml)
 python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
 coordinate_reference_system=$(yq -r '.park.'$np'.coordinate_reference_system' $base_dir/tmp/sl-np-mapping.yaml)
-print_scale=$(yq -r '.park.'$np'.print_scale' $base_dir/tmp/sl-np-mapping.yaml)
+print_scale=$(yq -r '.park.'$np'.print_layout.scale' $base_dir/tmp/sl-np-mapping.yaml)
 
 # This can't be run unless data and db is not available
 if ! [ -f "$base_dir/db/$np.db" ]; then

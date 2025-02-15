@@ -29,7 +29,7 @@ from qgis.core import (
 import csv
 import sys
 from PyQt5.QtCore import Qt, QSizeF
-from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtGui import QColor, QFont, QPainter
 from pathlib import Path
 # from qgis.analysis import QgsNativeAlgorithms
 
@@ -253,11 +253,33 @@ def main():
                             "outline_width": row[5],
                         }
                     )
+                    
                     if float(row[5]) == 0:
                         symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
                         
                     if Path(symbol_path + "/" + row[0] + ".svg").exists():
                         symbol.appendSymbolLayer(createSVGFillSymbolLayer(symbol_path + "/" + row[0] + ".svg", row, print_scale))
+                    
+                    match row[14]:
+                        case "":
+                            pass
+                        case "DotLine":
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.DotLine)
+                        case "DashLine":
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.DashLine)
+                        case "DashDotDotLine":
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.DashDotDotLine)
+                        case "NoPen":
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+                    
+                    # Setting the blending mode
+                    match row[15]:
+                        case "":
+                            pass
+                        case "Multiply":
+                            layer.setBlendMode(QPainter.CompositionMode_Multiply)
+                        case "Overlay":
+                            layer.setBlendMode(QPainter.CompositionMode_Overlay)
                 elif layer.geometryType() == QgsWkbTypes.LineGeometry:
                     symbol = QgsLineSymbol.createSimple(
                         {"color": row[4], "width": float(row[5]) * 1.5, "capstyle": "round"}
@@ -266,10 +288,14 @@ def main():
                     inner_line.setColor(QColor(row[3]))
                     inner_line.setWidth(float(row[5]))
                     match row[14]:
-                        case "dotted":
+                        case "":
+                            pass
+                        case "DotLine":
                             inner_line.setPenStyle(Qt.DotLine)
-                        case "dash":
+                        case "DashLine":
                             inner_line.setPenStyle(Qt.DashLine)
+                        case "DashDotDotLine":
+                            inner_line.setPenStyle(Qt.DashDotDotLine)
                     inner_line.setPenCapStyle(Qt.RoundCap) # Set round end caps for lines
                     symbol.appendSymbolLayer(inner_line)
                     
