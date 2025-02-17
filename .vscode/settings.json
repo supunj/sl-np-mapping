@@ -1,5 +1,8 @@
 {
     "lldb.showDisassembly": "auto",
     "lldb.dereferencePointers": true,
-    "lldb.consoleMode": "commands"
+    "lldb.consoleMode": "commands",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    }
 }

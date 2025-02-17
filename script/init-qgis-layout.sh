@@ -1,8 +1,8 @@
 #!/bin/sh
 
 np=$1
-base_dir=$2
-scale=$3
+scale=$2
+base_dir=$3
 
 # Config params to tmp
 sed -e 's|{\$HOME}|'$(printf '%s' "$HOME" | sed 's|/|\\/|g')'|g' \
@@ -10,7 +10,7 @@ sed -e 's|{\$HOME}|'$(printf '%s' "$HOME" | sed 's|/|\\/|g')'|g' \
 
 python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
 
-"$python3_bin" $base_dir/tool/generate-qgis-print-layout.py \
+"$python3_bin" $base_dir/tool/generate-qgis-layout.py \
                                                             $np \
                                                             $base_dir \
                                                             $scale

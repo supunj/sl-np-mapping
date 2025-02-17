@@ -193,8 +193,8 @@ def main():
 
     # New QGIS project
     project = QgsProject.instance()
-    crs = QgsCoordinateReferenceSystem(coordinate_reference_system)
-    project.setCrs(crs)
+    project.setCrs(QgsCoordinateReferenceSystem(coordinate_reference_system))
+    project.setTitle(np)
     project.writeEntry("Paths", "Absolute", False)  # Set paths to relative
     project.write(new_project_path)
 
