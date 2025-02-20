@@ -8,10 +8,10 @@
             "processId": "${command:pickProcess}"
         },
         {
-            "name": "Python Debugger: Current File",
+            "name": "generate-qgis-project.py",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",            
+            "program": "./tool/generate-qgis-project.py",
             "args": [
                 "kumana",
                 "/mnt/data2/Workspace/new/sl-np-mapping/db/kumana.db",
@@ -21,6 +21,18 @@
                 "/mnt/data2/Workspace/new/sl-np-mapping/qgis/kumana.qgz",
                 "/mnt/data2/Workspace/new/sl-np-mapping/qgis/symbol/kumana",
                 "EPSG:4326"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "generate-pdf-png-map.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./tool/generate-pdf-png-map.py",
+            "args": [
+                "hp",
+                "10000",
+                "/mnt/data2/Workspace/new/sl-np-mapping"
             ],
             "console": "integratedTerminal"
         }

@@ -72,7 +72,6 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
-    print_scale: *default_print_scale
   kumana:
     coordinate_reference_system: *default_crs
     boundary_name: "Kumana National Park"
@@ -88,7 +87,6 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
-    print_scale: 11000
   yb1:
     coordinate_reference_system: *default_crs
     boundary_name: "Yala National Park - Block 1"
@@ -104,7 +102,6 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
-    print_scale: 11000
   galoya:
     coordinate_reference_system: *default_crs
     boundary_name: "Gal Oya Valley National Park"
@@ -120,7 +117,6 @@ park:
     convert_crop_tile_width: *default_crop_tile_width
     convert_crop_tile_height: *default_crop_tile_height
     park_glow_raster_reduce_by_px: 5000
-    print_scale: 15000
   hp:
     coordinate_reference_system: *default_crs
     boundary_name: "Horton Plains National Park"
@@ -136,4 +132,34 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
-    print_scale: *default_print_scale
+    layout_10000:
+      margin: 25
+      dpi: 300
+      output_file_name: "Hortan_Plains_National_Park_1_10000"
+      title:
+        text: "Horton Plains National Park"
+        width: 612
+        height: 60
+        font: "Lato"
+        font_size: 140
+        text_colour: "#eeeeee"
+        background_colour: "#346751"
+      map:
+        background_colour: "#eeeeee"
+      scale:
+        font: "Lato"
+        font_size: 52
+        text_colour: "#eeeeee"
+        background_colour: "#346751"
+      legend:
+        columns: 1
+        font: "Lato"
+        font_size: 20
+        text_colour: "#346751"
+        background_colour: "#eeeeee"
+      compass_rose:
+        svg: "compass-rose"
+        size: 100
+      qr:
+        svg: "info-01"
+        size: 70

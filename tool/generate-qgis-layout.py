@@ -56,10 +56,10 @@ def calculateMapSize(project, scale):
     height_mm = (geodesic((ymin, xmin), (ymax, xmin)).meters * 1000) / scale
     return width_mm, height_mm, extent
 
-def createPage(layout, width_mm, height_mm):
+def createPage(layout, width_mm, height_mm):    
     page = QgsLayoutItemPage(layout)
     page.setPageSize(QgsLayoutSize(width_mm, height_mm, QgsUnitTypes.LayoutMillimeters))
-    layout.pageCollection().addPage(page)
+    layout.pageCollection().addPage(page)    
     return page
 
 def addMap(config, np, scale, layout, width_mm, height_mm, extent):
@@ -202,19 +202,21 @@ def loadProject(base_dir, np, layout_name):
     print(f"Deleted existing layout '{layout_name}'.")
     return project
 
-def createPrintLayout(project, layout_name):
+def createPrintLayout(config, np, scale, project, layout_name):
+    dpi = int(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("dpi"))
     layout = QgsPrintLayout(project)
     layout.setName(layout_name)
+    layout.renderContext().setDpi(dpi)
     return layout
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) != 4:
         print("Inadequate parameters.")
         sys.exit(1)
 
-    np = sys.argv[1]
-    base_dir = sys.argv[2]
-    scale = sys.argv[3]
+    np = sys.argv[1]    
+    scale = sys.argv[2]
+    base_dir = sys.argv[3]
     
      # Load configuration once
     config = loadConfig(base_dir + "/conf/sl-np-mapping.yaml")
@@ -228,7 +230,7 @@ def main():
     project = loadProject(base_dir, np, layout_name)
 
     # Create a new layout
-    layout = createPrintLayout(project, layout_name)
+    layout = createPrintLayout(config, np, scale, project, layout_name)
 
     width_mm, height_mm, extent = calculateMapSize(project, int(scale))
 
