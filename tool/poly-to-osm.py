@@ -1,6 +1,6 @@
-import xml.etree.ElementTree as ET
 from datetime import datetime
 import sys
+import xml.etree.ElementTree as ET
 
 def parse_poly_file(poly_file_path, np):
     # Parse a .poly file and return the list of polygons with their points.

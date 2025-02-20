@@ -1,36 +1,37 @@
+import csv
+from pathlib import Path
+import sys
+
+from PyQt5.QtCore import QSizeF, Qt
+from PyQt5.QtGui import QColor, QFont, QPainter
 from qgis.core import (
     QgsApplication,
-    QgsProject,
-    QgsVectorLayer,
+    QgsContrastEnhancement,
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
     QgsFillSymbol,
     QgsLineSymbol,
-    QgsSingleSymbolRenderer,
-    QgsWkbTypes,
-    QgsMarkerSymbol,
-    QgsSvgMarkerSymbolLayer,
-    QgsMarkerSymbol,
-    QgsRasterLayer,
-    QgsTextFormat,
-    QgsTextBufferSettings,
-    QgsPalLayerSettings,
-    QgsVectorLayerSimpleLabeling,
-    QgsSimpleLineSymbolLayer,
-    QgsCoordinateReferenceSystem,
-    QgsContrastEnhancement,
-    QgsMultiBandColorRenderer,
-    QgsTextBackgroundSettings,
-    QgsProperty,
-    QgsSVGFillSymbolLayer,
-    QgsSimpleMarkerSymbolLayer,
     QgsMarkerLineSymbolLayer,
-    QgsSymbolLayer
+    QgsMarkerSymbol,
+    QgsMarkerSymbol,
+    QgsMultiBandColorRenderer,
+    QgsPalLayerSettings,
+    QgsProject,
+    QgsProperty,
+    QgsRasterLayer,
+    QgsSVGFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsSvgMarkerSymbolLayer,
+    QgsSymbolLayer,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsTextFormat,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+    QgsWkbTypes
 )
-import csv
-import sys
-from PyQt5.QtCore import Qt, QSizeF
-from PyQt5.QtGui import QColor, QFont, QPainter
-from pathlib import Path
 # from qgis.analysis import QgsNativeAlgorithms
 
 def setLabel(row, layer):

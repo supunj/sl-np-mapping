@@ -1,21 +1,15 @@
-import sys
 from pathlib import Path
+import sys
 from typing import Any, Dict
-from ruamel.yaml import YAML
-from ruamel.yaml.parser import ParserError
-from qgis.PyQt.QtGui import QImage, QPainter
-from PyQt5.QtCore import QSize, QRectF
-import math
-
-from qgis.core import (
-    QgsApplication,
-    QgsProject,
-    QgsLayoutExporter,
-    QgsRectangle,
-    QgsRenderContext    
-)
 
 from osgeo import gdal
+from qgis.core import (
+    QgsApplication,
+    QgsLayoutExporter,
+    QgsProject
+)
+from ruamel.yaml import YAML
+from ruamel.yaml.parser import ParserError
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 yaml = YAML(typ="safe")

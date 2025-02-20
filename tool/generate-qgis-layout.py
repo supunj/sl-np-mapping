@@ -1,34 +1,32 @@
-import sys
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsProject,
-    QgsLayout,
-    QgsLayoutSize,
-    QgsUnitTypes,
-    QgsLayoutItemMap,
-    QgsRectangle,
-    QgsLayoutItemScaleBar,
-    QgsLayoutItemLegend,
-    QgsLayoutItemPicture,
-    QgsPrintLayout,
-    QgsLayoutItemPage,
-    QgsLayoutPoint,
-    QgsLayoutItem,
-    QgsLegendStyle,
-    QgsTextFormat,
-    QgsLayoutItemLabel,
-    QgsScaleBarSettings
-)
-
-from PyQt5.QtCore import Qt
-from qgis.PyQt.QtCore import QRectF
-from PyQt5.QtGui import QColor, QFont
-from geopy.distance import geodesic
 from pathlib import Path
+import sys
 from typing import Any, Dict
+
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QFont
+from geopy.distance import geodesic
+from qgis.PyQt.QtCore import QRectF
+from qgis.core import (
+    QgsApplication,
+    QgsLayoutItem,
+    QgsLayoutItemLabel,
+    QgsLayoutItemLegend,
+    QgsLayoutItemMap,
+    QgsLayoutItemPage,
+    QgsLayoutItemPicture,
+    QgsLayoutItemScaleBar,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsLegendStyle,
+    QgsPrintLayout,
+    QgsProject,
+    QgsScaleBarSettings,
+    QgsTextFormat,
+    QgsUnitTypes
+)
 
 yaml = YAML(typ="safe")
 
