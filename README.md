@@ -1,4 +1,8 @@
-# Maps of Sri Lanka's National Parks
+# Maps of Sri Lanka's National Parks 🇱🇰
+
+- Lahugala-Kithulana National Part - [[4ftx2ft/PDF]](render/lahugala/lahugala-4x2.pdf) , [[8ftx5ft/PDF]](render/lahugala/lahugala-4x2.pdf) , [[SVG]](render/lahugala/lahugala-4x2.svg) 🐘🐆
+- Horton Plains National Park - [[1:10000/PDF]](render/hp/Horton_Plains_National_Park_1_10000.pdf) , [[1:10000/PNG]](render/hp/Horton_Plains_National_Park_1_10000.png) 🐆
+
 
 ## Why?
 
@@ -17,7 +21,7 @@ Whatever is here can be used without any restrictions but attributions will be a
 
 ## Pre-requisites
 
-1. A Linux box. The commands here are for Debian but any other distro would do as long as you can get the dependencies running
+1. A Linux box. The commands here are for Debian but any other distribution would do as long as you can get the dependencies running
 2. [yq](https://github.com/mikefarah/yq) - `sudo apt install yq`
 3. [poly2geojson](https://github.com/pirxpilot/poly2geojson)
     - `sudo apt install cargo`
@@ -33,6 +37,9 @@ Whatever is here can be used without any restrictions but attributions will be a
     - *nvm - `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash`*
     - *node.js - `nvm install v22.12.0`*
 12. [QGIS](https://www.qgis.org) - `sudo apt install qgis`
+13. Python 3 and imported modules
+    - `sudo apt install python3-ruamel.yaml`
+    - `sudo apt install python3-geopy`
 
 ### Optional
 
@@ -40,7 +47,7 @@ Whatever is here can be used without any restrictions but attributions will be a
 2. [JOSM](https://josm.openstreetmap.de) with 'poly' plugin for creating [OSM Polygon Filters](https://wiki.openstreetmap.org/wiki/Osmosis/Polygon_Filter_File_Format) - `sudo apt install josm`
 3. [qrencode](https://fukuchi.org/works/qrencode) - `sudo apt install qrencode`
 4. [VSCodium](https://vscodium.com) or any other IDE
-5. Monaco font
+5. 'Monaco' or 'Lato' fonts
 
 ## Process
 
@@ -74,8 +81,12 @@ Whatever is here can be used without any restrictions but attributions will be a
             create_map_symbols@{ shape: trap-t, label: "Create SVG \n map symbols" }
             map_symbols@{ shape: docs, label: ".svg" }
             generate_qgis_project@{ shape: rect, label: "Generate QGIS project" }
+            qgis_project@{ shape: doc, label: "(.qgz)" }
             refine_qgis_project@{ shape: trap-t, label: "Refine the map" }
-            final_map@{ shape: doc, label: "Final map (.pdf/.svg/.png)" }
+            generate_qgis_layout@{ shape: rect, label: "Generate QGIS layout" }
+            refine_qgis_layout@{ shape: trap-t, label: "Refine the layout" }
+            export_layout@{ shape: rect, label: "Export the layout" }
+            final_map@{ shape: doc, label: "Final map (.pdf/.png)" }
             stop@{ shape: dbl-circ, label: "Stop" }
             
             start --> create_conf
@@ -108,29 +119,34 @@ Whatever is here can be used without any restrictions but attributions will be a
             define_qgis_layers --> qgis_layer_definitions            
             define_qgis_layers --> create_map_symbols
             create_map_symbols --> map_symbols
-            create_map_symbols --> generate_qgis_project            
+            create_map_symbols --> generate_qgis_project
+            generate_qgis_project --> qgis_project
             generate_qgis_project --> refine_qgis_project
-            refine_qgis_project --> final_map
-            refine_qgis_project --> stop
+            refine_qgis_project --> generate_qgis_layout
+            generate_qgis_layout --> refine_qgis_layout
+            refine_qgis_layout --> export_layout
+            export_layout --> final_map
+            final_map --> stop
    ```
 
 ## Steps
 
 1. Clone the repo
+
 2. Give shell scripts the execution permission
    ```
    $ chmod +x ./script/*.sh
    ```
 3. Create the config - `cp ./conf/sl-np-mapping-template.yaml ./conf/sl-np-mapping.yaml`
-   You can use `{$HOME}` and `{$base_dir}` can be used and variables in the config and they will be replaced by the environment variables `$HOME` and `$base_dir` respectively. The configurable items are self descriptive.
+   You can use `{$HOME}` and `{$base_dir}` can be used and variables in the config and they will be replaced by the environment variables `$HOME` and `$base_dir` respectively. The configurable items are self descriptive
 
-4. Create the park polygon in JOSM and save it as a .poly file. The name of the file is quite important as you need to pass that to subsequent scripts.
+4. Create the park polygon in JOSM and save it as a .poly file. The name of the file is quite important as you need to pass that to subsequent scripts
 
    ![alt text](image/park_polygon.png)
 
-   Make sure to change the second line, which is the polygon name to the park name. Typically the original value there would be `1`.
+   Make sure to change the second line, which is the polygon name to the park name. Typically the original value there would be `1`
 
-5. `./script/init-data.sh <park_name> $(pwd)` - Acquire and filter OSM data for the given parkThis produces following output files.
+5. `./script/init-data.sh <park_name> $(pwd)` - Acquire and filter OSM data for the given parkThis produces following output files
     - `$base_dir/var/$np-background.osm`
     - `$base_dir/var/$np-boundary-polygon.geojson`
     - `$base_dir/var/$np-boundary-polygon.osm`
@@ -148,25 +164,33 @@ Whatever is here can be used without any restrictions but attributions will be a
     - `$base_dir/var/sri-lanka.geojson`
     - `$base_dir/var/sri-lanka-latest.osm.pbf`
 
-6. `./script/init-db.sh yb1 $(pwd)` - Insert all the data collected to a SpatiaLite DB. SpatiaLite makes it possible to store the data without having to host a database server and also provides decent support for spatial data handling. This produces the file `$base_dir/db/$np.db`. During this process the vector data will be cleansed, massaged and enriched even more. The SQL script for the latter is in the file `$base_dir/script/enrich-and-add-geometry.sql`. This script will produce following tables in the DB.
+6. `./script/init-db.sh <park_name> $(pwd)` - Insert all the data collected to a SpatiaLite DB. SpatiaLite makes it possible to store the data without having to host a database server and also provides decent support for spatial data handling. This produces the file `$base_dir/db/$np.db`. During this process the vector data will be cleansed, massaged and enriched even more. The SQL script for the latter is in the file `$base_dir/script/enrich-and-add-geometry.sql`. This script will produce following tables in the DB
 
     <img src="image/spatialite_tables.png" alt="Description" style="width: 50%; height: auto;">
 
-7. Define the [colour map](https://gdal.org/en/stable/programs/gdaldem.html) for the shaded relief for the park and place it in `$base_dir\dem`. The park name should be prefixed.
+7. Define the [colour map](https://gdal.org/en/stable/programs/gdaldem.html) for the shaded relief for the park and place it in `$base_dir\dem`. The park name should be prefixed
 
-8. `./script/init-shaded-relief.sh yb1 $(pwd)` - This generates the hill-shade background raster and the park boundary glow in GeoTIFF format. The latter is for eye-candy and can be turned off in the QGIS project. The output files are,
+8. `./script/init-shaded-relief.sh <park_name> $(pwd)` - This generates the hill-shade background raster and the park boundary glow in GeoTIFF format. The latter is for eye-candy and can be turned off in the QGIS project. The output files are,
     - `$base_dir/var/$np-hill-shade.tiff`
     - `$base_dir/var/$np-boundary-glow.tiff`
 
     ![alt text](image/hill_shade_raster.png)
     ![alt text](image/park_glow_raster.png)
 
-9. Define QGIS layers along with desired symbology. This is done in the file `$base_dir/qgis/layer/$np-qgis-layers.csv`. Below is the format of the CSV. The master template for this can be found in the file [$base/qgis/layer/master-qgis-layers.csv](./qgis/layer/master-qgis-layers.csv).
+9. Define QGIS layers along with desired symbology. This is done in the file `$base_dir/qgis/layer/$np-qgis-layers.csv`. Below is the format of the CSV. The master template for this can be found in the file [$base/qgis/layer/master-qgis-layers.csv](./qgis/layer/master-qgis-layers.csv)
 
-10. Create SVG symbols for POIs in the folder `$base_dir/symbol`. These will be converted to QGIS friendly SVG format in the next step and be placed in the folder `$base_dir/qgis/symbol/$np` for each park. If you use 3rd party SVGs, please make sure to make appropriate attributions. The file name should be as same as the respective QGIS layer ID in the CSV file. You can have park specific symbols by prefixing the file name with the park name.
+10. Create SVG symbols for POIs in the folder `$base_dir/symbol`. These will be converted to QGIS friendly SVG format in the next step and be placed in the folder `$base_dir/qgis/symbol/$np` for each park. If you use 3rd party SVGs, please make sure to make appropriate attributions. The file name should be as same as the respective QGIS layer ID in the CSV file. You can have park specific symbols by prefixing the file name with the park name
 
-11. `./script/init-qgis-project.sh yb1 $(pwd)` - This will put everything together and generate a QGIS project that you can start working on
+11. `./script/init-qgis-project.sh <park_name> $(pwd)` - This will put everything together and generate a QGIS project that you can start working on
 
     ![alt text](image/qgis_project.png)
 
-12. `./script/init-park.sh yb1 $(pwd)` - This will run all the above scripts all at once.
+12. `./script/init-park.sh <park_name> $(pwd)` - This will run all the above scripts all at once.
+
+13. `./script/init-qgis-layout.sh <park_name> <scale> $(pwd)` - This creates a layout for the given park in the given scale. The scale should be specified as a number (E.g.: If the desires scale is 1:10000, scale would be 10000)
+
+    ![alt text](image/qgis_layout.png)
+
+14. `/script/render-park-v2.sh <park_name> <scale> <output format> $(pwd)` - This script exports a given layout in the given format. Possible values for the format are 'pdf' or 'png'. The output will be placed in the directory `$base_dir/render/<park name>`
+
+    🚨Caution :  This operation will require a significant amount of memory and processing power depending on the scale of the map.
