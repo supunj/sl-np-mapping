@@ -1,6 +1,6 @@
 # Maps of Sri Lanka's National Parks 🇱🇰
 
-- Lahugala-Kithulana National Part - [[4ftx2ft/PDF]](render/lahugala/lahugala-4x2.pdf) , [[8ftx5ft/PDF]](render/lahugala/lahugala-4x2.pdf) , [[SVG]](render/lahugala/lahugala-4x2.svg) 🐘🐆
+- Lahugala-Kithulana National Part - [[4ftx2ft/PDF]](render/lahugala/lahugala-4x2.pdf) , [[8ftx5ft/PDF]](render/lahugala/lahugala-8x5-plain-optimised.pdf) , [[SVG]](render/lahugala/lahugala-8x5-plain-optimised.svg) , [[A4/Monochrome/PDF]](render/lahugala/lahugala-A4-monochrome-inkscape.pdf) 🐘🐆
 - Horton Plains National Park - [[1:10000/PDF]](render/hp/Horton_Plains_National_Park_1_10000.pdf) , [[1:10000/PNG]](render/hp/Horton_Plains_National_Park_1_10000.png) 🐆
 
 
