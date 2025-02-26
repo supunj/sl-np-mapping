@@ -12,6 +12,8 @@ from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
+from PyQt5.QtCore import QSize
+
 yaml = YAML(typ="safe")
 
 # Type alias for configuration
@@ -70,7 +72,7 @@ def main():
             
         pdf_result = exporter.exportToPdf(base_dir + "/render/" + np + "/" + output_file_name + ".pdf", pdf_settings)
         
-        if pdf_result != QgsLayoutExporter.Success:
+        if pdf_result != QgsLayoutExporter.ExportResult.Success:
             raise Exception("PDF export failed!")
 
         print(f"PDF exported successfully")
@@ -81,13 +83,23 @@ def main():
     if format == "png":
         image_settings = QgsLayoutExporter.ImageExportSettings()
         image_settings.dpi = dpi
-        image_settings.pages = [0] 
+        image_settings.pages = [0]
         image_settings.generateWorldFile = False
-        image_settings.forceVectorOutput = False
+        #image_settings.forceVectorOutput = False
+
+        #grid_size = QSize(1000, 1000)
 
         png_result = exporter.exportToImage(base_dir + "/render/" + np + "/" + output_file_name + ".png", image_settings)
         
-        if png_result != QgsLayoutExporter.Success:
+        # png_result = exporter.exportToTiledImage(
+        #                                             base_dir + "/render/" + np,  # Folder to save tiles
+        #                                             output_file_name,             # Base name for tiles (e.g., "map_tile_")
+        #                                             "png",                       # Image format
+        #                                             image_settings,
+        #                                             gridSize=grid_size
+        #                                         )
+
+        if png_result != QgsLayoutExporter.ExportResult.Success:
             raise Exception("PNG export failed!")
 
         print(f"PNG exported successfully")

@@ -16,6 +16,7 @@ hotel|points|"INSTR(other_tags, '""tourism""=>""hotel""') > 0 or INSTR(other_tag
 toilet|points|"INSTR(other_tags, '""amenity""=>""toilets""') > 0"|#333533|transparent|6|1|Lato|0|#333533|no|||Toilet||
 forest_office|points|"INSTR(other_tags, '""office""=>""forestry""') > 0 or INSTR(other_tags, '""office""=>""research""') > 0"|#333533|transparent|6|1|Lato|6|#333533|no|||Ranger Office||
 junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#6a4c93|transparent|5|1|Lato|6|#6a4c93|no|||Junction||
+information|points|"INSTR(other_tags, '""tourism""=>""information""') > 0 and INSTR(other_tags, '""information""=>""board""') > 0"|#333533|transparent|6|1|Lato|0|#333533|no|||Tourist Information||
 scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#da627d|transparent|7|1|Lato|8|#eeeeee|yes+|||Scenic Area||
 bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0 or INSTR(other_tags, '""tourism""=>""hostel""') > 0"|#c8553d|transparent|7|1|Lato|8|#eeeeee|yes+|||Circuit Bungalow||
 campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|8|#eeeeee|yes+|||Camping Site||

@@ -2,14 +2,12 @@ from pathlib import Path
 import sys
 from typing import Any, Dict
 
-from ruamel.yaml import YAML
-from ruamel.yaml.parser import ParserError
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
 from geopy.distance import geodesic
 from qgis.PyQt.QtCore import QRectF
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsLayoutItem,
     QgsLayoutItemLabel,
@@ -25,8 +23,9 @@ from qgis.core import (
     QgsProject,
     QgsScaleBarSettings,
     QgsTextFormat,
-    QgsUnitTypes
 )
+from ruamel.yaml import YAML
+from ruamel.yaml.parser import ParserError
 
 yaml = YAML(typ="safe")
 
@@ -56,7 +55,7 @@ def calculateMapSize(project, scale):
 
 def createPage(layout, width_mm, height_mm):    
     page = QgsLayoutItemPage(layout)
-    page.setPageSize(QgsLayoutSize(width_mm, height_mm, QgsUnitTypes.LayoutMillimeters))
+    page.setPageSize(QgsLayoutSize(width_mm, height_mm, Qgis.LayoutUnit.Millimeters))
     layout.pageCollection().addPage(page)    
     return page
 
@@ -66,7 +65,7 @@ def addMap(config, np, scale, layout, width_mm, height_mm, extent):
     map.setId("Main Map")
     map.setFrameEnabled(False)
     map.setScale(int(scale))
-    map.setRect(QRectF(0, 0, width_mm, height_mm))  # Set map position and size
+    map.setRect(QRectF(0, 0, width_mm, height_mm))
     map.setBackgroundEnabled(True)
     map.setBackgroundColor(QColor(background_colour))
     map.setExtent(extent)
@@ -87,13 +86,13 @@ def addScale(config, np, scale, layout, map, page):
     scale_bar.setAlignment(QgsScaleBarSettings.Alignment.AlignMiddle) 
     scale_bar.setBackgroundEnabled(True)
     scale_bar.setBackgroundColor(QColor(background_colour))
-    scale_bar.setReferencePoint(QgsLayoutItem.LowerMiddle)
-    scale_bar.attemptMove(QgsLayoutPoint(page.pageSize().width()/2, page.pageSize().height() - margin, QgsUnitTypes.LayoutMillimeters))
+    scale_bar.setReferencePoint(QgsLayoutItem.ReferencePoint.LowerMiddle)
+    scale_bar.attemptMove(QgsLayoutPoint(page.pageSize().width()/2, page.pageSize().height() - margin, Qgis.LayoutUnit.Millimeters))
     
     scale_text_format = QgsTextFormat()
-    scale_text_format.setFont(QFont(font))  # Font, size, weight, italic
+    scale_text_format.setFont(QFont(font))
     scale_text_format.setSize(font_size)
-    scale_text_format.setColor(QColor(text_colour))  # Black text
+    scale_text_format.setColor(QColor(text_colour))
     scale_bar.setTextFormat(scale_text_format)
     
     layout.addLayoutItem(scale_bar)
@@ -106,29 +105,36 @@ def addLegend(config, np, scale, layout, map, page):
     background_colour = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("background_colour")
     font = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("font")
     font_size = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("font_size"))
+    symbol_size = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("symbol_size"))
+    item_spacing = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("item_spacing"))
     
     legend = QgsLayoutItemLegend(layout)
     legend.setId("Legend")
     legend.setLinkedMap(map)
-    legend.setReferencePoint(QgsLayoutItem.LowerRight)
+    legend.setReferencePoint(QgsLayoutItem.ReferencePoint.LowerRight)
     legend.setColumnCount(columns)
+    legend.setEqualColumnWidth(True)
     legend.setLegendFilterByMapEnabled(True)
     legend.setTitle("Legend")
     legend.setBackgroundColor(QColor(background_colour))
-    
-    legend_title_style = legend.rstyle(QgsLegendStyle.Title)
+    legend.setSymbolWidth(symbol_size)
+    legend.setSymbolHeight(symbol_size)
+    legend.setColumnSpace(item_spacing)
+    legend.setStyleMargin(QgsLegendStyle.Style.Symbol, item_spacing)
+    legend.setStyleMargin(QgsLegendStyle.Style.SymbolLabel, 0)
+
+    legend_title_style = legend.rstyle(QgsLegendStyle.Style.Title)
     legend_title_format = legend_title_style.textFormat()
-    legend_title_font = QFont(font)
+    legend_title_format.setFont(QFont(font))
     legend_title_format.setSize(font_size * 2) # Twice the size of legend labels
-    legend_title_format.setFont(legend_title_font)
-    
-    legend_label_style = legend.rstyle(QgsLegendStyle.SymbolLabel)
+    legend_title_format.setColor(QColor(text_colour))
+        
+    legend_label_style = legend.rstyle(QgsLegendStyle.Style.SymbolLabel)
     legend_label_format = legend_label_style.textFormat()
-    legend_label_font = QFont(font)
-    legend_label_format.setSize(font_size)
-    legend_label_format.setFont(legend_label_font)
-    
-    legend.attemptMove(QgsLayoutPoint(page.pageSize().width() - margin, page.pageSize().height() - margin, QgsUnitTypes.LayoutMillimeters))
+    legend_label_format.setFont(QFont(font))
+    legend_label_format.setSize(font_size)    
+    legend_label_format.setColor(QColor(text_colour))    
+    legend.attemptMove(QgsLayoutPoint(page.pageSize().width() - margin, page.pageSize().height() - margin, Qgis.LayoutUnit.Millimeters))
     layout.addLayoutItem(legend)
     return legend
 
@@ -139,10 +145,10 @@ def addCompassRose(config, np, scale, layout, page, base_dir):
     
     compass_rose = QgsLayoutItemPicture(layout)
     compass_rose.setId("Compass Rose")
-    compass_rose.setReferencePoint(QgsLayoutItem.UpperLeft)
+    compass_rose.setReferencePoint(QgsLayoutItem.ReferencePoint.UpperLeft)
     compass_rose.setPicturePath(compass_rose_svg)
-    compass_rose.attemptMove(QgsLayoutPoint(page.pageSize().width() - size - margin, margin, QgsUnitTypes.LayoutMillimeters))
-    compass_rose.attemptResize(QgsLayoutSize(size, size, QgsUnitTypes.LayoutMillimeters))
+    compass_rose.attemptMove(QgsLayoutPoint(page.pageSize().width() - size - margin, margin, Qgis.LayoutUnit.Millimeters))
+    compass_rose.attemptResize(QgsLayoutSize(size, size, Qgis.LayoutUnit.Millimeters))
     layout.addLayoutItem(compass_rose)
     return compass_rose
 
@@ -153,10 +159,10 @@ def addQR(config, np, scale, layout, page, base_dir):
     
     qr = QgsLayoutItemPicture(layout)
     qr.setId("QR")
-    qr.setReferencePoint(QgsLayoutItem.LowerLeft)
+    qr.setReferencePoint(QgsLayoutItem.ReferencePoint.LowerLeft)
     qr.setPicturePath(qr_svg)
-    qr.attemptResize(QgsLayoutSize(size, size, QgsUnitTypes.LayoutMillimeters))
-    qr.attemptMove(QgsLayoutPoint(margin, page.pageSize().height() - margin, QgsUnitTypes.LayoutMillimeters))
+    qr.attemptResize(QgsLayoutSize(size, size, Qgis.LayoutUnit.Millimeters))
+    qr.attemptMove(QgsLayoutPoint(margin, page.pageSize().height() - margin, Qgis.LayoutUnit.Millimeters))
     layout.addLayoutItem(qr)
     return qr
 
@@ -173,8 +179,8 @@ def addMapTitle(config, np, scale, layout):
     map_title = QgsLayoutItemLabel(layout)
     map_title.setId("Main Title")
     map_title.setText(text)
-    map_title.setHAlign(Qt.AlignHCenter)
-    map_title.setVAlign(Qt.AlignVCenter)
+    map_title.setHAlign(Qt.AlignmentFlag.AlignHCenter)
+    map_title.setVAlign(Qt.AlignmentFlag.AlignVCenter)
     
     # Font
     map_title_format = QgsTextFormat()
@@ -186,9 +192,9 @@ def addMapTitle(config, np, scale, layout):
     # Background
     map_title.setBackgroundEnabled(True)
     map_title.setBackgroundColor(QColor(background_colour))
-    map_title.setReferencePoint(QgsLayoutItem.UpperLeft)
-    map_title.attemptMove(QgsLayoutPoint(margin, margin, QgsUnitTypes.LayoutMillimeters))
-    map_title.attemptResize(QgsLayoutSize(width, height, QgsUnitTypes.LayoutMillimeters))
+    map_title.setReferencePoint(QgsLayoutItem.ReferencePoint.UpperLeft)
+    map_title.attemptMove(QgsLayoutPoint(margin, margin, Qgis.LayoutUnit.Millimeters))
+    map_title.attemptResize(QgsLayoutSize(width, height, Qgis.LayoutUnit.Millimeters))
     
     layout.addLayoutItem(map_title)
     return map_title
