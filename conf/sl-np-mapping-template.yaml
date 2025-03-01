@@ -42,7 +42,7 @@ tool:
     convert:
       path: convert
       glow_colour: &default_glow_colour "#606c38"
-      glow_blur: &default_glow_blur "900x300"
+      glow_blur: &default_glow_blur "150x50"
       glow_level: &default_glow_level "0%,100%,1.0"
       crop_tile_width: &default_crop_tile_width 512
       crop_tile_height: &default_crop_tile_height 512
@@ -104,7 +104,7 @@ park:
     park_glow_raster_reduce_by_px: 0
     layout_11000:
       margin: 25
-      dpi: 300
+      dpi: 200
       output_file_name: "Yala_National_Park_Block_1_1_11000"
       title:
         text: "Yala National Park - Block 1"
@@ -112,21 +112,21 @@ park:
         height: 70
         font: "Lato"
         font_size: 180
-        text_colour: "#eeeeee"
+        text_colour: "#ffffff"
         background_colour: "#346751"
       map:
-        background_colour: "#eeeeee"
+        background_colour: "#ffffff"
       scale:
         font: "Lato"
         font_size: 82
-        text_colour: "#eeeeee"
+        text_colour: "#ffffff"
         background_colour: "#346751"
       legend:
         columns: 1
         font: "Lato"
         font_size: 30
-        text_colour: "#346751"
-        background_colour: "#eeeeee"
+        text_colour: "#000000"
+        background_colour: "#ffffff"
         symbol_size: 10
         item_spacing: 4
       compass_rose:
@@ -175,21 +175,21 @@ park:
         height: 60
         font: "Lato"
         font_size: 140
-        text_colour: "#eeeeee"
+        text_colour: "#ffffff"
         background_colour: "#346751"
       map:
-        background_colour: "#eeeeee"
+        background_colour: "#ffffff"
       scale:
         font: "Lato"
         font_size: 52
-        text_colour: "#eeeeee"
+        text_colour: "#ffffff"
         background_colour: "#346751"
       legend:
         columns: 2
         font: "Lato"
         font_size: 20
-        text_colour: "#346751"
-        background_colour: "#eeeeee"
+        text_colour: "#000000"
+        background_colour: "#ffffff"
         symbol_size: 8
         item_spacing: 4
       compass_rose:
