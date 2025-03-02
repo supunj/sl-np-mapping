@@ -87,6 +87,39 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
+    layout_11000:
+      margin: 25
+      dpi: 200
+      output_file_name: "Kumana_National_Park_1_11000"
+      title:
+        text: "Kumana National Park (Yala East)"
+        width: 1100
+        height: 165
+        font: "Lato"
+        font_size: 200
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      map:
+        background_colour: "#ffffff"
+      scale:
+        font: "Lato"
+        font_size: 82
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      legend:
+        columns: 1
+        font: "Lato"
+        font_size: 30
+        text_colour: "#000000"
+        background_colour: "#ffffff"
+        symbol_size: 10
+        item_spacing: 4
+      compass_rose:
+        svg: "compass-rose"
+        size: 200
+      qr:
+        svg: "info-01"
+        size: 150
   yb1:
     coordinate_reference_system: *default_crs
     boundary_name: "Yala National Park - Block 1"
