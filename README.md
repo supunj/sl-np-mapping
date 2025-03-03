@@ -4,6 +4,7 @@
 - Horton Plains National Park - [[1:10000/PDF]](render/hp/Horton_Plains_National_Park_1_10000.pdf) , [[1:10000/PNG]](render/hp/Horton_Plains_National_Park_1_10000.png) 🐆
 - Yala National Park (Block 1) - [[1:11000/PDF]](render/yb1/Yala_National_Park_Block_1_1_11000.pdf) , [[1:11000/PNG]](render/yb1/Yala_National_Park_Block_1_1_11000.png) 🐆 🐻 🐘 🐊
 - Kumana National Park (Yala East) - [[1:11000/PDF]](render/kumana/Kumana_National_Park_1_11000.pdf) , [[1:11000/PNG]](render/kumana/Kumana_National_Park_1_11000.png) 🦚 🐆 🐻 🐘 🐊
+- Galoya Valley National Park - [[1:15000/PDF]](render/galoya/Galoya_Valley_National_Park_1_15000.pdf) , [[1:15000/PNG]](render/galoya/Galoya_Valley_National_Park_1_15000.png) 🐘 🐦 🦚 🦋
 
 ## Why?
 

@@ -170,7 +170,7 @@ park:
         size: 100
   galoya:
     coordinate_reference_system: *default_crs
-    boundary_name: "Gal Oya Valley National Park"
+    boundary_name: "Galoya Valley National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
     gdaldem_hillshade_factor: *default_dem_factor
@@ -183,6 +183,39 @@ park:
     convert_crop_tile_width: *default_crop_tile_width
     convert_crop_tile_height: *default_crop_tile_height
     park_glow_raster_reduce_by_px: 5000
+    layout_15000:
+      margin: 25
+      dpi: 150
+      output_file_name: "Galoya_Valley_National_Park_1_15000"
+      title:
+        text: "Galoya Valley National Park"
+        width: 930
+        height: 140
+        font: "Lato"
+        font_size: 200
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      map:
+        background_colour: "#ffffff"
+      scale:
+        font: "Lato"
+        font_size: 82
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      legend:
+        columns: 1
+        font: "Lato"
+        font_size: 30
+        text_colour: "#000000"
+        background_colour: "#ffffff"
+        symbol_size: 10
+        item_spacing: 4
+      compass_rose:
+        svg: "compass-rose"
+        size: 200
+      qr:
+        svg: "info-01"
+        size: 150
   hp:
     coordinate_reference_system: *default_crs
     boundary_name: "Horton Plains National Park"
