@@ -53,9 +53,10 @@ def calculateMapSize(project, scale):
     height_mm = (geodesic((ymin, xmin), (ymax, xmin)).meters * 1000) / scale
     return width_mm, height_mm, extent
 
-def createPage(layout, width_mm, height_mm):    
+def createPage(layout, width_mm, height_mm, scale):    
     page = QgsLayoutItemPage(layout)
     page.setPageSize(QgsLayoutSize(width_mm, height_mm, Qgis.LayoutUnit.Millimeters))
+    #page.setScale(int(scale))
     layout.pageCollection().addPage(page)    
     return page
 
@@ -63,12 +64,14 @@ def addMap(config, np, scale, layout, width_mm, height_mm, extent):
     background_colour = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("map", {}).get("background_colour")
     map = QgsLayoutItemMap(layout)
     map.setId("Main Map")
-    map.setFrameEnabled(False)
-    map.setScale(int(scale))
     map.setRect(QRectF(0, 0, width_mm, height_mm))
+    map.setExtent(extent)
+    map.zoomToExtent(extent)
+    map.setScale(float(scale))
+    #print(map.scale())
+    map.setFrameEnabled(False)
     map.setBackgroundEnabled(True)
     map.setBackgroundColor(QColor(background_colour))
-    map.setExtent(extent)
     layout.addLayoutItem(map)
     return map
 
@@ -112,6 +115,8 @@ def addLegend(config, np, scale, layout, map, page):
     legend.setId("Legend")
     legend.setLinkedMap(map)
     legend.setReferencePoint(QgsLayoutItem.ReferencePoint.LowerRight)
+    legend.setAutoUpdateModel(False)
+    removeCertainLegendItems(legend) # Remove unnecessary legend items
     legend.setColumnCount(columns)
     legend.setEqualColumnWidth(True)
     legend.setLegendFilterByMapEnabled(True)
@@ -137,6 +142,16 @@ def addLegend(config, np, scale, layout, map, page):
     legend.attemptMove(QgsLayoutPoint(page.pageSize().width() - margin, page.pageSize().height() - margin, Qgis.LayoutUnit.Millimeters))
     layout.addLayoutItem(legend)
     return legend
+
+def removeCertainLegendItems(legend):
+    root = legend.model().rootGroup()
+    layers_to_remove = {'Park Canvas', 'hill_shade', 'park_outer_glow'}
+
+    for layer_node in reversed(list(root.findLayers())):
+        if layer_node.layer().name() in layers_to_remove:
+            parent = layer_node.parent()
+            parent.removeChildNode(layer_node)            
+    return
 
 def addCompassRose(config, np, scale, layout, page, base_dir):
     compass_rose_svg = base_dir + "/symbol/" + config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("compass_rose", {}).get("svg") + ".svg"
@@ -239,7 +254,7 @@ def main():
     width_mm, height_mm, extent = calculateMapSize(project, int(scale))
 
     # Create page
-    page = createPage(layout, width_mm, height_mm)
+    page = createPage(layout, width_mm, height_mm, scale)
 
     # Add the map
     map = addMap(config, np, scale, layout, width_mm, height_mm, extent)

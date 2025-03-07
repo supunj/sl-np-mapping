@@ -39,7 +39,7 @@ path|cropped_lines|"highway = 'path' or highway = 'footway' or highway = 'steps'
 track|cropped_lines|"highway = 'track'"|#996600|#eeeeee|0.5|1|Lato|6|#333533|no|||Track|DashLine|
 major_contour|cropped_sl_contour|"type = 'major'"|#9a8c98|transparent|0.5|1|Lato|6|#333533|no|||Contour - Major|DashLine|
 medium_contour|cropped_sl_contour|"type = 'medium'"|#808080|transparent|0.25|1|Lato|6|#333533|no|||Contour - Medium|DotLine|
-minor_contour|cropped_sl_contour|"type = 'minor'"|#f2e9e4|transparent|0.125|1|Lato|6|#333533|no|||Contour - Minor|DotLine|
+minor_contour|cropped_sl_contour|"type = 'minor'"|#707070|transparent|0.125|1|Lato|6|#333533|no|||Contour - Minor|DotLine|
 admin_boundary|sl_admin|"geom is not null"|#333533|transparent|0.125|1|Lato|8|#333533|no|||District / Provincial Boundary|DashLine|
 building|cropped_multipolygons|"building = 'yes'"|#b56576|transparent|0|1|Lato|8|#333533|no|||Building||
 dam|cropped_multipolygons|"INSTR(other_tags, '""waterway""=>""dam""') > 0 or INSTR(other_tags, '""waterway""=>""weir""')"|#adadad|#444444|0|1|Lato|8|#333533|no|||Dam||
@@ -62,7 +62,7 @@ scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0|1|Lato|8|#3866
 farmland|cropped_multipolygons|"landuse = 'farmland' or landuse = 'orchard' or place = 'farm' or landuse = 'plant_nursery'"|#eef0d5|#606c38|0.25|1|Lato|8|#606c38|no|#606c38|15|Farmland||Multiply
 beach|cropped_multipolygons|"natural = 'beach' or  natural = 'sand'"|#ffd166|transparent|0|1|Lato|0|#333533|no|#7f5539|20|Sand / Beach||Multiply
 sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|10|#333533|no|#eeeeee|20|Ocean / Sea||Overlay
-forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'excavation'"|#8e9aaf|transparent|0|1|Lato|0|#333533|no|||Forest Clearing||Multiply
+forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'excavation'"|#8e9aaf|transparent|0|1|Lato|8|#333533|no|||Forest Clearing||Multiply
 forest_cover|forest_cover||#add19e|transparent|0.5|0.5|Lato|0|#333533|no|||Forest Cover||
 other_forest|surrounding_forests_diff||#add19e|transparent|0|1|Lato|0|#333533|no|||Surrounding Forest||Overlay
 terrain|background_multipolygons|"name = '{$np}_terrain' and place = 'island'"|#bcb8b1|transparent|0|1|Lato|0|#333533|no|||Terrain||Overlay

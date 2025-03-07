@@ -1,10 +1,11 @@
 import csv
 from pathlib import Path
 import sys
-
+from typing import Union
 from PyQt5.QtCore import QSizeF, Qt
 from PyQt5.QtGui import QColor, QFont, QPainter
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsContrastEnhancement,
     QgsCoordinateReferenceSystem,
@@ -30,7 +31,8 @@ from qgis.core import (
     QgsTextFormat,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
-    QgsWkbTypes
+    QgsLabelObstacleSettings,
+    QgsLabelLineSettings
 )
 # from qgis.analysis import QgsNativeAlgorithms
 
@@ -45,7 +47,7 @@ def setLabel(row, layer):
 
         # Add text buffer
         buffer_settings = QgsTextBufferSettings()
-        buffer_settings.setColor(QColor("#eeeeee"))
+        buffer_settings.setColor(QColor("#ffffff"))
         buffer_settings.setSize(0.4)
         buffer_settings.setEnabled(False)  # Disable buffer by default
         
@@ -54,34 +56,51 @@ def setLabel(row, layer):
         background_settings.setFillColor(QColor(row[3]))  # Set the default background color
         background_settings.setStrokeColor(QColor("transparent"))  # No borders
         background_settings.setStrokeWidth(0)  # No borders
-        background_settings.setType(QgsTextBackgroundSettings.ShapeRectangle)  # Set shape to rectangle
-        background_settings.setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        background_settings.setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)  # Set shape to rectangle
+        background_settings.setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
         background_settings.setSize(QSizeF(0.5, 0.5))  # Add padding
         background_settings.setRadii(QSizeF(1.0, 1.0))  # Radius for rounded corners
         background_settings.setEnabled(False) # Disable background by default
         
         label_settings = QgsPalLayerSettings()
-        label_settings.dataDefinedProperties().setProperty(QgsPalLayerSettings.Size,
+        label_settings.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.Size,
                                                           QgsProperty.fromExpression(
                                                                 f"""
                                                                 {row[8]} - 3 + 6 * exp(-0.00001 * @map_scale)
                                                                 """
                                                             )
                                                         )
+                                                        
+        obstacle_settings = QgsLabelObstacleSettings()
+        obstacle_settings.setIsObstacle(False)
+        obstacle_settings.setFactor(0.0)
+        label_settings.setObstacleSettings(obstacle_settings)    
+        
+        if layer.geometryType() == Qgis.GeometryType.Polygon:            
+            label_settings.displayAll = True
+            label_settings.placement = Qgis.LabelPlacement.AroundPoint
+            polygon_label_placement_flags = Qgis.LabelPolygonPlacementFlags(Qgis.LabelPolygonPlacementFlag.AllowPlacementOutsideOfPolygon | Qgis.LabelPolygonPlacementFlag.AllowPlacementInsideOfPolygon)
+            label_settings.setPolygonPlacementFlags(polygon_label_placement_flags)
+            label_settings.centroidWhole = False
+            label_settings.centroidInside = True
+            label_settings.dist = 0
+            label_settings.distUnits = Qgis.RenderUnit.Millimeters
 
-        if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-            label_settings.showAllLabels = True
-            label_settings.placement = QgsPalLayerSettings.AroundPoint
             buffer_settings.setEnabled(False)
-            background_settings.setFillColor(QColor("#eeeeee"))
+            
+            background_settings.setFillColor(QColor("#ffffff"))
             background_settings.setOpacity(0.6)
             background_settings.setEnabled(True)
-        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
-            label_settings.placement = QgsPalLayerSettings.Curved
+        elif layer.geometryType() == Qgis.GeometryType.Line:
+            label_settings.placement = Qgis.LabelPlacement.Curved
+            line_label_settings = QgsLabelLineSettings()
+            line_label_placement_flags = Qgis.LabelLinePlacementFlags(Qgis.LabelLinePlacementFlag.OnLine | Qgis.LabelLinePlacementFlag.AboveLine | Qgis.LabelLinePlacementFlag.BelowLine | Qgis.LabelLinePlacementFlag.MapOrientation)
+            line_label_settings.setPlacementFlags(line_label_placement_flags)
+            label_settings.setLineSettings(line_label_settings)
             buffer_settings.setEnabled(True)
-        elif layer.geometryType() == QgsWkbTypes.PointGeometry:
-            label_settings.showAllLabels = True
-            label_settings.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
+        elif layer.geometryType() == Qgis.GeometryType.Point:
+            label_settings.displayAll = True
+            label_settings.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
             label_settings.dist = 5
             buffer_settings.setEnabled(False)
             
@@ -89,7 +108,7 @@ def setLabel(row, layer):
                 # text_format.setColor(QColor("#eeeeee"))
                 background_settings.setEnabled(True)
                 buffer_settings.setEnabled(False) # Disable buffer for the label
-            
+        
         # Set the settings to the text format parent
         text_format.setBuffer(buffer_settings)
         text_format.setBackground(background_settings)
@@ -97,8 +116,8 @@ def setLabel(row, layer):
          # Set up label settings        
         label_settings.fieldName = "name"
         label_settings.setFormat(text_format)
-        label_settings.MinScale = 0  # 0 for unlimited
-        label_settings.MaxScale = 1e10  # large number for unlimited
+        label_settings.minimumScale = 0  # 0 for unlimited
+        label_settings.maximumScale = 1e10  # large number for unlimited
 
         # Set the labeling layer to the vector layer
         labeling_layer = QgsVectorLayerSimpleLabeling(label_settings)
@@ -111,7 +130,7 @@ def setLayerContrastEnhancement(layer):
         for band in [1, 2, 3]: # We know its only 3 bands for now
             contrast_enhancement = QgsContrastEnhancement(renderer.dataType(band))
             # Turn off the contrast enhancement for each band
-            contrast_enhancement.setContrastEnhancementAlgorithm(QgsContrastEnhancement.NoEnhancement)
+            contrast_enhancement.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ContrastEnhancementAlgorithm.NoEnhancement)
             if band == 1:
                 renderer.setRedContrastEnhancement(contrast_enhancement)
             elif band == 2:
@@ -133,7 +152,7 @@ def createSVGPOISymbolLayer(symbol_path, row, print_scale):
         
     svg_symbol_layer.setStrokeColor(QColor(row[4]))
     svg_symbol_layer.setAngle(0)
-    svg_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertySize,
+    svg_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertySize,
                                                     QgsProperty.fromExpression(
                                                         f"""
                                                         {row[5]} - 3 + 6 * exp(-0.0001 * @map_scale)
@@ -147,7 +166,7 @@ def createSVGBackgroundSymbolLayer(symbol_path, row, print_scale):
     svg_symbol_layer.setColor(QColor(row[9]))
     svg_symbol_layer.setSize(float(row[5]))
     svg_symbol_layer.setStrokeWidth(float(0.0))
-    svg_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertySize,
+    svg_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertySize,
                                                     QgsProperty.fromExpression(
                                                         f"""
                                                         {row[5]} - 3 + 6 * exp(-0.0001 * @map_scale)
@@ -162,7 +181,7 @@ def createSVGFillSymbolLayer(symbol_path, row, print_scale):
     svg_fill_symbol_layer.setPatternWidth(float(row[12]))
     svg_fill_symbol_layer.setSvgStrokeColor(QColor(row[11]))    
     svg_fill_symbol_layer.setSvgStrokeWidth(float(0.0))
-    svg_fill_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertyWidth,
+    svg_fill_symbol_layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyWidth,
                                                     QgsProperty.fromExpression(
                                                         f"""
                                                         {row[12]} - 3 + 6 * exp(-0.0001 * @map_scale)
@@ -246,7 +265,7 @@ def main():
 
             # Check if the layer is valid
             if layer.isValid():
-                if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+                if layer.geometryType() == Qgis.GeometryType.Polygon:
                     symbol = QgsFillSymbol.createSimple(
                         {
                             "color": row[3],
@@ -281,7 +300,7 @@ def main():
                             layer.setBlendMode(QPainter.CompositionMode_Multiply)
                         case "Overlay":
                             layer.setBlendMode(QPainter.CompositionMode_Overlay)
-                elif layer.geometryType() == QgsWkbTypes.LineGeometry:
+                elif layer.geometryType() == Qgis.GeometryType.Line:
                     symbol = QgsLineSymbol.createSimple(
                         {"color": row[4], "width": float(row[5]) * 1.5, "capstyle": "round"}
                     )
@@ -314,7 +333,7 @@ def main():
                         marker_line_symbol_layer.setSubSymbol(marker_symbol)
                         marker_line_symbol_layer.setInterval(3)
                         symbol.changeSymbolLayer(0, marker_line_symbol_layer)
-                elif layer.geometryType() == QgsWkbTypes.PointGeometry:
+                elif layer.geometryType() == Qgis.GeometryType.Point:
                     if Path(symbol_path + "/" + row[0] + ".svg").is_file():
                         symbol = QgsMarkerSymbol()
                         if row[10] == "yes" or row[10] == "yes+": # Enable background for the symbol
