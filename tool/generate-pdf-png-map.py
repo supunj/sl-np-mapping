@@ -70,7 +70,7 @@ def main():
         pdf_settings = QgsLayoutExporter.PdfExportSettings()
         pdf_settings.pages = [0] 
             
-        pdf_result = exporter.exportToPdf(base_dir + "/render/" + np + "/" + output_file_name + ".pdf", pdf_settings)
+        pdf_result = exporter.exportToPdf(base_dir + "/render/" + np + "/" + output_file_name + "_1_" + scale + ".pdf", pdf_settings)
         
         if pdf_result != QgsLayoutExporter.ExportResult.Success:
             raise Exception("PDF export failed!")
@@ -89,7 +89,7 @@ def main():
 
         #grid_size = QSize(1000, 1000)
 
-        png_result = exporter.exportToImage(base_dir + "/render/" + np + "/" + output_file_name + ".png", image_settings)
+        png_result = exporter.exportToImage(base_dir + "/render/" + np + "/" + output_file_name + "_1_" + scale + ".png", image_settings)
         
         # png_result = exporter.exportToTiledImage(
         #                                             base_dir + "/render/" + np,  # Folder to save tiles

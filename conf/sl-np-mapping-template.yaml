@@ -90,7 +90,7 @@ park:
     layout_11000:
       margin: 25
       dpi: 200
-      output_file_name: "Kumana_National_Park_1_11000"
+      output_file_name: "Kumana_National_Park"
       title:
         text: "Kumana National Park (Yala East)"
         width: 1100
@@ -120,6 +120,39 @@ park:
       qr:
         svg: "info-01"
         size: 150
+    layout_20000:
+      margin: 25
+      dpi: 300
+      output_file_name: "Kumana_National_Park"
+      title:
+        text: "Kumana National Park (Yala East)"
+        width: 550
+        height: 80
+        font: "Lato"
+        font_size: 100
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      map:
+        background_colour: "#ffffff"
+      scale:
+        font: "Lato"
+        font_size: 41
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      legend:
+        columns: 1
+        font: "Lato"
+        font_size: 15
+        text_colour: "#000000"
+        background_colour: "#ffffff"
+        symbol_size: 8
+        item_spacing: 2
+      compass_rose:
+        svg: "compass-rose"
+        size: 100
+      qr:
+        svg: "info-01"
+        size: 75
   yb1:
     coordinate_reference_system: *default_crs
     boundary_name: "Yala National Park - Block 1"
@@ -138,7 +171,7 @@ park:
     layout_11000:
       margin: 25
       dpi: 200
-      output_file_name: "Yala_National_Park_Block_1_1_11000"
+      output_file_name: "Yala_National_Park_Block_1"
       title:
         text: "Yala National Park - Block 1"
         width: 780
@@ -168,6 +201,39 @@ park:
       qr:
         svg: "info-01"
         size: 100
+    layout_20000:
+      margin: 15
+      dpi: 300
+      output_file_name: "Yala_National_Park_Block_1"
+      title:
+        text: "Yala National Park - Block 1"
+        width: 390
+        height: 35
+        font: "Lato"
+        font_size: 90
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      map:
+        background_colour: "#ffffff"
+      scale:
+        font: "Lato"
+        font_size: 41
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      legend:
+        columns: 2
+        font: "Lato"
+        font_size: 15
+        text_colour: "#000000"
+        background_colour: "#ffffff"
+        symbol_size: 8
+        item_spacing: 2
+      compass_rose:
+        svg: "compass-rose"
+        size: 75
+      qr:
+        svg: "info-01"
+        size: 50
   galoya:
     coordinate_reference_system: *default_crs
     boundary_name: "Galoya Valley National Park"
@@ -186,7 +252,7 @@ park:
     layout_15000:
       margin: 25
       dpi: 150
-      output_file_name: "Galoya_Valley_National_Park_1_15000"
+      output_file_name: "Galoya_Valley_National_Park"
       title:
         text: "Galoya Valley National Park"
         width: 930
@@ -216,6 +282,39 @@ park:
       qr:
         svg: "info-01"
         size: 150
+    layout_30000:
+      margin: 15
+      dpi: 200
+      output_file_name: "Galoya_Valley_National_Park"
+      title:
+        text: "Galoya Valley National Park"
+        width: 465
+        height: 70
+        font: "Lato"
+        font_size: 100
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      map:
+        background_colour: "#ffffff"
+      scale:
+        font: "Lato"
+        font_size: 41
+        text_colour: "#ffffff"
+        background_colour: "#346751"
+      legend:
+        columns: 1
+        font: "Lato"
+        font_size: 15
+        text_colour: "#000000"
+        background_colour: "#ffffff"
+        symbol_size: 6
+        item_spacing: 1
+      compass_rose:
+        svg: "compass-rose"
+        size: 100
+      qr:
+        svg: "info-01"
+        size: 75
   hp:
     coordinate_reference_system: *default_crs
     boundary_name: "Horton Plains National Park"
@@ -234,7 +333,7 @@ park:
     layout_10000:
       margin: 25
       dpi: 300
-      output_file_name: "Horton_Plains_National_Park_1_10000"
+      output_file_name: "Horton_Plains_National_Park"
       title:
         text: "Horton Plains National Park"
         width: 612

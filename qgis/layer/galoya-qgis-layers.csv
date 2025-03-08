@@ -1,7 +1,7 @@
 Layer ID|Table|"Where Clause"|Fill / Inner Line / Symbol / Label Colour|Border / Outer Line / Symbol Border Colour|Border / Line / Symbol Size|Opacity|Font Name|Font Size|Font / Symbol Background Colour|Symbol / Label Background (yes = Only Symbol, yes+ = Both Label and the Symbol, no = No Background) |SVG Fill Colour (Only for Polygons)|SVG Fill Size (Only for Polygons)|Layer Name|Pen Style (dotted, dash etc.)|Blending Mode
 boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|#333533|no|||Park Boundary|DashDotDotLine|
-protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|7|1|Lato|10|#0353a4|no|||Marine Reserve||
-protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|7|1|Lato|10|#31572c|no|||Forest Reserve||
+protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|10|1|Lato|12|#0353a4|no|||Marine Reserve||
+protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|10|1|Lato|12|#31572c|no|||Forest Reserve||
 waterfall|points|"INSTR(other_tags, '""waterway""=>""waterfall""') > 0"|#18364E|transparent|7|1|Lato|8|#eeeeee|yes+|||Waterfall||
 cave|points|"INSTR(other_tags, '""natural""=>""cave_entrance""') > 0"|#403d39|transparent|7|1|Lato|8|#403d39|no|||Cave||
 peak|points|"INSTR(other_tags, '""natural""=>""peak""') > 0"|#6c584c|#eeeeee|7|1|Lato|8|#eeeeee|yes+|||Mountain Peak||
@@ -61,7 +61,7 @@ grassland|cropped_multipolygons|"natural = 'grassland'"|#cdebb0|#4a5759|0.25|1|L
 scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0|1|Lato|8|#386641|no|#354f52|15|Scrub||Multiply
 farmland|cropped_multipolygons|"landuse = 'farmland' or landuse = 'orchard' or place = 'farm' or landuse = 'plant_nursery'"|#eef0d5|#606c38|0.25|1|Lato|8|#606c38|no|#606c38|15|Farmland||Multiply
 beach|cropped_multipolygons|"natural = 'beach' or  natural = 'sand'"|#ffd166|transparent|0|1|Lato|0|#333533|no|#7f5539|20|Sand / Beach||Multiply
-sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|10|#333533|no|#eeeeee|20|Ocean / Sea||Overlay
+sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|12|#333533|no|#eeeeee|20|Ocean / Sea||Overlay
 forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'excavation'"|#8e9aaf|transparent|0|1|Lato|8|#333533|no|||Forest Clearing||Multiply
 forest_cover|forest_cover||#add19e|transparent|0.5|0.5|Lato|0|#333533|no|||Forest Cover||
 other_forest|surrounding_forests_diff||#add19e|transparent|0|1|Lato|0|#333533|no|||Surrounding Forest||Overlay
