@@ -1,28 +1,21 @@
 # Maps of Sri Lanka's National Parks 🇱🇰
 
 - Lahugala-Kithulana National Part 🐘 🐊 🐆 🐻
-  * [[4ftx2ft/PDF]](render/lahugala/lahugala-4x2.pdf)
-  * [[8ftx5ft/PDF]](render/lahugala/lahugala-8x5-plain-optimised.pdf)
-  * [[SVG]](render/lahugala/lahugala-8x5-plain-optimised.svg)
-  * [[A4/Monochrome/PDF]](render/lahugala/lahugala-A4-monochrome-inkscape.pdf)
+  * [4ftx2ft/PDF](render/lahugala/lahugala-4x2.pdf)
+  * [8ftx5ft/PDF](render/lahugala/lahugala-8x5-plain-optimised.pdf)
+  * [SVG](render/lahugala/lahugala-8x5-plain-optimised.svg)
+  * [A4/Monochrome/PDF](render/lahugala/lahugala-A4-monochrome-inkscape.pdf)
 - Horton Plains National Park 🐆
-  * [[1:10000/PDF]](render/hp/Horton_Plains_National_Park_1_10000.pdf)
-  * [[1:10000/PNG]](render/hp/Horton_Plains_National_Park_1_10000.png)
+  * 1:10000 - [PDF](render/hp/Horton_Plains_National_Park_1_10000.pdf) / [PNG](render/hp/Horton_Plains_National_Park_1_10000.png)
 - Yala National Park (Block 1) 🐆 🐻 🐘 🐊
-  * [[1:11000/PDF]](render/yb1/Yala_National_Park_Block_1_1_11000.pdf)
-  * [[1:11000/PNG]](render/yb1/Yala_National_Park_Block_1_1_11000.png)
-  * [[1:20000/PDF]](render/yb1/Yala_National_Park_Block_1_1_20000.pdf)
-  * [[1:20000/PNG]](render/yb1/Yala_National_Park_Block_1_1_20000.png)
+  * 1:11000 - [PDF](render/yb1/Yala_National_Park_Block_1_1_11000.pdf) / [PNG](render/yb1/Yala_National_Park_Block_1_1_11000.png)
+  * 1:20000 - [PDF](render/yb1/Yala_National_Park_Block_1_1_20000.pdf) / [PNG](render/yb1/Yala_National_Park_Block_1_1_20000.png)
 - Kumana National Park (Yala East) 🦚 🐆 🐻 🐘 🐊
-  * [[1:11000/PDF]](render/kumana/Kumana_National_Park_1_11000.pdf)
-  * [[1:11000/PNG]](render/kumana/Kumana_National_Park_1_11000.png)
-  * [[1:20000/PDF]](render/kumana/Kumana_National_Park_1_20000.pdf)
-  * [[1:20000/PNG]](render/kumana/Kumana_National_Park_1_20000.png)
+  * 1:11000 - [PDF](render/kumana/Kumana_National_Park_1_11000.pdf) / [PNG](render/kumana/Kumana_National_Park_1_11000.png)
+  * 1:20000 - [PDF](render/kumana/Kumana_National_Park_1_20000.pdf) / [PNG](render/kumana/Kumana_National_Park_1_20000.png)
 - Galoya Valley National Park 🐘 🐦 🦚 🦋
-  * [[1:15000/PDF]](render/galoya/Galoya_Valley_National_Park_1_15000.pdf)
-  * [[1:15000/PNG]](render/galoya/Galoya_Valley_National_Park_1_15000.png)
-  * [[1:30000/PDF]](render/galoya/Galoya_Valley_National_Park_1_30000.pdf)
-  * [[1:30000/PNG]](render/galoya/Galoya_Valley_National_Park_1_30000.png)
+  * 1:15000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_15000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_15000.png)
+  * 1:30000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_30000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_30000.png)
 
 ## Why?
 
