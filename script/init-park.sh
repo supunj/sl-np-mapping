@@ -16,3 +16,6 @@ $base_dir/script/init-shaded-relief.sh $np $base_dir
 
 # Generate the QGIS project
 $base_dir/script/init-qgis-project.sh $np $base_dir
+
+# Overview map
+$base_dir/script/init-qgis-overview-map.sh $np png $base_dir

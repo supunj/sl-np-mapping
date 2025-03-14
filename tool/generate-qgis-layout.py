@@ -27,6 +27,9 @@ from qgis.core import (
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
 
+from PIL import Image
+
+
 yaml = YAML(typ="safe")
 
 # Type alias for configuration
@@ -49,14 +52,13 @@ def calculateMapSize(project, scale):
     ymin = extent.yMinimum()
     ymax = extent.yMaximum()
     
-    width_mm = (geodesic((ymin, xmin), (ymin, xmax)).meters * 1000) / scale
-    height_mm = (geodesic((ymin, xmin), (ymax, xmin)).meters * 1000) / scale
+    width_mm = (geodesic((ymin, xmin), (ymin, xmax)).meters * 1000) / float(scale)
+    height_mm = (geodesic((ymin, xmin), (ymax, xmin)).meters * 1000) / float(scale)
     return width_mm, height_mm, extent
 
-def createPage(layout, width_mm, height_mm, scale):    
+def createPage(layout, width_mm, height_mm):    
     page = QgsLayoutItemPage(layout)
     page.setPageSize(QgsLayoutSize(width_mm, height_mm, Qgis.LayoutUnit.Millimeters))
-    #page.setScale(int(scale))
     layout.pageCollection().addPage(page)    
     return page
 
@@ -68,15 +70,13 @@ def addMap(config, np, scale, layout, width_mm, height_mm, extent):
     map.setExtent(extent)
     map.zoomToExtent(extent)
     map.setScale(float(scale))
-    #print(map.scale())
     map.setFrameEnabled(False)
     map.setBackgroundEnabled(True)
     map.setBackgroundColor(QColor(background_colour))
     layout.addLayoutItem(map)
     return map
 
-def addScale(config, np, scale, layout, map, page):
-    margin = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("margin"))
+def addScale(config, np, scale, layout, map, page, margin):
     text_colour = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("scale", {}).get("text_colour")
     background_colour = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("scale", {}).get("background_colour")
     font = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("scale", {}).get("font")
@@ -101,8 +101,7 @@ def addScale(config, np, scale, layout, map, page):
     layout.addLayoutItem(scale_bar)
     return scale_bar
 
-def addLegend(config, np, scale, layout, map, page):
-    margin = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("margin"))
+def addLegend(config, np, scale, layout, map, page, margin):
     columns = int(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("columns"))
     text_colour = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("text_colour")
     background_colour = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("legend", {}).get("background_colour")
@@ -153,9 +152,7 @@ def removeCertainLegendItems(legend):
             parent.removeChildNode(layer_node)            
     return
 
-def addCompassRose(config, np, scale, layout, page, base_dir):
-    compass_rose_svg = base_dir + "/symbol/" + config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("compass_rose", {}).get("svg") + ".svg"
-    margin = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("margin"))
+def addCompassRose(config, np, scale, layout, page, compass_rose_svg, margin):    
     size = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("compass_rose", {}).get("size"))
     
     compass_rose = QgsLayoutItemPicture(layout)
@@ -167,9 +164,7 @@ def addCompassRose(config, np, scale, layout, page, base_dir):
     layout.addLayoutItem(compass_rose)
     return compass_rose
 
-def addQR(config, np, scale, layout, page, base_dir):
-    qr_svg = base_dir + "/" + config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("qr", {}).get("svg") + ".svg"
-    margin = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("margin"))
+def addQR(config, np, scale, layout, page, qr_svg, margin):    
     size = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("qr", {}).get("size"))
     
     qr = QgsLayoutItemPicture(layout)
@@ -181,8 +176,7 @@ def addQR(config, np, scale, layout, page, base_dir):
     layout.addLayoutItem(qr)
     return qr
 
-def addMapTitle(config, np, scale, layout):
-    margin = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("margin"))
+def addMapTitle(config, np, scale, layout, margin):
     width = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("title", {}).get("width"))
     height = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("title", {}).get("height"))
     text = config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("title", {}).get("text")
@@ -214,6 +208,30 @@ def addMapTitle(config, np, scale, layout):
     layout.addLayoutItem(map_title)
     return map_title
 
+def calculateOverviewMapSize(config, np, scale, overview_map_png):
+    scale_factor = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("overview_map", {}).get("scale_factor"))
+
+    with Image.open(overview_map_png) as img:
+        width, height = img.size
+    
+    return width/scale_factor, height/scale_factor
+
+def addOverviewMap(config, np, scale, layout, page, overview_map_png, margin):
+    position_x = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("overview_map", {}).get("position_x"))
+    position_y = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("overview_map", {}).get("position_y"))
+
+    overview_map = QgsLayoutItemPicture(layout)
+    overview_map.setId("Overview Map")
+    overview_map.setReferencePoint(QgsLayoutItem.ReferencePoint.UpperLeft)
+    overview_map.setPicturePath(overview_map_png)
+
+    width, height = calculateOverviewMapSize(config, np, scale, overview_map_png)
+
+    overview_map.attemptResize(QgsLayoutSize(width, height, Qgis.LayoutUnit.Millimeters))
+    overview_map.attemptMove(QgsLayoutPoint(position_x, position_y, Qgis.LayoutUnit.Millimeters))
+    layout.addLayoutItem(overview_map)
+    return overview_map
+
 def loadProject(base_dir, np, layout_name):
     project = QgsProject.instance()
     project.read(base_dir + "/qgis/" + np + ".qgz")
@@ -229,16 +247,21 @@ def createPrintLayout(config, np, scale, project, layout_name):
     return layout
 
 def main():
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         print("Inadequate parameters.")
         sys.exit(1)
 
     np = sys.argv[1]    
     scale = sys.argv[2]
-    base_dir = sys.argv[3]
+    config_file = sys.argv[3]
+    base_dir = sys.argv[4]
     
      # Load configuration once
-    config = loadConfig(base_dir + "/conf/sl-np-mapping.yaml")
+    config = loadConfig(config_file)
+    margin = float(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("margin"))
+    compass_rose_svg = base_dir + "/symbol/" + config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("compass_rose", {}).get("svg") + ".svg"
+    qr_svg = base_dir + "/" + config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("qr", {}).get("svg") + ".svg"
+    overview_map_png = base_dir + "/render/" + np + "/" + config.get("park", {}).get(np, {}).get("output_file_name") + "_Overview.png"
     layout_name = scale
 
     # QGIS environment    
@@ -251,28 +274,31 @@ def main():
     # Create a new layout
     layout = createPrintLayout(config, np, scale, project, layout_name)
 
-    width_mm, height_mm, extent = calculateMapSize(project, int(scale))
+    width_mm, height_mm, extent = calculateMapSize(project, scale)
 
     # Create page
-    page = createPage(layout, width_mm, height_mm, scale)
+    page = createPage(layout, width_mm, height_mm)
 
     # Add the map
     map = addMap(config, np, scale, layout, width_mm, height_mm, extent)
     
     # Add the scale bar
-    scale_bar = addScale(config, np, scale, layout, map, page)    
+    scale_bar = addScale(config, np, scale, layout, map, page, margin)    
 
     # Add the legend
-    legend = addLegend(config, np, scale, layout, map, page)
+    legend = addLegend(config, np, scale, layout, map, page, margin)
 
     # Add a compass rose (SVG image)    
-    compass_rose = addCompassRose(config, np, scale, layout, page, base_dir)
+    compass_rose = addCompassRose(config, np, scale, layout, page, compass_rose_svg, margin)
         
     # Add the QR (SVG image)    
-    qr = addQR(config, np, scale, layout, page, base_dir)
+    qr = addQR(config, np, scale, layout, page, qr_svg, margin)
 
     # Title
-    map_title = addMapTitle(config, np, scale, layout)
+    map_title = addMapTitle(config, np, scale, layout, margin)
+
+    # Overview map
+    overview_map = addOverviewMap(config, np, scale, layout, page, overview_map_png, margin)
 
     # Add the layout to the project
     project.layoutManager().addLayout(layout)

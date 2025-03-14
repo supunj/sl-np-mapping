@@ -1,7 +1,6 @@
 import csv
 from pathlib import Path
 import sys
-from typing import Union
 from PyQt5.QtCore import QSizeF, Qt
 from PyQt5.QtGui import QColor, QFont, QPainter
 from qgis.core import (
@@ -192,7 +191,7 @@ def createSVGFillSymbolLayer(symbol_path, row, print_scale):
 
 def main():
     # Check if the database path and properties file path are provided
-    if len(sys.argv) < 8:
+    if len(sys.argv) < 9:
         print("Inadequate parameters.")
         sys.exit(1)
 
@@ -203,9 +202,10 @@ def main():
     hill_shade_raster_file = sys.argv[4]
     park_outer_glow_raster_file = sys.argv[5]
     new_project_path = sys.argv[6]
-    symbol_path = sys.argv[7]
-    coordinate_reference_system = sys.argv[8]
-    print_scale = sys.argv[9]
+    symbol_path = sys.argv[7]    
+    print_scale = sys.argv[8]
+
+    coordinate_reference_system = "EPSG:4326"
 
     # Initialize QGIS Application in headless mode (for standalone scripts)
     qgs = QgsApplication([], False)
@@ -387,7 +387,7 @@ def main():
 
     # Save the project to the specified path
     project.write(new_project_path)
-    print(f"New QGIS project created and saved at: {new_project_path}")
+    print(f"Main map project created and saved at: {new_project_path}")
 
     # Clean up by closing the QGIS application
     qgs.exitQgis()

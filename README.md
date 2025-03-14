@@ -13,6 +13,7 @@
 - Kumana National Park (Yala East) 🦚 🐆 🐻 🐘 🐊
   * 1:11000 - [PDF](render/kumana/Kumana_National_Park_1_11000.pdf) / [PNG](render/kumana/Kumana_National_Park_1_11000.png)
   * 1:20000 - [PDF](render/kumana/Kumana_National_Park_1_20000.pdf) / [PNG](render/kumana/Kumana_National_Park_1_20000.png)
+  * Overview Map - [SVG](render/kumana/Kumana_National_Park_Overview.svg) / [PNG](render/kumana/Kumana_National_Park_Overview.png)
 - Galoya Valley National Park 🐘 🐦 🦚 🦋
   * 1:15000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_15000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_15000.png)
   * 1:30000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_30000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_30000.png)
@@ -53,6 +54,7 @@ Whatever is here can be used without any restrictions but attributions will be a
 13. Python 3 and imported modules
     - `sudo apt install python3-ruamel.yaml`
     - `sudo apt install python3-geopy`
+    - `sudo apt install python3-pillow`
 
 ### Optional
 

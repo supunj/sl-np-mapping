@@ -13,4 +13,5 @@ python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml
 "$python3_bin" $base_dir/tool/generate-qgis-layout.py \
                                                         $np \
                                                         $scale \
+                                                        $base_dir/tmp/sl-np-mapping.yaml \
                                                         $base_dir

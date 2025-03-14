@@ -10,6 +10,7 @@ symbol_dir=$base_dir/qgis/symbol/$np
 # Create runtime folders if they don't exist
 mkdir -p $base_dir/tmp
 mkdir -p $base_dir/var
+mkdir -p $base_dir/render/$np
 
 # Config params
 sed -e 's|{\$HOME}|'$(printf '%s' "$HOME" | sed 's|/|\\/|g')'|g' \
@@ -18,8 +19,9 @@ rsvg_convert_bin=$(yq -r '.tool.rsvg_convert.path' $base_dir/tmp/sl-np-mapping.y
 xmlstarlet_bin=$(yq -r '.tool.xmlstarlet.path' $base_dir/tmp/sl-np-mapping.yaml)
 svgo_bin=$(yq -r '.tool.svgo.path' $base_dir/tmp/sl-np-mapping.yaml)
 python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml)
-coordinate_reference_system=$(yq -r '.park.'$np'.coordinate_reference_system' $base_dir/tmp/sl-np-mapping.yaml)
+coordinate_reference_system=$(yq -r '.global.coordinate_reference_system' $base_dir/tmp/sl-np-mapping.yaml)
 print_scale=$(yq -r '.park.'$np'.print_layout.scale' $base_dir/tmp/sl-np-mapping.yaml)
+output_file_name=$(yq -r '.park.'$np'.output_file_name' $base_dir/tmp/sl-np-mapping.yaml)
 
 # This can't be run unless data and db is not available
 if ! [ -f "$base_dir/db/$np.db" ]; then
@@ -77,6 +79,7 @@ while IFS='|' read layer_name column2; do
 
 done < "$base_dir/tmp/$np-qgis-layers.csv"
 
+# Main map
 "$python3_bin" $base_dir/tool/generate-qgis-project.py \
                                                     $np \
                                                     $base_dir/db/$np.db \
@@ -85,5 +88,5 @@ done < "$base_dir/tmp/$np-qgis-layers.csv"
                                                     $base_dir/var/$np-park-polygon-glow.tiff \
                                                     $base_dir/qgis/$np.qgz \
                                                     $base_dir/qgis/symbol/$np \
-                                                    $coordinate_reference_system \
-                                                    $print_scale
+                                                    $print_scale \
+                                                    $coordinate_reference_system

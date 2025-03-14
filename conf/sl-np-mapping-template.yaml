@@ -58,7 +58,6 @@ tool:
     path: inkscape
 park:
   lahugala:
-    coordinate_reference_system: *default_crs
     boundary_name: "Lahugala Kitulana National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -73,7 +72,6 @@ park:
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
   kumana:
-    coordinate_reference_system: *default_crs
     boundary_name: "Kumana National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -87,10 +85,13 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
+    output_file_name: "Kumana_National_Park"
+    overview_map:
+      scale: 500000
+      layout_name: "overview"
     layout_11000:
       margin: 25
       dpi: 200
-      output_file_name: "Kumana_National_Park"
       title:
         text: "Kumana National Park (Yala East)"
         width: 1100
@@ -120,10 +121,13 @@ park:
       qr:
         svg: "info-01"
         size: 150
+      overview_map:
+        scale_factor: 20
+        position_x: 25
+        position_y: 215
     layout_20000:
       margin: 25
       dpi: 300
-      output_file_name: "Kumana_National_Park"
       title:
         text: "Kumana National Park (Yala East)"
         width: 550
@@ -153,8 +157,11 @@ park:
       qr:
         svg: "info-01"
         size: 75
+      overview_map:
+        scale_factor: 40
+        position_x: 25
+        position_y: 135
   yb1:
-    coordinate_reference_system: *default_crs
     boundary_name: "Yala National Park - Block 1"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -168,10 +175,13 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
+    output_file_name: "Yala_National_Park_Block_1"
+    overview_map:
+      scale: 500000
+      layout_name: "overview"
     layout_11000:
       margin: 25
       dpi: 200
-      output_file_name: "Yala_National_Park_Block_1"
       title:
         text: "Yala National Park - Block 1"
         width: 780
@@ -204,7 +214,6 @@ park:
     layout_20000:
       margin: 15
       dpi: 300
-      output_file_name: "Yala_National_Park_Block_1"
       title:
         text: "Yala National Park - Block 1"
         width: 390
@@ -235,7 +244,6 @@ park:
         svg: "info-01"
         size: 50
   galoya:
-    coordinate_reference_system: *default_crs
     boundary_name: "Galoya Valley National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -249,10 +257,13 @@ park:
     convert_crop_tile_width: *default_crop_tile_width
     convert_crop_tile_height: *default_crop_tile_height
     park_glow_raster_reduce_by_px: 5000
+    output_file_name: "Galoya_Valley_National_Park"
+    overview_map:
+      scale: 500000
+      layout_name: "overview"
     layout_15000:
       margin: 25
       dpi: 150
-      output_file_name: "Galoya_Valley_National_Park"
       title:
         text: "Galoya Valley National Park"
         width: 930
@@ -285,7 +296,6 @@ park:
     layout_30000:
       margin: 15
       dpi: 200
-      output_file_name: "Galoya_Valley_National_Park"
       title:
         text: "Galoya Valley National Park"
         width: 465
@@ -316,7 +326,6 @@ park:
         svg: "info-01"
         size: 75
   hp:
-    coordinate_reference_system: *default_crs
     boundary_name: "Horton Plains National Park"
     boundary_tag: "type=boundary"
     gdalwarp_hillshade_tr: *default_tr
@@ -330,10 +339,13 @@ park:
     convert_crop_tile_width: 100000
     convert_crop_tile_height: 100000
     park_glow_raster_reduce_by_px: 0
+    output_file_name: "Horton_Plains_National_Park"
+    overview_map:
+      scale: 500000
+      layout_name: "overview"
     layout_10000:
       margin: 25
       dpi: 300
-      output_file_name: "Horton_Plains_National_Park"
       title:
         text: "Horton Plains National Park"
         width: 612
