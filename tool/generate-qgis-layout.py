@@ -2,6 +2,7 @@ from pathlib import Path
 import sys
 from typing import Any, Dict
 
+from PIL import Image
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
 from geopy.distance import geodesic
@@ -26,9 +27,6 @@ from qgis.core import (
 )
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
-
-from PIL import Image
-
 
 yaml = YAML(typ="safe")
 

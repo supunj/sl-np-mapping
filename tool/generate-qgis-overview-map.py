@@ -4,6 +4,7 @@ from typing import Any, Dict
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
+from osgeo import gdal
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -21,14 +22,14 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsPrintLayout,
     QgsProject,
+    QgsSimpleFillSymbolLayer,
     QgsSingleSymbolRenderer,
     QgsUnitTypes,
     QgsVectorLayer,
-    QgsSimpleFillSymbolLayer
 )
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
-from osgeo import gdal
+
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 yaml = YAML(typ="safe")
@@ -67,6 +68,8 @@ def createQGISProject(coordinate_reference_system, np, db_path):
         uri.setDataSource("", table_layer[0], "geom", "", "ogc_fid")
         layer = QgsVectorLayer(uri.uri(), table_layer[1], "spatialite")
     
+        symbol = None
+
         if layer.isValid():
             if layer.geometryType() == Qgis.GeometryType.Polygon:
                 symbol = QgsFillSymbol.createSimple(
@@ -78,7 +81,7 @@ def createQGISProject(coordinate_reference_system, np, db_path):
                 )
                 
                 if table_layer[3] == 0:
-                    symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+                    symbol.symbolLayer(0).setStrokeStyle(Qt.PenStyle.NoPen)
             elif layer.geometryType() == Qgis.GeometryType.Line:
                 symbol = QgsLineSymbol.createSimple(
                     {
@@ -107,8 +110,8 @@ def calculatePageSize(project, extent, scale):
     # Calculate extent dimensions in meters
     da = QgsDistanceArea()
     da.setSourceCrs(project.crs(), project.transformContext())
-    extent_width = da.convertLengthMeasurement(extent.width(), QgsUnitTypes.DistanceMeters)
-    extent_height = da.convertLengthMeasurement(extent.height(), QgsUnitTypes.DistanceMeters)
+    extent_width = da.convertLengthMeasurement(extent.width(), Qgis.DistanceUnit.Meters)
+    extent_height = da.convertLengthMeasurement(extent.height(), Qgis.DistanceUnit.Meters)
 
     # Calculate page size in millimeters
     page_width_mm = (extent_width * 1000) / float(scale)
@@ -133,7 +136,7 @@ def createLayout(project, scale, layout_name):
     fill_symbol.deleteSymbolLayer(0)
     transparent_fill = QgsSimpleFillSymbolLayer()
     transparent_fill.setColor(QColor(0, 0, 0, 0))
-    transparent_fill.setStrokeStyle(Qt.NoPen)    
+    transparent_fill.setStrokeStyle(Qt.PenStyle.NoPen)    
     fill_symbol.appendSymbolLayer(transparent_fill)
     page.setPageStyleSymbol(fill_symbol)
 

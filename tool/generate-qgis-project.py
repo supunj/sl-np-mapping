@@ -275,7 +275,7 @@ def main():
                     )
                     
                     if float(row[5]) == 0:
-                        symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+                        symbol.symbolLayer(0).setStrokeStyle(Qt.PenStyle.NoPen)
                         
                     if Path(symbol_path + "/" + row[0] + ".svg").exists():
                         symbol.appendSymbolLayer(createSVGFillSymbolLayer(symbol_path + "/" + row[0] + ".svg", row, print_scale))
@@ -284,13 +284,13 @@ def main():
                         case "":
                             pass
                         case "DotLine":
-                            symbol.symbolLayer(0).setStrokeStyle(Qt.DotLine)
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.PenStyle.DotLine)
                         case "DashLine":
-                            symbol.symbolLayer(0).setStrokeStyle(Qt.DashLine)
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.PenStyle.DashLine)
                         case "DashDotDotLine":
-                            symbol.symbolLayer(0).setStrokeStyle(Qt.DashDotDotLine)
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.PenStyle.DashDotDotLine)
                         case "NoPen":
-                            symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
+                            symbol.symbolLayer(0).setStrokeStyle(Qt.PenStyle.NoPen)
                     
                     # Setting the blending mode
                     match row[15]:
@@ -311,12 +311,12 @@ def main():
                         case "":
                             pass
                         case "DotLine":
-                            inner_line.setPenStyle(Qt.DotLine)
+                            inner_line.setPenStyle(Qt.PenStyle.DotLine)
                         case "DashLine":
-                            inner_line.setPenStyle(Qt.DashLine)
+                            inner_line.setPenStyle(Qt.PenStyle.DashLine)
                         case "DashDotDotLine":
-                            inner_line.setPenStyle(Qt.DashDotDotLine)
-                    inner_line.setPenCapStyle(Qt.RoundCap) # Set round end caps for lines
+                            inner_line.setPenStyle(Qt.PenStyle.DashDotDotLine)
+                    inner_line.setPenCapStyle(Qt.PenCapStyle.RoundCap) # Set round end caps for lines
                     symbol.appendSymbolLayer(inner_line)
                     
                     if row[0] == "embankment":
@@ -325,7 +325,7 @@ def main():
                         # marker_symbol_layer.setColor(QColor("red"))
                         marker_symbol_layer.setStrokeColor(QColor("#333533"))
                         marker_symbol_layer.setStrokeWidth(0.5)
-                        marker_symbol_layer.setShape(QgsSimpleMarkerSymbolLayer.Line)
+                        marker_symbol_layer.setShape(Qgis.MarkerShape.Line)
                         marker_symbol_layer.setAngle(180) # Rotate the line to make it vertical
                         marker_symbol = QgsMarkerSymbol()
                         marker_symbol.changeSymbolLayer(0, marker_symbol_layer)

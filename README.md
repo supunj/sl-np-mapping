@@ -7,9 +7,11 @@
   * [A4/Monochrome/PDF](render/lahugala/lahugala-A4-monochrome-inkscape.pdf)
 - Horton Plains National Park 🐆
   * 1:10000 - [PDF](render/hp/Horton_Plains_National_Park_1_10000.pdf) / [PNG](render/hp/Horton_Plains_National_Park_1_10000.png)
+  * Overview Map - [SVG](render/hp/Horton_Plains_National_Park_Overview.svg) / [PNG](render/hp/Horton_Plains_National_Park_Overview.png)
 - Yala National Park (Block 1) 🐆 🐻 🐘 🐊
   * 1:11000 - [PDF](render/yb1/Yala_National_Park_Block_1_1_11000.pdf) / [PNG](render/yb1/Yala_National_Park_Block_1_1_11000.png)
   * 1:20000 - [PDF](render/yb1/Yala_National_Park_Block_1_1_20000.pdf) / [PNG](render/yb1/Yala_National_Park_Block_1_1_20000.png)
+  * Overview Map - [SVG](render/yb1/Yala_National_Park_Block_1_Overview.svg) / [PNG](render/yb1/Yala_National_Park_Block_1_Overview.png)
 - Kumana National Park (Yala East) 🦚 🐆 🐻 🐘 🐊
   * 1:11000 - [PDF](render/kumana/Kumana_National_Park_1_11000.pdf) / [PNG](render/kumana/Kumana_National_Park_1_11000.png)
   * 1:20000 - [PDF](render/kumana/Kumana_National_Park_1_20000.pdf) / [PNG](render/kumana/Kumana_National_Park_1_20000.png)
@@ -17,6 +19,7 @@
 - Galoya Valley National Park 🐘 🐦 🦚 🦋
   * 1:15000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_15000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_15000.png)
   * 1:30000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_30000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_30000.png)
+  * Overview Map - [SVG](render/galoya/Galoya_Valley_National_Park_Overview.svg) / [PNG](render/galoya/Galoya_Valley_National_Park_Overview.png)
 
 ## Why?
 
@@ -95,8 +98,13 @@ Whatever is here can be used without any restrictions but attributions will be a
             qgis_layer_definitions@{ shape: doc, label: "Layers (.csv)" }
             create_map_symbols@{ shape: trap-t, label: "Create SVG \n map symbols" }
             map_symbols@{ shape: docs, label: ".svg" }
-            generate_qgis_project@{ shape: rect, label: "Generate QGIS project" }
-            qgis_project@{ shape: doc, label: "(.qgz)" }
+            generate_main_qgis_project@{ shape: rect, label: "Generate main QGIS project" }
+            main_qgis_project@{ shape: doc, label: "(.qgz)" }
+            generate_overview_qgis_project@{ shape: rect, label: "Generate overview QGIS project" }
+            overview_qgis_project@{ shape: doc, label: "(.qgz)" }
+            generate_qgis_overview_layout@{ shape: rect, label: "Generate overview QGIS layout" }
+            export_overview_layout@{ shape: rect, label: "Export overview layout" }
+            overview_map@{ shape: doc, label: "Overview map (.png/.svg)" }
             refine_qgis_project@{ shape: trap-t, label: "Refine the map" }
             generate_qgis_layout@{ shape: rect, label: "Generate QGIS layout" }
             refine_qgis_layout@{ shape: trap-t, label: "Refine the layout" }
@@ -134,9 +142,14 @@ Whatever is here can be used without any restrictions but attributions will be a
             define_qgis_layers --> qgis_layer_definitions            
             define_qgis_layers --> create_map_symbols
             create_map_symbols --> map_symbols
-            create_map_symbols --> generate_qgis_project
-            generate_qgis_project --> qgis_project
-            generate_qgis_project --> refine_qgis_project
+            create_map_symbols --> generate_main_qgis_project
+            generate_main_qgis_project --> main_qgis_project
+            generate_main_qgis_project --> generate_overview_qgis_project
+            generate_overview_qgis_project --> overview_qgis_project
+            generate_overview_qgis_project --> generate_qgis_overview_layout
+            generate_qgis_overview_layout --> export_overview_layout
+            export_overview_layout --> overview_map
+            export_overview_layout --> refine_qgis_project
             refine_qgis_project --> generate_qgis_layout
             generate_qgis_layout --> refine_qgis_layout
             refine_qgis_layout --> export_layout
@@ -200,12 +213,16 @@ Whatever is here can be used without any restrictions but attributions will be a
 
     ![alt text](image/qgis_project.png)
 
-12. `./script/init-park.sh <park_name> $(pwd)` - This will run all the above scripts all at once.
+12. `./script/init-qgis-overview-map.sh <park_name> <format(svg/png)> $(pwd)` - This generates the overview map in the directory `$base_dir/render/<park name>`. This will later be used in the print layout.
 
-13. `./script/init-qgis-layout.sh <park_name> <scale> $(pwd)` - This creates a layout for the given park in the given scale. The scale should be specified as a number (E.g.: If the desires scale is 1:10000, scale would be 10000)
+    ![alt text](image/overview_map.png)
+
+13. `./script/init-park.sh <park_name> $(pwd)` - This will run all the above scripts all at once.
+
+14. `./script/init-qgis-layout.sh <park_name> <scale> $(pwd)` - This creates a layout for the given park in the given scale. The scale should be specified as a number (E.g.: If the desires scale is 1:10000, scale would be 10000)
 
     ![alt text](image/qgis_layout.png)
 
-14. `/script/render-park-v2.sh <park_name> <scale> <output format> $(pwd)` - This script exports a given layout in the given format. Possible values for the format are 'pdf' or 'png'. The output will be placed in the directory `$base_dir/render/<park name>`
+15. `/script/render-park-v2.sh <park_name> <scale> <output format> $(pwd)` - This script exports a given layout in the given format. Possible values for the format are 'pdf' or 'png'. The output will be placed in the directory `$base_dir/render/<park name>`
 
     🚨Caution :  This operation will require a significant amount of memory and processing power depending on the scale of the map.

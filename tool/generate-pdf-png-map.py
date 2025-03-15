@@ -3,11 +3,7 @@ import sys
 from typing import Any, Dict
 
 from osgeo import gdal
-from qgis.core import (
-    QgsApplication,
-    QgsLayoutExporter,
-    QgsProject
-)
+from qgis.core import QgsApplication, QgsLayoutExporter, QgsProject
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
 gdal.PushErrorHandler('CPLQuietErrorHandler')
