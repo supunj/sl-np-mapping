@@ -6,12 +6,14 @@ from osgeo import gdal
 from qgis.core import QgsApplication, QgsLayoutExporter, QgsProject
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
-gdal.PushErrorHandler('CPLQuietErrorHandler')
+
+gdal.PushErrorHandler("CPLQuietErrorHandler")
 
 yaml = YAML(typ="safe")
 
 # Type alias for configuration
 ConfigDict = Dict[str, Any]
+
 
 def loadConfig(config_path: str) -> ConfigDict:
     try:
@@ -23,6 +25,7 @@ def loadConfig(config_path: str) -> ConfigDict:
     except Exception as e:
         raise SystemExit(f"⚡ Unexpected error loading config: {e}")
 
+
 def loadProjectLayout(qgis_project_file, np, layout_name):
     project = QgsProject.instance()
     project.read(qgis_project_file)
@@ -31,6 +34,7 @@ def loadProjectLayout(qgis_project_file, np, layout_name):
         raise Exception(f"Project or layout not found!")
     else:
         return project, layout
+
 
 def main():
     if len(sys.argv) != 7:
@@ -43,18 +47,18 @@ def main():
     qgis_project_file = sys.argv[4]
     config_file = sys.argv[5]
     output_file = sys.argv[6]
-            
-     # Load configuration once
+
+    # Load configuration once
     config = loadConfig(config_file)
     layout_name = scale
 
-    # QGIS environment    
+    # QGIS environment
     qgs = QgsApplication([], False)
     qgs.initQgis()
 
     # Load the existing project
     project, layout = loadProjectLayout(qgis_project_file, np, layout_name)
-    
+
     exporter = QgsLayoutExporter(layout)
 
     dpi = int(config.get("park", {}).get(np, {}).get("layout_" + scale, {}).get("dpi"))
@@ -62,17 +66,17 @@ def main():
     # Export to PDF
     if format == "pdf":
         pdf_settings = QgsLayoutExporter.PdfExportSettings()
-        pdf_settings.pages = [0] 
-            
+        pdf_settings.pages = [0]
+
         pdf_result = exporter.exportToPdf(output_file, pdf_settings)
-        
+
         if pdf_result != QgsLayoutExporter.ExportResult.Success:
             raise Exception("PDF export failed!")
 
         print(f"PDF exported successfully")
-        
+
         sys.exit(0)
-    
+
     # Export to PNG
     if format == "png":
         image_settings = QgsLayoutExporter.ImageExportSettings()
@@ -81,13 +85,14 @@ def main():
         image_settings.generateWorldFile = False
 
         png_result = exporter.exportToImage(output_file, image_settings)
-        
+
         if png_result != QgsLayoutExporter.ExportResult.Success:
             raise Exception("PNG export failed!")
 
         print(f"PNG exported successfully")
 
         sys.exit(0)
+
 
 # Main execution
 if __name__ == "__main__":

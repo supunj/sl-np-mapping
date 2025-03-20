@@ -88,5 +88,4 @@ done < "$base_dir/tmp/$np-qgis-layers.csv"
                                                     $base_dir/var/$np-park-polygon-glow.tiff \
                                                     $base_dir/qgis/$np.qgz \
                                                     $base_dir/qgis/symbol/$np \
-                                                    $print_scale \
-                                                    $coordinate_reference_system
+                                                    $base_dir/tmp/sl-np-mapping.yaml

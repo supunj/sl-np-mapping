@@ -155,12 +155,41 @@ create table cropped_multipolygons as select multipolygons.*, cast(ST_AsText(ST_
                                    (select ST_Union(geom) as geom
                                     from background) as background
                               where ST_Intersects(multipolygons.geom, background.geom);
+-- TODO : This will only handle polygon and multipolygons. We need to find an easier way to handle geometrycollections.
+delete 
+from cropped_multipolygons 
+where GeometryType(ST_GeomFromText(geom_tmp)) in ('GEOMETRYCOLLECTION');
+
 alter table cropped_multipolygons drop column geom;
 select AddGeometryColumn('cropped_multipolygons', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
 select CreateSpatialIndex('cropped_multipolygons', 'geom');
-update cropped_multipolygons 
-      set geom = ST_Multi(ST_GeomFromText(geom_tmp, 4326));
+update cropped_multipolygons
+      set geom = ST_Multi(ST_GeomFromText(geom_tmp, 4326))
+where GeometryType(ST_GeomFromText(geom_tmp)) in ('POLYGON', 'MULTIPOLYGON');
+
 alter table cropped_multipolygons drop column geom_tmp;
+
+-- update cropped_multipolygons
+-- 		set geom = with recursive split_geometries as (
+-- 						select ogc_fid,
+-- 							   geom_tmp,
+-- 							   1 as idx,
+-- 							   GeometryN(ST_GeomFromText(geom_tmp), 1) as extracted_geometry
+-- 						from cropped_multipolygons
+-- 						where GeometryType(ST_GeomFromText(geom_tmp)) = 'GEOMETRYCOLLECTION'
+						
+-- 						union all
+						
+-- 						select s.ogc_fid,
+-- 							   s.geom_tmp,
+-- 							   s.idx + 1,
+-- 							   GeometryN(ST_GeomFromText(s.geom_tmp), s.idx + 1)
+-- 						from split_geometries s
+-- 						where s.idx + 1 <= NumGeometries(s.geom_tmp)
+-- 					)
+-- 					select ST_Union(extracted_geometry)
+-- 					from split_geometries
+-- 					where GeometryType(extracted_geometry) in ('POLYGON', 'MULTIPOLYGON');
 
 -- Crop all ways to the background polygon
 create table cropped_lines as select lines.*, cast(ST_AsText(ST_Transform(ST_Intersection(lines.geom, background.geom), 4326)) as text) as geom_tmp

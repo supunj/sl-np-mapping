@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   enable-background="new 0 0 580 580"
+   height="580"
+   viewBox="0 0 580 580"
+   width="580"
+   version="1.1"
+   id="svg16210"
+   sodipodi:docname="lake.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs16214" />
+  <sodipodi:namedview
+     id="namedview16212"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.0582219"
+     inkscape:cx="-23.624536"
+     inkscape:cy="300.0316"
+     inkscape:window-width="2192"
+     inkscape:window-height="1165"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg16210" />
+  <path
+     d="M 549.54853,532.21126 H 238.12035 c -2.73823,0 -4.95907,2.687 -4.95907,6 0,3.313 2.22084,6 4.95907,6 H 549.5477 c 2.73824,0 4.95908,-2.687 4.95908,-6 0,-3.313 -2.22001,-6 -4.95825,-6 z"
+     fill="param(fill)"
+     fill-opacity="param(fill-opacity)"
+     stroke="param(outline)"
+     stroke-opacity="param(outline-opacity)"
+     stroke-width="0.909125"
+     id="path16186-3" />
+  <path
+     d="M 369.69736,37.051704 H 31.653838 c -6.601423,0 -11.955491,2.687 -11.955491,6 0,3.313 5.354068,6 11.955491,6 H 369.69736 c 6.60143,0 11.9555,-2.687 11.9555,-6 0,-3.313 -5.35207,-6 -11.9555,-6 z"
+     fill="param(fill)"
+     fill-opacity="param(fill-opacity)"
+     stroke="param(outline)"
+     stroke-opacity="param(outline-opacity)"
+     stroke-width="1.41159"
+     id="path16208" />
+  <path
+     d="M 448.1414,284.63148 H 149.7419 c -5.82724,0 -10.55341,2.687 -10.55341,6 0,3.313 4.72617,6 10.55341,6 h 298.3995 c 5.82725,0 10.55342,-2.687 10.55342,-6 0,-3.313 -4.72441,-6 -10.55342,-6 z"
+     fill="param(fill)"
+     fill-opacity="param(fill-opacity)"
+     stroke="param(outline)"
+     stroke-opacity="param(outline-opacity)"
+     stroke-width="1.32624"
+     id="path16208-7" />
+</svg>

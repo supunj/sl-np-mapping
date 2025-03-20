@@ -44,21 +44,22 @@ admin_boundary|sl_admin|"geom is not null"|#333533|transparent|0.125|1|Lato|8|#3
 building|cropped_multipolygons|"building = 'yes'"|#b56576|transparent|0|1|Lato|8|#333533|no|||Building||
 dam|cropped_multipolygons|"INSTR(other_tags, '""waterway""=>""dam""') > 0 or INSTR(other_tags, '""waterway""=>""weir""')"|#adadad|#444444|0|1|Lato|8|#333533|no|||Dam||
 river_area|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""river""') > 0"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|||River Area||
-river|cropped_lines|"waterway = 'river'"|#aed9e0|#18364E|1.5|1|Lato|8|#18364E|no|||River||
-waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (other_tags is null or (INSTR(other_tags, '""intermittent""=>""yes""') = 0 and INSTR(other_tags, '""seasonal ""=>""yes""') = 0))"|#aed9e0|#18364E|0.5|1|Lato|6|#18364E|no|||Waterway||
-intermittent_waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (INSTR(other_tags, '""intermittent""=>""yes""') > 0 or INSTR(other_tags, '""seasonal ""=>""yes""') > 0)"|#18364E|#aed9e0|0.5|1|Lato|6|#18364E|no|||Seasonal Waterway|DotLine|
+river|cropped_lines|"waterway = 'river'"|#aed9e0|#18364E|1.5|1|Lato|8|#18364E|no|||River / Oya||
+waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (other_tags is null or (INSTR(other_tags, '""intermittent""=>""yes""') = 0 and INSTR(other_tags, '""seasonal ""=>""yes""') = 0))"|#aed9e0|#18364E|0.5|1|Lato|6|#18364E|no|||Waterway / Ara||
+intermittent_waterway|cropped_lines|"waterway in ('stream', 'canal', 'tidal_channel', 'flowline', 'drain', 'ditch' ) and (INSTR(other_tags, '""intermittent""=>""yes""') > 0 or INSTR(other_tags, '""seasonal ""=>""yes""') > 0)"|#18364E|#aed9e0|0.5|1|Lato|6|#18364E|no|||Seasonal Waterway / Kandura|DotLine|
 residential_area|cropped_multipolygons|"landuse = 'residential' or place = 'isolated_dwelling'"|#e0dfdf|#b9b9b9|0.125|1|Lato|0|#333533|no|||Residential Area||
 parking|cropped_multipolygons|"amenity = 'parking'"|#b8b8ff|transparent|0|0.8|Lato|0|#333533|no|||Parking Lot||
 industrial|cropped_multipolygons|"landuse = 'industrial' or landuse = 'aquaculture'"|#9f86c0|transparent|0|0.8|Lato|6|#333533|no|||Industrial Area||
 rock|cropped_multipolygons|"natural = 'bare_rock'"|#495057|transparent|0|0.8|Lato|8|#333533|no|#d9d9d9|30|Rocky Outcrop||Multiply
 waterhole|cropped_multipolygons|"amenity = 'watering_place'"|#aed9e0|#18364E|0.125|1|Lato|8|#18364E|no||10|Artificial Waterhole||Multiply
-pond|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""pond""') > 0"|#aed9e0|#18364E|0.125|1|Lato|8|#18364E|no||10|Pond||Multiply
-reservoir|cropped_multipolygons|"natural = 'water' and (INSTR(other_tags, '""water""=>""reservoir""') > 0 or INSTR(other_tags, '""water""=>""lake""') > 0)"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#18364E|12|Reservoir||Multiply
+pond|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""pond""') > 0"|#aed9e0|#18364E|0.125|1|Lato|8|#18364E|no||10|Pond / Wala / Kema||Multiply
+reservoir|cropped_multipolygons|"natural = 'water' and (INSTR(other_tags, '""water""=>""reservoir""') > 0)"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#18364E|12|Reservoir / Tank / Wewa||Multiply
+lake|cropped_multipolygons|"natural = 'water' and (INSTR(other_tags, '""water""=>""lake""') > 0)"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#18364E|12|Lake / Villu||Multiply
 wetland|cropped_multipolygons|"natural = 'wetland'"|#17c3b2|#028090|0|1|Lato|8|#028090|no|#18364E|15|Wetland / Swamp||Multiply
 lagoon|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""lagoon""') > 0"|#aed9e0|#18364E|0.25|1|Lato|8|#18364E|no|#eeeeee|12|Lagoon||Multiply
 basin|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""basin""') > 0"|#eeeeee|transparent|0.25|1|Lato|8|#18364E|no|#18364E|6|Basin||Multiply
-grassland|cropped_multipolygons|"natural = 'grassland'"|#cdebb0|#4a5759|0.25|1|Lato|8|#333533|no|#4a5759|15|Grassland||Multiply
-scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0|1|Lato|8|#386641|no|#354f52|15|Scrub||Multiply
+grassland|cropped_multipolygons|"natural = 'grassland'"|#cdebb0|#4a5759|0.25|1|Lato|8|#333533|no|#4a5759|15|Grassland / Pitiya||Multiply
+scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0|1|Lato|8|#386641|no|#354f52|15|Scrub / Pitiya||Multiply
 farmland|cropped_multipolygons|"landuse = 'farmland' or landuse = 'orchard' or place = 'farm' or landuse = 'plant_nursery'"|#eef0d5|#606c38|0.25|1|Lato|8|#606c38|no|#606c38|15|Farmland||Multiply
 beach|cropped_multipolygons|"natural = 'beach' or  natural = 'sand'"|#ffd166|transparent|0|1|Lato|0|#333533|no|#7f5539|20|Sand / Beach||Multiply
 sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|12|#333533|no|#eeeeee|20|Ocean / Sea||Overlay

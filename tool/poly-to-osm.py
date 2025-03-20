@@ -2,6 +2,7 @@ from datetime import datetime
 import sys
 import xml.etree.ElementTree as ET
 
+
 def parse_poly_file(poly_file_path, np):
     # Parse a .poly file and return the list of polygons with their points.
     polygons = []
@@ -20,8 +21,10 @@ def parse_poly_file(poly_file_path, np):
                 current_polygon.append((lat, lon))
     return polygons
 
+
 def generate_unique_id(base, counter, np):
     return int(hash(f"{base}_{counter}_{np}_sl_np_mapping") % 1e10)
+
 
 def create_osm_file_from_poly(polygons, output_osm_file, np):
     # Create an OSM XML v0.6 file based on the parsed polygons, adding version and timestamp.
@@ -41,7 +44,7 @@ def create_osm_file_from_poly(polygons, output_osm_file, np):
         # Create nodes for each point in the polygon
         for lat, lon in polygon:
             if (lat, lon) not in unique_nodes:
-                #node_id = generate_unique_id(node_id, np)
+                # node_id = generate_unique_id(node_id, np)
                 node = ET.SubElement(
                     osm,
                     "node",
@@ -56,8 +59,8 @@ def create_osm_file_from_poly(polygons, output_osm_file, np):
                 node_id += 1
             else:
                 nodes.append(unique_nodes[(lat, lon)])
-                
-        #way_id = generate_unique_id(timestamp, way_id, np)
+
+        # way_id = generate_unique_id(timestamp, way_id, np)
         way = ET.SubElement(
             osm, "way", id=str(way_id), version="1", timestamp=timestamp
         )
@@ -79,6 +82,7 @@ def create_osm_file_from_poly(polygons, output_osm_file, np):
     with open(output_osm_file, "wb") as f:
         tree.write(f, encoding="UTF-8", xml_declaration=True)
 
+
 def main():
     # Check if the database path and properties file path are provided
     if len(sys.argv) < 3:
@@ -88,12 +92,15 @@ def main():
     np = sys.argv[1]
     poly_file = sys.argv[2]
     output_osm_file = sys.argv[3]
-    
+
     polygons = parse_poly_file(poly_file, np)
     create_osm_file_from_poly(polygons, output_osm_file, np)
 
-    print(f"OSM file '{output_osm_file}' for the map area polygon created successfully.")
+    print(
+        f"OSM file '{output_osm_file}' for the map area polygon created successfully."
+    )
     return 0
-    
+
+
 if __name__ == "__main__":
     main()

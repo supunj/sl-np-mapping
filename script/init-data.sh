@@ -126,7 +126,8 @@ fi
             -O \
             -o $base_dir/var/$np-surrounding-forests.osm \
             $base_dir/tmp/$np-surrounding-forests-phase-1.osm \
-            wr/natural=wood
+            wr/natural=wood \
+			wr/landuse=forest
 
 # Surrounding protected areas
 "$osmosis_bin" \
