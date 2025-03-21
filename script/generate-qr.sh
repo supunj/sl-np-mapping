@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 # Project root
 base_dir=$1

@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 np=$1
 scale=$2

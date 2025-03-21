@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 np=$1
 
@@ -8,6 +9,9 @@ base_dir=$2
 # Create runtime folders if they don't exist
 mkdir -p $base_dir/tmp
 mkdir -p $base_dir/var
+
+# Clean-up the tmp
+rm -rf $base_dir/tmp/*
 
 # Config params
 sed -e 's|{\$HOME}|'$(printf '%s' "$HOME" | sed 's|/|\\/|g')'|g' \
@@ -21,9 +25,6 @@ gdal_contour_bin=$(yq -r '.tool.gdal.gdal_contour.path' $base_dir/tmp/sl-np-mapp
 np_boundary_name=$(yq -r '.park.'$np'.boundary_name' $base_dir/tmp/sl-np-mapping.yaml)
 np_boundary_tag=$(yq -r '.park.'$np'.boundary_tag' $base_dir/tmp/sl-np-mapping.yaml)
 elevation_interval=$(yq -r '.park.'$np'.elevation_interval' $base_dir/tmp/sl-np-mapping.yaml)
-
-# Clean-up the tmp
-rm $base_dir/tmp/*
 
 #Download if map does not exists
 if ! [ -f "$base_dir/var/sri-lanka-latest.osm.pbf" ]; then

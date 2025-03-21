@@ -5,3 +5,4 @@ symbology-style.db
 var/*
 .fuse_hidden*
 my_py_env/
+.mypy_cache

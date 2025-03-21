@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 polygon=$1 # .geojson
 

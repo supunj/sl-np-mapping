@@ -1,5 +1,5 @@
-
 #!/bin/sh
+set -eu
 
 np=$1
 
@@ -10,6 +10,8 @@ base_dir=$2
 mkdir -p $base_dir/tmp
 mkdir -p $base_dir/var
 mkdir -p $base_dir/db
+
+rm $base_dir/db/$np.db
 
 # Config params
 sed -e 's|{\$HOME}|'$(printf '%s' "$HOME" | sed 's|/|\\/|g')'|g' \
@@ -22,8 +24,6 @@ if ! [ -f "$base_dir/var/$np-cleansed.osm" ] || ! [ -f "$base_dir/var/$np-srtm.t
 	echo "No OSM or elevation data. Please run 'init-data.sh' first"
     exit 1
 fi
-
-rm $base_dir/db/$np.db
 
 # then insert the geometries from the OSM file
 "$ogr2ogr_bin" \

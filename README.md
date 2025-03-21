@@ -20,6 +20,9 @@
   * 1:15000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_15000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_15000.png)
   * 1:30000 - [PDF](render/galoya/Galoya_Valley_National_Park_1_30000.pdf) / [PNG](render/galoya/Galoya_Valley_National_Park_1_30000.png)
   * Overview Map - [SVG](render/galoya/Galoya_Valley_National_Park_Overview.svg) / [PNG](render/galoya/Galoya_Valley_National_Park_Overview.png)
+- 🚧 🚧 🚧 Wilpattu National Park 🐆 🐻 🐘 🐊
+  * 1:40000 - [PDF](render/wilpattu/Wilpattu_National_Park_1_40000.pdf) / [PNG](render/wilpattu/Wilpattu_National_Park_1_40000.png)
+  * Overview Map - [SVG](render/wilpattu/Wilpattu_National_Park_Overview.svg) / [PNG](render/wilpattu/Wilpattu_National_Park_Overview.png)
 
 ## Why?
 
@@ -53,8 +56,9 @@ Whatever is here can be used without any restrictions but attributions will be a
 11. [svgo](https://github.com/svg/svgo) - `npm install -g svgo`
     - *nvm - `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash`*
     - *node.js - `nvm install v22.12.0`*
-12. [QGIS](https://www.qgis.org) - `sudo apt install qgis`
-13. Python 3 and imported modules
+12. [libvips](https://www.libvips.org) - `sudo apt install libvips-tools`
+13. [QGIS](https://www.qgis.org) - `sudo apt install qgis`
+14. Python 3 and imported modules
     - `sudo apt install python3-ruamel.yaml`
     - `sudo apt install python3-geopy`
     - `sudo apt install python3-pillow`

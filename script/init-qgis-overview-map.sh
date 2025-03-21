@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 np=$1
 format=$2
