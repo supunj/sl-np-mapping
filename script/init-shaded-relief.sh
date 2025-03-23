@@ -139,30 +139,49 @@ for tile in $base_dir/tmp/$np-mono-tile_files/0/*; do
               -gravity center \
               $base_dir/tmp/$np-colour-tile_files/0/$tile_file_name \
               $tile \
-              $base_dir/tmp/$np-srtm-combined-tile-$tile_file_name
+              $base_dir/tmp/$np-srtm-blended-tile-$tile_file_name
 done
 
 echo "7. The two sets of images were blended."
 
 # Combine them again
-tiles=$(ls $base_dir/tmp/$np-srtm-combined-tile-*.tiff | \
+tiles=$(ls $base_dir/tmp/$np-srtm-blended-tile-*.tiff | \
         sed -E 's/.*tile-([0-9]+)_([0-9]+)\..*/\2 \1 &/' | \
         sort -n -k1 -k2 | \
         awk '{print $NF}')
-across=$(ls $base_dir/tmp/$np-srtm-combined-tile-*_0.tiff | wc -l) # Get the highest column index
+across=$(ls $base_dir/tmp/$np-srtm-blended-tile-*_0.tiff | wc -l) # Get the highest column index
 
-vips arrayjoin "$tiles" $base_dir/tmp/$np-srtm-combined.tiff --across $across
+"$vips_bin" \
+            arrayjoin \
+            "$tiles" \
+            $base_dir/tmp/$np-srtm-blended-combined.tiff \
+            --across $across
 
 echo "8. Blended image tiles were combined."
+
+image_width=$("$vipsheader_bin" -f width $base_dir/tmp/$np-srtm-panchromatic.tiff 2>/dev/null)
+image_height=$("$vipsheader_bin" -f height $base_dir/tmp/$np-srtm-panchromatic.tiff 2>/dev/null)
+
+# vips arrayjoin requires all tiles to be equal in dimensions. If not it will add a black padding
+# to the bottom and right most tiles, making the image larger than the original.
+# This is problematic when you need to attach geo data back to the image. So we need to crop the
+# image to the original size. 
+"$vips_bin" \
+            crop \
+            $base_dir/tmp/$np-srtm-blended-combined.tiff \
+            $base_dir/tmp/$np-srtm-blended-combined-no-padding.tiff \
+            0 0 $image_width $image_height
+
+echo "9. Black padding was removed from the combined image."
 
 # Re-attach the geo information to the image - this is a temporary measure to make the -cutline work as later on we will lose geo data when we do the convert
 "$gdal_translate_bin" \
               -a_srs EPSG:4326 \
               -a_ullr $1 $4 $3 $2 \
-              $base_dir/tmp/$np-srtm-combined.tiff \
-              $base_dir/tmp/$np-srtm-combined-geo-referenced.tiff
+              $base_dir/tmp/$np-srtm-blended-combined-no-padding.tiff \
+              $base_dir/tmp/$np-srtm-blended-combined-no-padding-geo-referenced.tiff
 
-echo "9. Re-attached geo data to the combined blended image."
+echo "10. Re-attached geo data to the combined blended image."
 
 # Cut out the exact park boundary polygon
 "$gdalwarp_bin" \
@@ -170,30 +189,27 @@ echo "9. Re-attached geo data to the combined blended image."
               -cutline $base_dir/var/$np-boundary-polygon.geojson \
               -dstalpha \
               -cblend 0 \
-              $base_dir/tmp/$np-srtm-combined-geo-referenced.tiff \
+              $base_dir/tmp/$np-srtm-blended-combined-no-padding-geo-referenced.tiff \
               $base_dir/var/$np-hillshade-park-polygon.tiff
 
-echo "10. Park polygon was cut out from the blended image."
+echo "11. Park polygon was cut out from the blended image."
 
 # Create an empty white image, compress, re-attach the geo data and apply the cut-line - this is to be used for creating the glow around the park boundary
 echo "Generating park's outer glow...."
-
-image_width=$("$vipsheader_bin" -f width $base_dir/var/$np-hillshade-park-polygon.tiff 2>/dev/null)
-image_height=$("$vipsheader_bin" -f height $base_dir/var/$np-hillshade-park-polygon.tiff 2>/dev/null)
 
 "$convert_bin" \
               -size "$((image_width - $park_glow_raster_reduce_by_px))"x"$((image_height - $park_glow_raster_reduce_by_px))" canvas:white \
               -compress lzw \
               -depth 8 $base_dir/tmp/$np-glow.tiff
 
-echo "11. Created a blank white to be used with park's outer glow."
+echo "12. Created a blank white to be used with park's outer glow."
 
 "$gdal_translate_bin" \
               -a_srs EPSG:4326 \
               -a_ullr $1 $4 $3 $2 $base_dir/tmp/$np-glow.tiff \
               $base_dir/tmp/$np-glow-geo-referenced.tiff
 
-echo "12. Attached geo data to the white blank image."
+echo "13. Attached geo data to the white blank image."
 
 "$gdalwarp_bin" \
               -overwrite \
@@ -202,7 +218,7 @@ echo "12. Attached geo data to the white blank image."
               -cblend 0 $base_dir/tmp/$np-glow-geo-referenced.tiff \
               $base_dir/tmp/$np-glow-geo-referenced-cropped.tiff
 
-echo "13. Park polygon was cut out from the white blank image."
+echo "14. Park polygon was cut out from the white blank image."
 
 # Add the glow...this may take time
 "$convert_bin" \
@@ -219,7 +235,7 @@ echo "13. Park polygon was cut out from the white blank image."
                 -composite \
                 $base_dir/tmp/$np-glow-cropped-applied.tiff
 
-echo "14. Added the glow to the white cut-out."
+echo "15. Added the glow to the white cut-out."
 
 # Replace the white with transparency
 "$convert_bin" \
@@ -228,7 +244,7 @@ echo "14. Added the glow to the white cut-out."
                 -transparent white \
                 $base_dir/tmp/$np-glow-cropped-applied-transparent.tiff
 
-echo "15. Replaced the white with transparency."
+echo "16. Replaced the white with transparency."
 
 # Geo-reference it again
 "$gdal_translate_bin" \

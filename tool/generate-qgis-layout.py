@@ -1,11 +1,12 @@
 from pathlib import Path
 import sys
 from typing import Any, Dict
-
+from ruamel.yaml import YAML
+from ruamel.yaml.parser import ParserError
 from PIL import Image
+from geopy.distance import geodesic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont
-from geopy.distance import geodesic
 from qgis.PyQt.QtCore import QRectF
 from qgis.core import (
     Qgis,
@@ -25,8 +26,6 @@ from qgis.core import (
     QgsScaleBarSettings,
     QgsTextFormat,
 )
-from ruamel.yaml import YAML
-from ruamel.yaml.parser import ParserError
 
 yaml = YAML(typ="safe")
 
@@ -72,20 +71,20 @@ def addMap(config, np, scale, layout, width_mm, height_mm, extent):
         .get("map", {})
         .get("background_colour")
     )
-    map = QgsLayoutItemMap(layout)
-    map.setId("Main Map")
-    map.setRect(QRectF(0, 0, width_mm, height_mm))
-    map.setExtent(extent)
-    map.zoomToExtent(extent)
-    map.setScale(float(scale))
-    map.setFrameEnabled(False)
-    map.setBackgroundEnabled(True)
-    map.setBackgroundColor(QColor(background_colour))
-    layout.addLayoutItem(map)
-    return map
+    main_map = QgsLayoutItemMap(layout)
+    main_map.setId("Main Map")
+    main_map.setRect(QRectF(0, 0, width_mm, height_mm))
+    main_map.setExtent(extent)
+    main_map.zoomToExtent(extent)
+    main_map.setScale(float(scale))
+    main_map.setFrameEnabled(False)
+    main_map.setBackgroundEnabled(True)
+    main_map.setBackgroundColor(QColor(background_colour))
+    layout.addLayoutItem(main_map)
+    return main_map
 
 
-def addScale(config, np, scale, layout, map, page, margin):
+def addScale(config, np, scale, layout, main_map, page, margin):
     text_colour = (
         config.get("park", {})
         .get(np, {})
@@ -117,7 +116,7 @@ def addScale(config, np, scale, layout, map, page, margin):
 
     scale_bar = QgsLayoutItemScaleBar(layout)
     scale_bar.setId("Scale")
-    scale_bar.setLinkedMap(map)
+    scale_bar.setLinkedMap(main_map)
     scale_bar.setStyle("Numeric")
     scale_bar.setAlignment(QgsScaleBarSettings.Alignment.AlignMiddle)
     scale_bar.setBackgroundEnabled(True)
@@ -141,7 +140,7 @@ def addScale(config, np, scale, layout, map, page, margin):
     return scale_bar
 
 
-def addLegend(config, np, scale, layout, map, page, margin):
+def addLegend(config, np, scale, layout, main_map, page, margin):
     columns = int(
         config.get("park", {})
         .get(np, {})
@@ -194,7 +193,7 @@ def addLegend(config, np, scale, layout, map, page, margin):
 
     legend = QgsLayoutItemLegend(layout)
     legend.setId("Legend")
-    legend.setLinkedMap(map)
+    legend.setLinkedMap(main_map)
     legend.setReferencePoint(QgsLayoutItem.ReferencePoint.LowerRight)
     legend.setAutoUpdateModel(False)
     removeCertainLegendItems(legend)  # Remove unnecessary legend items

@@ -2,6 +2,7 @@ global:
   coordinate_reference_system: "EPSG:4326"
   print_scale: &default_print_scale 10000
   symbol_background_svg: "/usr/share/qgis/svg/backgrounds/background_square_rounded.svg"
+  qgis_profiles_path: "{$HOME}/.local/share/QGIS/QGIS3/profiles"
 tool:
   poly2geojson:
     path: "{$HOME}/.cargo/bin/poly2geojson"

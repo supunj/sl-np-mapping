@@ -23,12 +23,16 @@ python3_bin=$(yq -r '.tool.python.python3.path' $base_dir/tmp/sl-np-mapping.yaml
 coordinate_reference_system=$(yq -r '.global.coordinate_reference_system' $base_dir/tmp/sl-np-mapping.yaml)
 print_scale=$(yq -r '.park.'$np'.print_layout.scale' $base_dir/tmp/sl-np-mapping.yaml)
 output_file_name=$(yq -r '.park.'$np'.output_file_name' $base_dir/tmp/sl-np-mapping.yaml)
+qgis_profiles_path=$(yq -r '.global.qgis_profiles_path' $base_dir/tmp/sl-np-mapping.yaml)
 
 # This can't be run unless data and db is not available
 if ! [ -f "$base_dir/db/$np.db" ]; then
 	echo "No SpatiaLite layers. Please run 'init-db.sh' first"
     exit 1
 fi
+
+# Copy custom qgis function  to the profiles/default/python/expressions folder so that it will be available in the UI (Need to reload QGIS)
+cp -f $base_dir/qgis/function/sl-np-mapping.py $qgis_profiles_path/default/python/expressions
 
 # Generate QGIS project
 sed 's/{$np}/'$np'/g' $base_dir/qgis/layer/$np-qgis-layers.csv > $base_dir/tmp/$np-qgis-layers.csv

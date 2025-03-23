@@ -1,6 +1,8 @@
 import csv
 from pathlib import Path
 import sys
+from ruamel.yaml import YAML
+from ruamel.yaml.parser import ParserError
 from typing import Any, Dict
 from PyQt5.QtCore import QSizeF, Qt
 from PyQt5.QtGui import QColor, QFont, QPainter
@@ -36,8 +38,7 @@ from qgis.core import (
 )
 
 # from qgis.analysis import QgsNativeAlgorithms
-from ruamel.yaml import YAML
-from ruamel.yaml.parser import ParserError
+
 
 yaml = YAML(typ="safe")
 
@@ -91,7 +92,7 @@ def setLabel(row, layer, print_scale):
             QgsPalLayerSettings.Property.Size,
             QgsProperty.fromExpression(
                 f"""
-                ({row[8]}/2) + (3*(9.99^17) / (1 + exp(0.00018*@map_scale + 37)))
+                calculate_size(@map_scale, {row[8]}, {print_scale})
                 """
             ),
         )
@@ -193,7 +194,7 @@ def createSVGPOISymbolLayer(symbol_path, row, print_scale):
         QgsSymbolLayer.Property.PropertySize,
         QgsProperty.fromExpression(
             f"""
-            ({row[5]}/2) + (3*(9.99^17) / (1 + exp(0.00018*@map_scale + 37)))
+            calculate_size(@map_scale, {row[5]}, {print_scale})
             """
         ),
     )
@@ -209,7 +210,7 @@ def createSVGBackgroundSymbolLayer(symbol_path, row, print_scale):
         QgsSymbolLayer.Property.PropertySize,
         QgsProperty.fromExpression(
             f"""
-            ({row[5]}/2) + (3*(9.99^17) / (1 + exp(0.00018*@map_scale + 37)))
+            calculate_size(@map_scale, {row[5]}, {print_scale})
             """
         ),
     )
@@ -226,7 +227,7 @@ def createSVGFillSymbolLayer(symbol_path, row, print_scale):
         QgsSymbolLayer.Property.PropertyWidth,
         QgsProperty.fromExpression(
             f"""
-            ({row[12]}/2) + (3*(9.99^17) / (1 + exp(0.00018*@map_scale + 37)))
+            calculate_size(@map_scale, {row[12]}, {print_scale})
             """
         ),
     )
@@ -259,7 +260,8 @@ def main():
 
     # Initialize QGIS Application in headless mode (for standalone scripts)
     qgs = QgsApplication([], False)
-    qgs.initQgis()
+    qgs.setAttribute(Qt.AA_EnableHighDpiScaling)
+    qgs.initQgis()    
 
     # New QGIS project
     project = QgsProject.instance()
