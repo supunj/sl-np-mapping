@@ -24,7 +24,7 @@ fi
                                                             $np \
                                                             $base_dir/tmp/sl-np-mapping.yaml \
                                                             $base_dir/db/$np.db \
-                                                            $base_dir/qgis/"$np"_overview.qgz \
+                                                            $base_dir/qgis/project/"$np"_overview.qgz \
                                                             $base_dir/tmp/"$output_file_name"_Overview_Raw.$format \
                                                             $format
 

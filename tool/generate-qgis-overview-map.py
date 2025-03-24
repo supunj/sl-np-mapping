@@ -49,13 +49,10 @@ def loadConfig(config_path: str) -> ConfigDict:
         raise SystemExit(f"⚡ Unexpected error loading config: {e}")
 
 
-def createQGISProject(coordinate_reference_system, np, db_path):
-    qgs = QgsApplication([], False)
-    qgs.initQgis()
-
+def createQGISProject(coordinate_reference_system, project_title, db_path):
     project = QgsProject.instance()
     project.setCrs(QgsCoordinateReferenceSystem(coordinate_reference_system))
-    project.setTitle(np)
+    project.setTitle(project_title)
     project.writeEntry("Paths", "Absolute", False)  # Set paths to relative
 
     uri = QgsDataSourceUri()
@@ -99,7 +96,7 @@ def createQGISProject(coordinate_reference_system, np, db_path):
         else:
             print("Layer failed to load.")
 
-    return qgs, project
+    return project
 
 
 def calculatePageSize(project, extent, scale):
@@ -220,8 +217,16 @@ def main():
     layout_name = (
         config.get("park", {}).get(np, {}).get("overview_map", {}).get("layout_name")
     )
+    project_title = (
+        config.get("park", {}).get(np, {}).get("boundary_name") + " - Overview"
+    )
 
-    qgs, project = createQGISProject(coordinate_reference_system, np, db_path)
+    # Initialize QGIS Application in headless mode (for standalone scripts)
+    QgsApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    qgs = QgsApplication([], False)
+    qgs.initQgis()
+
+    project = createQGISProject(coordinate_reference_system, project_title, db_path)
     layout = createLayout(project, scale, layout_name)
     project.layoutManager().addLayout(layout)
     project.write(overview_project_path)

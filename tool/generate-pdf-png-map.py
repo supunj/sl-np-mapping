@@ -2,6 +2,7 @@ from pathlib import Path
 import sys
 from typing import Any, Dict
 
+from PyQt5.QtCore import Qt
 from osgeo import gdal
 from qgis.core import QgsApplication, QgsLayoutExporter, QgsProject
 from ruamel.yaml import YAML
@@ -53,6 +54,7 @@ def main():
     layout_name = scale
 
     # QGIS environment
+    QgsApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     qgs = QgsApplication([], False)
     qgs.initQgis()
 
@@ -73,12 +75,8 @@ def main():
         if pdf_result != QgsLayoutExporter.ExportResult.Success:
             raise Exception("PDF export failed!")
 
-        print(f"PDF exported successfully")
-
-        sys.exit(0)
-
-    # Export to PNG
-    if format == "png":
+        print("PDF exported successfully")
+    elif format == "png":  # Export to PNG
         image_settings = QgsLayoutExporter.ImageExportSettings()
         image_settings.dpi = dpi
         image_settings.pages = [0]
@@ -89,9 +87,9 @@ def main():
         if png_result != QgsLayoutExporter.ExportResult.Success:
             raise Exception("PNG export failed!")
 
-        print(f"PNG exported successfully")
+        print("PNG exported successfully")
 
-        sys.exit(0)
+    qgs.exitQgis()
 
 
 # Main execution

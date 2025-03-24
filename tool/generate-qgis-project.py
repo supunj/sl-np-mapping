@@ -257,16 +257,17 @@ def main():
     )
     print_scale = float(config.get("park", {}).get(np, {}).get("print_scale"))
     symbol_background_svg = config.get("global", {}).get("symbol_background_svg")
+    project_title = config.get("park", {}).get(np, {}).get("boundary_name")
 
     # Initialize QGIS Application in headless mode (for standalone scripts)
+    QgsApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     qgs = QgsApplication([], False)
-    qgs.setAttribute(Qt.AA_EnableHighDpiScaling)
-    qgs.initQgis()    
+    qgs.initQgis()
 
     # New QGIS project
     project = QgsProject.instance()
     project.setCrs(QgsCoordinateReferenceSystem(coordinate_reference_system))
-    project.setTitle(np)
+    project.setTitle(project_title)
     project.writeEntry("Paths", "Absolute", False)  # Set paths to relative
     project.write(new_project_path)
 

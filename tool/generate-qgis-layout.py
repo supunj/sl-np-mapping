@@ -410,9 +410,9 @@ def addOverviewMap(config, np, scale, layout, page, overview_map_png, margin):
     return overview_map
 
 
-def loadProject(base_dir, np):
+def loadProject(qgis_project):
     project = QgsProject.instance()
-    project.read(base_dir + "/qgis/" + np + ".qgz")
+    project.read(qgis_project)
     return project
 
 
@@ -425,14 +425,15 @@ def createPrintLayout(config, np, scale, project, layout_name):
 
 
 def main():
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 6:
         print("Inadequate parameters.")
         sys.exit(1)
 
     np = sys.argv[1]
     scale = sys.argv[2]
-    config_file = sys.argv[3]
+    qgis_project = sys.argv[3]
     base_dir = sys.argv[4]
+    config_file = sys.argv[5]
 
     # Load configuration once
     config = loadConfig(config_file)
@@ -470,11 +471,12 @@ def main():
     layout_name = scale
 
     # QGIS environment
+    QgsApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     qgs = QgsApplication([], False)
     qgs.initQgis()
 
     # Load the existing project
-    project = loadProject(base_dir, np)
+    project = loadProject(qgis_project)
 
     # Delete the layout if exists
     project.layoutManager().removeLayout(

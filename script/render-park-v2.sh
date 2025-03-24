@@ -20,6 +20,6 @@ output_file_name=$(yq -r '.park.'$np'.output_file_name' $base_dir/tmp/sl-np-mapp
                                                         $np \
                                                         $scale \
                                                         $format \
-                                                        $base_dir/qgis/$np.qgz \
+                                                        $base_dir/qgis/project/$np.qgz \
                                                         $base_dir/tmp/sl-np-mapping.yaml \
                                                         $base_dir/render/$np/"$output_file_name"_1_$scale.$format
