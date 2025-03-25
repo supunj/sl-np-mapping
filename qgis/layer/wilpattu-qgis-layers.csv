@@ -1,7 +1,12 @@
 Layer ID|Table|"Where Clause"|Fill / Inner Line / Symbol / Label Colour|Border / Outer Line / Symbol Border Colour|Border / Line / Symbol Size|Opacity|Font Name|Font Size|Font / Symbol Background Colour|Symbol / Label Background (yes = Only Symbol, yes+ = Both Label and the Symbol, no = No Background) |SVG Fill Colour (Only for Polygons)|SVG Fill Size (Only for Polygons)|Layer Name|Pen Style (dotted, dash etc.)|Blending Mode
-boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|#333533|no|||Park Boundary|DashDotDotLine|
 protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|10|1|Lato|15|#0353a4|no|||Marine Reserve||
 protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|10|1|Lato|15|#31572c|no|||Forest Reserve||
+scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#da627d|transparent|7|1|Lato|11|#eeeeee|yes+|||Scenic Area||
+bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0 or INSTR(other_tags, '""tourism""=>""hostel""') > 0"|#c8553d|transparent|7|1|Lato|11|#eeeeee|yes+|||Circuit Bungalow||
+campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|11|#eeeeee|yes+|||Camping Site||
+hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|11|#eeeeee|yes+|||Hindu Temple||
+buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|11|#774936|yes+|||Buddhist Temple||
+historic|points|"INSTR(other_tags, '""historic""=>""ruins""') > 0 or INSTR(other_tags, '""historic""=>""archaeological_site""')"|#242423|transparent|7|1|Lato|11|#eeeeee|yes+|||Historic Place / Ruins||
 waterfall|points|"INSTR(other_tags, '""waterway""=>""waterfall""') > 0"|#18364E|transparent|7|1|Lato|11|#eeeeee|yes+|||Waterfall||
 cave|points|"INSTR(other_tags, '""natural""=>""cave_entrance""') > 0"|#403d39|transparent|7|1|Lato|11|#403d39|no|||Cave||
 peak|points|"INSTR(other_tags, '""natural""=>""peak""') > 0"|#6c584c|#eeeeee|7|1|Lato|11|#eeeeee|yes+|||Mountain Peak||
@@ -17,14 +22,9 @@ toilet|points|"INSTR(other_tags, '""amenity""=>""toilets""') > 0"|#333533|transp
 forest_office|points|"INSTR(other_tags, '""office""=>""forestry""') > 0 or INSTR(other_tags, '""office""=>""research""') > 0"|#333533|transparent|6|1|Lato|9|#333533|no|||Ranger Office||
 junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#6a4c93|transparent|5|1|Lato|9|#6a4c93|no|||Junction||
 information|points|"INSTR(other_tags, '""tourism""=>""information""') > 0 and INSTR(other_tags, '""information""=>""board""') > 0"|#333533|transparent|6|1|Lato|0|#333533|no|||Tourist Information||
-scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#da627d|transparent|7|1|Lato|11|#eeeeee|yes+|||Scenic Area||
-bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0 or INSTR(other_tags, '""tourism""=>""hostel""') > 0"|#c8553d|transparent|7|1|Lato|11|#eeeeee|yes+|||Circuit Bungalow||
-campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|11|#eeeeee|yes+|||Camping Site||
-hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|11|#eeeeee|yes+|||Hindu Temple||
-buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|11|#774936|yes+|||Buddhist Temple||
-historic|points|"INSTR(other_tags, '""historic""=>""ruins""') > 0 or INSTR(other_tags, '""historic""=>""archaeological_site""')"|#242423|transparent|7|1|Lato|11|#eeeeee|yes+|||Historic Place / Ruins||
 ford|points|"INSTR(other_tags, '""ford""=>""yes""') > 0"|#00509d|#eeeeee|4|1|Lato|0|#333533|no|||Ford||
 railway_station|points|"INSTR(other_tags, '""railway""=>""station""') > 0"|#333533|transparent|6|1|Lato|9|#333533|no|||Train Station||
+boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|#333533|no|||Park Boundary|DashDotDotLine|
 railway|cropped_lines|railway = 'rail'|#eeeeee|#787878|1.0|1|Lato|11|#333533|no|||Train Track|DotLine|
 power_line|cropped_lines|"INSTR(other_tags, '""power""=>""line""') > 0"|#888|transparent|0.125|1|Lato|0|#333533|no|||Powerline||
 fence|cropped_lines|"barrier = 'fence'"|#adb5bd|transparent|0.125|1|Lato|0|#333533|no|||Fence||
@@ -55,14 +55,14 @@ waterhole|cropped_multipolygons|"amenity = 'watering_place'"|#aed9e0|#18364E|0.1
 pond|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""pond""') > 0"|#aed9e0|#18364E|0.125|1|Lato|11|#18364E|no||10|Pond / Wala / Kema||Multiply
 reservoir|cropped_multipolygons|"natural = 'water' and (INSTR(other_tags, '""water""=>""reservoir""') > 0)"|#aed9e0|#18364E|0.25|1|Lato|11|#18364E|no|#18364E|12|Reservoir / Tank / Wewa||Multiply
 lake|cropped_multipolygons|"natural = 'water' and (INSTR(other_tags, '""water""=>""lake""') > 0)"|#aed9e0|#18364E|0.25|1|Lato|11|#18364E|no|#18364E|12|Lake / Villu||Multiply
-wetland|cropped_multipolygons|"natural = 'wetland'"|#17c3b2|#028090|0|1|Lato|11|#028090|no|#18364E|15|Wetland / Swamp||Multiply
-lagoon|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""lagoon""') > 0"|#aed9e0|#18364E|0.25|1|Lato|11|#18364E|no|#eeeeee|12|Lagoon||Multiply
-basin|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""basin""') > 0"|#eeeeee|transparent|0.25|1|Lato|11|#18364E|no|#18364E|6|Basin||Multiply
+wetland|cropped_multipolygons|"natural = 'wetland'"|#c9e4de|#028090|0|1|Lato|11|#028090|no|#18364E|15|Wetland / Swamp||Multiply
+lagoon|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""lagoon""') > 0"|#aed9e0|#18364E|0.25|1|Lato|11|#18364E|no|#ffffff|12|Lagoon||Multiply
+basin|cropped_multipolygons|"natural = 'water' and INSTR(other_tags, '""water""=>""basin""') > 0"|transparent|transparent|0|1|Lato|11|#18364E|no|#18364E|12|Basin||Multiply
 grassland|cropped_multipolygons|"natural = 'grassland'"|#cdebb0|#4a5759|0.25|1|Lato|11|#333533|no|#4a5759|15|Grassland / Pitiya||Multiply
 scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0|1|Lato|11|#386641|no|#354f52|15|Scrub / Pitiya||Multiply
 farmland|cropped_multipolygons|"landuse = 'farmland' or landuse = 'orchard' or place = 'farm' or landuse = 'plant_nursery'"|#eef0d5|#606c38|0.25|1|Lato|11|#606c38|no|#606c38|15|Farmland||Multiply
 beach|cropped_multipolygons|"natural = 'beach' or  natural = 'sand'"|#ffd166|transparent|0|1|Lato|0|#333533|no|#7f5539|20|Sand / Beach||Multiply
-sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|15|#333533|no|#eeeeee|20|Ocean / Sea||Overlay
+sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|15|#333533|no|#ffffff|20|Ocean / Sea||Overlay
 forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'excavation'"|#8e9aaf|transparent|0|1|Lato|11|#333533|no|||Forest Clearing||Multiply
 forest_cover|forest_cover||#add19e|transparent|0.5|0.5|Lato|0|#333533|no|||Forest Cover||
 other_forest|surrounding_forests_diff||#add19e|transparent|0|1|Lato|0|#333533|no|||Surrounding Forest||Overlay
