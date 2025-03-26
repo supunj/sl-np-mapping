@@ -366,7 +366,7 @@ def main():
                             "width": float(row[5]) * 1.5,
                             "capstyle": "round",
                         }
-                    )
+                    )                    
                     inner_line = QgsSimpleLineSymbolLayer()
                     inner_line.setColor(QColor(row[3]))
                     inner_line.setWidth(float(row[5]))

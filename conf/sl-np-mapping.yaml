@@ -43,9 +43,9 @@ tool:
   imagemagick:
     convert:
       path: convert
-      glow_colour: &default_glow_colour "#606c38"
-      glow_blur: &default_glow_blur "150x50"
-      glow_level: &default_glow_level "0%,100%,1.0"
+      glow_colour: &default_glow_colour "#346751"
+      glow_blur: &default_glow_blur "400x200"
+      glow_level: &default_glow_level "0%,100%,1"
       crop_tile_width: &default_crop_tile_width 512
       crop_tile_height: &default_crop_tile_height 512
       limit_param: "-limit memory 10GiB -limit map 10GiB -limit disk 10GiB"
