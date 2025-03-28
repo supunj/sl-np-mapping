@@ -139,7 +139,7 @@ def setLabel(row, layer, print_scale):
             buffer_settings.setEnabled(False)
 
             if row[10] == "yes+":  # Enable background for the label as well
-                # text_format.setColor(QColor("#eeeeee"))
+                # text_format.setColor(QColor("#ffffff"))
                 background_settings.setEnabled(True)
                 buffer_settings.setEnabled(False)  # Disable buffer for the label
 
@@ -364,9 +364,9 @@ def main():
                         {
                             "color": row[4],
                             "width": float(row[5]) * 1.5,
-                            "capstyle": "round",
+                            "capstyle": "flat",
                         }
-                    )                    
+                    )
                     inner_line = QgsSimpleLineSymbolLayer()
                     inner_line.setColor(QColor(row[3]))
                     inner_line.setWidth(float(row[5]))
@@ -380,8 +380,8 @@ def main():
                         case "DashDotDotLine":
                             inner_line.setPenStyle(Qt.PenStyle.DashDotDotLine)
                     inner_line.setPenCapStyle(
-                        Qt.PenCapStyle.RoundCap
-                    )  # Set round end caps for lines
+                        Qt.PenCapStyle.FlatCap
+                    )
                     symbol.appendSymbolLayer(inner_line)
 
                     if row[0] == "embankment":

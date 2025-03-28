@@ -1,7 +1,7 @@
 Layer ID|Table|"Where Clause"|Fill / Inner Line / Symbol / Label Colour|Border / Outer Line / Symbol Border Colour|Border / Line / Symbol Size|Opacity|Font Name|Font Size|Font / Symbol Background Colour|Symbol / Label Background (yes = Only Symbol, yes+ = Both Label and the Symbol, no = No Background) |SVG Fill Colour (Only for Polygons)|SVG Fill Size (Only for Polygons)|Layer Name|Pen Style (dotted, dash etc.)|Blending Mode
 protected_marine_area|points|"INSTR(other_tags, '""protected_area""=>""marine""') > 0"|#0353a4|transparent|10|1|Lato|14|#0353a4|no|||Marine Reserve||
 protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') > 0"|#31572c|transparent|10|1|Lato|14|#31572c|no|||Forest Reserve||
-scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#da627d|transparent|7|1|Lato|10|#eeeeee|yes+|||Scenic Area||
+scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#9b5de5|transparent|7|1|Lato|10|#eeeeee|yes+|||Scenic Area||
 bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0 or INSTR(other_tags, '""tourism""=>""hostel""') > 0"|#c8553d|transparent|7|1|Lato|10|#eeeeee|yes+|||Circuit Bungalow||
 campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|10|#eeeeee|yes+|||Camping Site||
 hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|10|#eeeeee|yes+|||Hindu Temple||
@@ -20,7 +20,7 @@ village|points|"place = 'village'"|#333533|transparent|7|1|Lato|12|#333533|no|||
 hotel|points|"INSTR(other_tags, '""tourism""=>""hotel""') > 0 or INSTR(other_tags, '""tourism""=>""guest_house""') > 0 "|#333533|transparent|6|1|Lato|0|#333533|no|||Lodging||
 toilet|points|"INSTR(other_tags, '""amenity""=>""toilets""') > 0"|#333533|transparent|6|1|Lato|0|#333533|no|||Toilet||
 forest_office|points|"INSTR(other_tags, '""office""=>""forestry""') > 0 or INSTR(other_tags, '""office""=>""research""') > 0"|#333533|transparent|6|1|Lato|8|#333533|no|||Ranger Office||
-junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#6a4c93|transparent|5|1|Lato|8|#6a4c93|no|||Junction||
+junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#333534|transparent|5|1|Lato|8|#333534|no|||Junction||
 information|points|"INSTR(other_tags, '""tourism""=>""information""') > 0 and INSTR(other_tags, '""information""=>""board""') > 0"|#333533|transparent|6|1|Lato|0|#333533|no|||Tourist Information||
 ford|points|"INSTR(other_tags, '""ford""=>""yes""') > 0"|#00509d|#eeeeee|4|1|Lato|0|#333533|no|||Ford||
 railway_station|points|"INSTR(other_tags, '""railway""=>""station""') > 0"|#333533|transparent|6|1|Lato|8|#333533|no|||Train Station||
