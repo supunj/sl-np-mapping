@@ -1,5 +1,6 @@
 global:
   coordinate_reference_system: "EPSG:4326"
+  utm: 32644
   print_scale: &default_print_scale 10000
   symbol_background_svg: "/usr/share/qgis/svg/backgrounds/background_square_rounded.svg"
   qgis_profiles_path: "{$HOME}/.local/share/QGIS/QGIS3/profiles"
@@ -9,7 +10,7 @@ tool:
   osmosis:
     path: "{$HOME}/opt/osmosis-0.49.2/bin/osmosis"
   osmium:
-    path: osmium
+    path: "{$HOME}/opt/osmium/osmium-tool/build/osmium"
   gdal:
     gdalwarp:
       path: gdalwarp
@@ -42,7 +43,7 @@ tool:
     path: svgo
   imagemagick:
     convert:
-      path: convert
+      path: magick
       glow_colour: &default_glow_colour "#346751"
       glow_blur: &default_glow_blur "400x200"
       glow_level: &default_glow_level "0%,100%,1"

@@ -9,7 +9,7 @@ where boundary = 'protected_area';
 
 delete
 from surrounding_forests_raw
-where type is null;
+where type is NULL;
 
 -- Split the background at the coastline into ocean polygon and the terrain polygon
 drop view if exists background_polygons;
@@ -21,7 +21,7 @@ with recursive background_split as (
 		 background.geom as background_geom,
 		 coastline.geom as coastline_geom,
 		 (case
-			when coastline.geom is null and background.geom is not null then background.geom
+			when coastline.geom is NULL and background.geom is not NULL then background.geom
 			else ST_GeometryN(ST_Split(background.geom, coastline.geom), 1)
 		  end) as geom,
 	       ST_NumGeometries(ST_Split(background.geom, coastline.geom)) as total_geoms
@@ -39,7 +39,7 @@ with recursive background_split as (
 		 background_geom,
 		 coastline_geom,
 		 (case
-				when coastline_geom is null and background_geom is not null then background_geom
+				when coastline_geom is NULL and background_geom is not NULL then background_geom
 				else ST_GeometryN(geom_collection, idx + 1)
 			 end) as geom,
              total_geoms
@@ -56,14 +56,14 @@ from background_split;
 drop table if exists background_multipolygons;
 
 create table background_multipolygons (
-  ogc_fid integer not null primary key autoincrement,
-  name text null,
-  type text null,
-  natural text null,
-  place text null,
-  other_tags text null
+  ogc_fid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NULL,
+  type VARCHAR NULL,
+  natural VARCHAR NULL,
+  place VARCHAR NULL,
+  other_tags VARCHAR NULL
 );
-select AddGeometryColumn('background_multipolygons', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+select AddGeometryColumn('background_multipolygons', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
 select CreateSpatialIndex('background_multipolygons', 'geom');
 
 insert into background_multipolygons(name, type, natural, place, other_tags, geom)
@@ -73,30 +73,30 @@ insert into background_multipolygons(name, type, natural, place, other_tags, geo
 				         end) as name,
 				         'multipolygon' as type, 
 				         (case
-						 when type = 'terrain' then null
+						 when type = 'terrain' then NULL
 						 else 'water'
 					   end) as natural,
                                  (case
 						 when type = 'terrain' then 'island'
-						 else null
+						 else NULL
 					   end) as place,
 					   (case
-						 when type = 'terrain' then null
+						 when type = 'terrain' then NULL
 						 else '"water"=>"ocean"'
 					   end) as other_tags,
 					   ST_Multi(geom) as geom
 				  from background_polygons
-                          where geom is not null;
+                          where geom is not NULL;
 
 -- Surrounding forests - this table will hold the difference after cutting out the boundary
 drop table if exists surrounding_forests_diff;
 
 create table surrounding_forests_diff (
-  ogc_fid integer not null primary key autoincrement,
-  name text null,
-  other_tags text null
+  ogc_fid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NULL,
+  other_tags VARCHAR NULL
 );
-select AddGeometryColumn('surrounding_forests_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+select AddGeometryColumn('surrounding_forests_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
 select CreateSpatialIndex('surrounding_forests_diff', 'geom');
 
 insert into surrounding_forests_diff(name, other_tags, geom)                                    
@@ -106,7 +106,7 @@ insert into surrounding_forests_diff(name, other_tags, geom)
                                     from surrounding_forests_raw,
                                          (select ST_Union(geom) as geom_b
                                           from park_boundary) as boundary
-                                    where ST_Difference(geom, boundary.geom_b) is not null;
+                                    where ST_Difference(geom, boundary.geom_b) is not NULL;
 
 update surrounding_forests_diff
 set geom = ST_Multi(ST_Intersection(surrounding_forests_diff.geom, background.geom))
@@ -117,11 +117,11 @@ from (select ST_Union(geom) as geom
 drop table if exists surrounding_protected_areas_diff;
 
 create table surrounding_protected_areas_diff (
-  ogc_fid integer not null primary key autoincrement,
-  name text null,
-  other_tags text null
+  ogc_fid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NULL,
+  other_tags VARCHAR NULL
 );
-select AddGeometryColumn('surrounding_protected_areas_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+select AddGeometryColumn('surrounding_protected_areas_diff', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
 select CreateSpatialIndex('surrounding_protected_areas_diff', 'geom');
 
 insert into surrounding_protected_areas_diff(name, other_tags, geom)
@@ -131,7 +131,7 @@ insert into surrounding_protected_areas_diff(name, other_tags, geom)
                                                 from surrounding_protected_areas_raw, 
                                                      (select ST_Union(geom) as geom_b
                                                       from park_boundary) as boundary
-                                                where ST_Difference(geom, boundary.geom_b) is not null;
+                                                where ST_Difference(geom, boundary.geom_b) is not NULL;
 
 update surrounding_protected_areas_diff
 set geom = ST_Multi(ST_Intersection(surrounding_protected_areas_diff.geom, background.geom))
@@ -147,10 +147,10 @@ select name,
 	 end,
 	 ST_StartPoint(GEOSMaximumInscribedCircle(geom, 0)) as visual_center
 from surrounding_protected_areas_diff
-where name is not null;
+where name is not NULL;
 
 -- Crop all polygons to the background polygon
-create table cropped_multipolygons as select multipolygons.*, cast(ST_AsText(ST_Transform(ST_Intersection(multipolygons.geom, background.geom), 4326)) as text) as geom_tmp
+create table cropped_multipolygons as select multipolygons.*, cast(ST_AsText(ST_Transform(ST_Intersection(multipolygons.geom, background.geom), 4326)) as TEXT) as geom_tmp
                               from multipolygons,
                                    (select ST_Union(geom) as geom
                                     from background) as background
@@ -166,7 +166,6 @@ select CreateSpatialIndex('cropped_multipolygons', 'geom');
 update cropped_multipolygons
       set geom = ST_Multi(ST_GeomFromText(geom_tmp, 4326))
 where GeometryType(ST_GeomFromText(geom_tmp)) in ('POLYGON', 'MULTIPOLYGON');
-
 alter table cropped_multipolygons drop column geom_tmp;
 
 -- update cropped_multipolygons
@@ -192,7 +191,7 @@ alter table cropped_multipolygons drop column geom_tmp;
 -- 					where GeometryType(extracted_geometry) in ('POLYGON', 'MULTIPOLYGON');
 
 -- Crop all ways to the background polygon
-create table cropped_lines as select lines.*, cast(ST_AsText(ST_Transform(ST_Intersection(lines.geom, background.geom), 4326)) as text) as geom_tmp
+create table cropped_lines as select lines.*, cast(ST_AsText(ST_Transform(ST_Intersection(lines.geom, background.geom), 4326)) as TEXT) as geom_tmp
                               from lines,
                                    (select ST_Union(geom) as geom
                                     from background) as background
@@ -205,19 +204,19 @@ update cropped_lines
 alter table cropped_lines drop column geom_tmp;
 
 -- Classify contours
-alter table sl_contour add column type text;
-alter table sl_contour add column name text;
+alter table sl_contour add column type VARCHAR;
+alter table sl_contour add column name VARCHAR;
 update sl_contour
 set type = case
             when elev % 100 = 0 then 'major'
             when elev % 20 = 0 then 'medium'
             else 'minor'
            end,
-    name = cast(cast(elev as int) as text);
+    name = cast(cast(elev as int) as TEXT);
 
 -- Crop contours to the background polygon
 create table cropped_sl_contour as select sl_contour.*, 
-                                          cast(ST_AsText(ST_Transform(ST_Intersection(sl_contour.geom, background.geom), 4326)) as text) as geom_tmp
+                                          cast(ST_AsText(ST_Transform(ST_Intersection(sl_contour.geom, background.geom), 4326)) as TEXT) as geom_tmp
                                    from sl_contour,
                                         (select ST_Union(geom) as geom
                                          from background) as background
@@ -229,12 +228,12 @@ update cropped_sl_contour
       set geom = ST_Multi(ST_GeomFromText(geom_tmp, 4326));
 alter table cropped_sl_contour drop column geom_tmp;
 
--- Crop admin boundaries to buffered background polygon so that they extend away from the map features. After that delete the lines with null geometries.
+-- Crop admin boundaries to buffered background polygon so that they extend away from the map features. After that delete the lines with NULL geometries.
 update sl_admin
 set geom = case
                when ST_GeometryType(ST_Intersection(sl_admin.geom, buffered_background.geom)) = 'LINESTRING' then ST_Intersection(sl_admin.geom, buffered_background.geom)
                when ST_GeometryType(ST_Intersection(sl_admin.geom, buffered_background.geom)) = 'GEOMETRYCOLLECTION' then ST_GeometryN(ST_Intersection(sl_admin.geom, buffered_background.geom), 1)
-               else null
+               else NULL
            end
 from (
       select ST_Multi(ST_Buffer(ST_Union(geom), ST_Perimeter(ST_Union(geom)) * 0.001 / (2 * ST_Area(geom)))) as geom
@@ -243,7 +242,7 @@ from (
 
 delete
 from sl_admin
-where geom is null;
+where geom is NULL;
 
 -- Remove the points outside of the background polygon
 delete
@@ -255,10 +254,10 @@ where not ST_Within(geom, (select ST_Union(geom) as geom
 drop table if exists feature_polygons;
 
 create table feature_polygons (
-  ogc_fid integer not null primary key autoincrement,
-  name text null
+  ogc_fid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NULL
 );
-select AddGeometryColumn('feature_polygons', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+select AddGeometryColumn('feature_polygons', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
 select CreateSpatialIndex('feature_polygons', 'geom');
 
 insert into feature_polygons
@@ -270,19 +269,19 @@ where ST_IsValid(geom);
 drop table if exists forest_cover;
 
 create table forest_cover (
-  ogc_fid integer not null primary key autoincrement,
-  name text null
+  ogc_fid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NULL
 );
-select AddGeometryColumn('forest_cover', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+select AddGeometryColumn('forest_cover', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
 select CreateSpatialIndex('forest_cover', 'geom');
 
 insert into forest_cover(name, geom)
 select  case
-          when ST_Difference(boundary.geom, other_poly.geom) is not null then 'forest_cover'
+          when ST_Difference(boundary.geom, other_poly.geom) is not NULL then 'forest_cover'
           else '{$np}_boundary_error'
         end as name,
         case
-          when ST_Difference(boundary.geom, other_poly.geom) is not null then ST_Multi(ST_Difference(boundary.geom, other_poly.geom))
+          when ST_Difference(boundary.geom, other_poly.geom) is not NULL then ST_Multi(ST_Difference(boundary.geom, other_poly.geom))
           else ST_Multi(ST_Buffer(ST_Centroid(other_poly.geom), 0.01))
         end as geom
 from (
@@ -316,11 +315,11 @@ from (with boundary_and_other_poly as (
     )
     select background_multipolygons.ogc_fid as ogc_fid,
            case
-            when ST_Difference(background_multipolygons.geom, boundary_and_other_poly.geom) is not null then background_multipolygons.name
+            when ST_Difference(background_multipolygons.geom, boundary_and_other_poly.geom) is not NULL then background_multipolygons.name
             else '{$np}_boundary_error'
            end as name,
            case
-             when ST_Difference(background_multipolygons.geom, boundary_and_other_poly.geom) is not null then ST_Difference(background_multipolygons.geom, boundary_and_other_poly.geom)
+             when ST_Difference(background_multipolygons.geom, boundary_and_other_poly.geom) is not NULL then ST_Difference(background_multipolygons.geom, boundary_and_other_poly.geom)
              else ST_Buffer(ST_Centroid(background_multipolygons.geom), 0.1)
            end as geom
     from boundary_and_other_poly, background_multipolygons
@@ -328,6 +327,55 @@ from (with boundary_and_other_poly as (
           background_multipolygons.name is 'Indian Ocean') and
           ST_Intersects(background_multipolygons.geom, boundary_and_other_poly.geom)) as diff
 where background_multipolygons.name = diff.name;
+
+-- background_multipolygons table contains small geometries that are quite useless for our purpose. Drop small areas and create a new table
+create table background_multipolygons_cleansed as
+with recursive split(id, name, type, natural, place, other_tags, part_index, geom, geom_area_calc) as (
+  select 
+    ogc_fid as id,
+    name,
+    type,
+    natural,
+    place,
+    other_tags,
+    1 as part_index,
+    geom,
+    ST_Transform(geom, 32644) as geom_area_calc
+  from background_multipolygons
+  where GeometryType(geom) in ('POLYGON', 'MULTIPOLYGON')
+  union all
+  select 
+    s.id,
+    name,
+    type,
+    natural,
+    place,
+    other_tags,
+    s.part_index + 1,
+    s.geom,
+    s.geom_area_calc
+  from split s
+  where s.part_index < NumGeometries(s.geom)
+)
+select 
+  id,
+  name,
+  type,
+  natural,
+  place,
+  other_tags,
+  part_index,
+  ST_AsText(ST_GeometryN(geom, part_index)) as geom_tmp,
+  Area(ST_GeometryN(geom_area_calc, part_index)) as area_sq_m
+from split
+where area_sq_m > 20
+order by area_sq_m desc;
+
+select AddGeometryColumn('background_multipolygons_cleansed', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
+select CreateSpatialIndex('background_multipolygons_cleansed', 'geom');
+update background_multipolygons_cleansed 
+      set geom = ST_Multi(ST_GeomFromText(geom_tmp, 4326));
+alter table background_multipolygons_cleansed drop column geom_tmp;
 
 -- For some reason man_made='clearcut' tagged polygons end up in lines table as closed lines. Make multipolygons from those and insert into polygons table. Then delete lines
 insert into cropped_multipolygons(osm_id, osm_way_id, name, man_made, other_tags, geom)
@@ -350,11 +398,11 @@ insert into points(name, other_tags, geom)
 select culverts.name, culverts.other_tags, ST_Intersection(culverts.geom, highways.geom) as intersection_point
 from (select *
 	from cropped_lines
-	where waterway is not null and
+	where waterway is not NULL and
             INSTR(other_tags, '"tunnel"=>"culvert"') > 0) as culverts,
 	(select *
 	 from cropped_lines
-	 where highway is not null) as highways 
+	 where highway is not NULL) as highways 
 where ST_Intersects(culverts.geom, highways.geom) and
       GeometryType(ST_Intersection(culverts.geom, highways.geom)) = 'POINT';
 
@@ -368,11 +416,11 @@ select case
        ST_Intersection(bridges.geom, waterways.geom) as intersection_point
 from (select *
 	from cropped_lines
-	where highway is not null and
+	where highway is not NULL and
             INSTR(other_tags, '"bridge"=>') > 0) as bridges,
      (select *
 	from cropped_lines
-	where waterway is not null) as waterways	 
+	where waterway is not NULL) as waterways	 
 where ST_Intersects(bridges.geom, waterways.geom) and
       GeometryType(ST_Intersection(bridges.geom, waterways.geom)) = 'POINT';
 
@@ -384,10 +432,10 @@ where waterway in ('dam', 'weir');
 
 -- Create a rectangle that represent the desired park canvas. This will be used in QGIS layout to calculate map extend.
 create table park_canvas (
-  ogc_fid integer not null primary key autoincrement,
-  name text null
+  ogc_fid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name VARCHAR NULL
 );
-select AddGeometryColumn('park_canvas', 'geom',  4326, 'MULTIPOLYGON', 'XY', 1);
+select AddGeometryColumn('park_canvas', 'geom',  4326, 'MULTIPOLYGON', 'XY', 0);
 select CreateSpatialIndex('park_canvas', 'geom');
 
 insert into park_canvas(ogc_fid, name, geom)

@@ -62,9 +62,9 @@ grassland|cropped_multipolygons|"natural = 'grassland'"|#cdebb0|#4a5759|0.25|1|L
 scrub|cropped_multipolygons|"natural = 'scrub'"|#d4e09b|#386641|0|1|Lato|11|#386641|no|#354f52|15|Scrub / Pitiya||Multiply
 farmland|cropped_multipolygons|"landuse = 'farmland' or landuse = 'orchard' or place = 'farm' or landuse = 'plant_nursery'"|#eef0d5|#606c38|0.25|1|Lato|11|#606c38|no|#606c38|15|Farmland||Multiply
 beach|cropped_multipolygons|"natural = 'beach' or  natural = 'sand'"|#ffd166|transparent|0|1|Lato|0|#333533|no|#7f5539|20|Sand / Beach||Multiply
-sea|background_multipolygons|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|15|#333533|no|#ffffff|20|Ocean / Sea||Overlay
+sea|background_multipolygons_cleansed|"name = 'Indian Ocean' and natural = 'water' and INSTR(other_tags, '""water""=>""ocean""') > 0"|#67c0de|transparent|0|1|Lato|15|#333533|no|#ffffff|20|Ocean / Sea||Overlay
 forest_clearing|cropped_multipolygons|"man_made = 'clearcut' or man_made = 'excavation'"|#8e9aaf|transparent|0|1|Lato|11|#333533|no|||Forest Clearing||Multiply
 forest_cover|forest_cover||#add19e|transparent|0.5|0.5|Lato|0|#333533|no|||Forest Cover||
 other_forest|surrounding_forests_diff||#add19e|transparent|0|1|Lato|0|#333533|no|||Surrounding Forest||Overlay
-terrain|background_multipolygons|"name = '{$np}_terrain' and place = 'island'"|#bcb8b1|transparent|0|1|Lato|0|#333533|no|||Terrain||Overlay
+terrain|background_multipolygons_cleansed|"name = '{$np}_terrain' and place = 'island'"|#bcb8b1|transparent|0|1|Lato|0|#333533|no|||Terrain||Overlay
 park_canvas|park_canvas||transparent|transparent|0.5|1|Lato|0|#333533|no|||Park Canvas||

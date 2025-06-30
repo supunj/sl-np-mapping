@@ -104,8 +104,7 @@ echo "3. Monochrome elevation map created."
               $base_dir/tmp/$np-srtm.tiff \
               $base_dir/dem/$np-shaded-relief-cmap.txt \
               $base_dir/tmp/$np-srtm-colour.tiff \
-              -z $gdaldem_hillshade_factor \
-              -s $gdaldem_hillshade_scale
+              -co COMPRESS=LZW
 
 echo "4. Colour elevation map created."
 
@@ -134,11 +133,14 @@ echo "6. Colour elevation map was split for easier processing."
 echo "Blending panchromatic and colour images...."
 for tile in $base_dir/tmp/$np-mono-tile_files/0/*; do
   tile_file_name=$(basename $tile)
+
+  #echo "$composite_bin -dissolve $composite_hillshade_dissolve -gravity center $tile $base_dir/tmp/$np-colour-tile_files/0/$tile_file_name $base_dir/tmp/$np-srtm-blended-tile-$tile_file_name"
+
   "$composite_bin" \
               -dissolve $composite_hillshade_dissolve \
               -gravity center \
-              $base_dir/tmp/$np-colour-tile_files/0/$tile_file_name \
               $tile \
+              $base_dir/tmp/$np-colour-tile_files/0/$tile_file_name \
               $base_dir/tmp/$np-srtm-blended-tile-$tile_file_name
 done
 
@@ -200,14 +202,14 @@ echo "Generating park's outer glow...."
 "$convert_bin" \
               -size "$((image_width - $park_glow_raster_reduce_by_px))"x"$((image_height - $park_glow_raster_reduce_by_px))" canvas:white \
               -compress lzw \
-              -depth 8 $base_dir/tmp/$np-glow.tiff
+              -depth 8 $base_dir/tmp/$np-glow-white-blank.tiff
 
 echo "12. Created a blank white to be used with park's outer glow."
 
 "$gdal_translate_bin" \
               -a_srs EPSG:4326 \
-              -a_ullr $1 $4 $3 $2 $base_dir/tmp/$np-glow.tiff \
-              $base_dir/tmp/$np-glow-geo-referenced.tiff
+              -a_ullr $1 $4 $3 $2 $base_dir/tmp/$np-glow-white-blank.tiff \
+              $base_dir/tmp/$np-glow-white-blank-geo-referenced.tiff
 
 echo "13. Attached geo data to the white blank image."
 
@@ -215,34 +217,30 @@ echo "13. Attached geo data to the white blank image."
               -overwrite \
               -cutline $base_dir/var/$np-boundary-polygon.geojson \
               -dstalpha \
-              -cblend 0 $base_dir/tmp/$np-glow-geo-referenced.tiff \
-              $base_dir/tmp/$np-glow-geo-referenced-cropped.tiff
+              -cblend 0 $base_dir/tmp/$np-glow-white-blank-geo-referenced.tiff \
+              $base_dir/tmp/$np-glow-white-blank-geo-referenced-cropped.tiff
 
 echo "14. Park polygon was cut out from the white blank image."
 
 # Add the glow...this may take time
-"$convert_bin" \
-                $convert_limit_param \
-                $base_dir/tmp/$np-glow-geo-referenced-cropped.tiff \
-                \(  +clone \
-                  -channel A  \
-                  -blur $convert_boundary_glow_blur \
-                  -level $convert_boundary_glow_level \
-                  +channel \
-                  +level-colors "$convert_boundary_glow_colour" \
-                \) \
-                -compose DstOver \
-                -composite \
-                $base_dir/tmp/$np-glow-cropped-applied.tiff
+"$convert_bin" $convert_limit_param \
+              $base_dir/tmp/$np-glow-white-blank-geo-referenced-cropped.tiff \
+              \( -clone 0 -alpha extract -blur $convert_boundary_glow_blur -level $convert_boundary_glow_level \) \
+              \( -clone 0 -fill "$convert_boundary_glow_colour" -colorize 100 -alpha off \) \
+              \( -clone 2 -clone 1 -compose copy_opacity -composite \) \
+              -delete 1,2 \
+              -swap 0,1 \
+              -compose over -composite \
+              $base_dir/tmp/$np-glow-white-blank-geo-referenced-cropped-applied.tiff
 
 echo "15. Added the glow to the white cut-out."
 
 # Replace the white with transparency
 "$convert_bin" \
-                $base_dir/tmp/$np-glow-cropped-applied.tiff \
+                $base_dir/tmp/$np-glow-white-blank-geo-referenced-cropped-applied.tiff \
                 -fuzz 10% \
                 -transparent white \
-                $base_dir/tmp/$np-glow-cropped-applied-transparent.tiff
+                $base_dir/tmp/$np-glow-white-blank-geo-referenced-cropped-applied-transparent.tiff
 
 echo "16. Replaced the white with transparency."
 
@@ -250,7 +248,7 @@ echo "16. Replaced the white with transparency."
 "$gdal_translate_bin" \
                 -a_srs EPSG:4326 \
                 -a_ullr $1 $4 $3 $2 \
-                $base_dir/tmp/$np-glow-cropped-applied-transparent.tiff \
+                $base_dir/tmp/$np-glow-white-blank-geo-referenced-cropped-applied-transparent.tiff \
                 $base_dir/var/$np-park-polygon-glow.tiff
 
 echo "16. Re-attached geo data to the final park glow image."

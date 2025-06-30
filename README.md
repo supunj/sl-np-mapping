@@ -43,26 +43,33 @@ Whatever is here can be used without any restrictions but attributions will be a
 ## Pre-requisites
 
 1. A Linux box. The commands here are for Debian but any other distribution would do as long as you can get the dependencies running
-2. [yq](https://github.com/mikefarah/yq) - `sudo apt install yq`
+2. [yq](https://github.com/mikefarah/yq) - `sudo apt install yq / sudo pacman -S yq`
 3. [poly2geojson](https://github.com/pirxpilot/poly2geojson)
-    - `sudo apt install cargo`
+    - Require Rust and Cargo -> `sudo apt install cargo / sudo pacman -S cargo`
+    - `rustup default stable` * Probably only needed on Arch based distros
     - `cargo install poly2geojson`
-4. [osmosis](https://github.com/openstreetmap/osmosis/releases/latest) - `sudo apt install openjdk-21-jdk`
-5. [GDAL](https://gdal.org/en/stable) - `sudo apt install gdal-bin`
-6. [osmium](https://osmcode.org/osmium-tool) - `sudo apt install osmium-tool`
-7. [SpatiaLite](https://www.gaia-gis.it/fossil/libspatialite/index) - `sudo apt install spatialite-bin`
-8. [ImageMagick](https://imagemagick.org/script/index.php) - `sudo apt install imagemagick`
-9. [rsvg-convert](https://github.com/bvibber/librsvg) - `sudo apt install librsvg2-bin`
-10. [xmlstarlet](https://xmlstar.sourceforge.net) - `sudo apt install xmlstarlet`
-11. [svgo](https://github.com/svg/svgo) - `npm install -g svgo`
+4. [osmosis](https://github.com/openstreetmap/osmosis/releases/latest)
+    - Require Java -> `sudo apt install openjdk-21-jdk / sudo pacman -S jdk-openjdk`
+5. [GDAL](https://gdal.org/en/stable) 
+    - `sudo apt install gdal-bin / sudo pacman -S python-gdal`
+6. [osmium](https://osmcode.org/osmium-tool) 
+    - On Debian based distros -> `sudo apt install osmium-tool`
+    - May have to build it yourself for Arch. Dependancies -> `sudo pacman -S libosmium protozero nlohmann-json boost-libs bzip2 zlib-ng-compat lz4 expat cmake pandoc-cli`
+7. [SpatiaLite](https://www.gaia-gis.it/fossil/libspatialite/index) - `sudo apt install spatialite-bin / yay -S spatialite-tools`
+8. [libvips](https://www.libvips.org)
+    - On Debian -> `sudo apt install libvips-tools` 
+    - On Arch -> `sudo pacman -S libvips openslide`
+9. [ImageMagick v7](https://imagemagick.org/script/index.php) - `sudo apt install imagemagick / sudo pacman -S imagemagick`
+10. [xmlstarlet](https://xmlstar.sourceforge.net) - `sudo apt install xmlstarlet / sudo pacman -S xmlstarlet`
+11. [rsvg-convert](https://github.com/bvibber/librsvg) - `sudo apt install librsvg2-bin`
+12. [svgo](https://github.com/svg/svgo) - `npm install -g svgo`
     - *nvm - `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash`*
     - *node.js - `nvm install v22.12.0`*
-12. [libvips](https://www.libvips.org) - `sudo apt install libvips-tools`
-13. [QGIS](https://www.qgis.org) - `sudo apt install qgis`
+13. [QGIS v3.44](https://www.qgis.org) - `sudo apt install qgis / sudo pacman -S qgis`
 14. Python 3 and imported modules
-    - `sudo apt install python3-ruamel.yaml`
-    - `sudo apt install python3-geopy`
-    - `sudo apt install python3-pillow`
+    - Debian -> `sudo apt install python3-ruamel.yaml python3-geopy python3-pillow`
+    - Arch -> `sudo pacman -S python-ruamel-yaml python-geopy python-pillow`
+15. ['Lato' font](https://www.latofonts.com) 
 
 ### Optional
 
@@ -70,7 +77,7 @@ Whatever is here can be used without any restrictions but attributions will be a
 2. [JOSM](https://josm.openstreetmap.de) with 'poly' plugin for creating [OSM Polygon Filters](https://wiki.openstreetmap.org/wiki/Osmosis/Polygon_Filter_File_Format) - `sudo apt install josm`
 3. [qrencode](https://fukuchi.org/works/qrencode) - `sudo apt install qrencode`
 4. [VSCodium](https://vscodium.com) or any other IDE
-5. 'Monaco' or 'Lato' fonts
+5. 'Monaco' font
 
 ## Process
 
