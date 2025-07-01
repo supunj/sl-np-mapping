@@ -55,7 +55,7 @@ Whatever is here can be used without any restrictions but attributions will be a
 6. [osmium](https://osmcode.org/osmium-tool) 
     - On Debian based distros -> `sudo apt install osmium-tool`
     - May have to build it yourself for Arch. Dependancies -> `sudo pacman -S libosmium protozero nlohmann-json boost-libs bzip2 zlib-ng-compat lz4 expat cmake pandoc-cli`
-7. [SpatiaLite](https://www.gaia-gis.it/fossil/libspatialite/index) - `sudo apt install spatialite-bin / yay -S spatialite-tools`
+7. [SpatiaLite v5.1.0](https://www.gaia-gis.it/fossil/libspatialite/index) - `sudo apt install spatialite-bin / yay -S spatialite-tools`
 8. [libvips](https://www.libvips.org)
     - On Debian -> `sudo apt install libvips-tools` 
     - On Arch -> `sudo pacman -S libvips openslide`
