@@ -4,6 +4,8 @@ protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') 
 scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#9b5de5|transparent|7|1|Lato|11|#eeeeee|yes+|||Scenic Area||
 bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0 or INSTR(other_tags, '""tourism""=>""hostel""') > 0"|#c8553d|transparent|7|1|Lato|11|#eeeeee|yes+|||Circuit Bungalow||
 campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|11|#eeeeee|yes+|||Camping Site||
+mosque|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""islam""') > 0"|#00672b|transparent|7|1|Lato|11|#eeeeee|yes+|||Mosque||
+church|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""christian""') > 0"|#2973B2|transparent|7|1|Lato|11|#eeeeee|yes+|||Church||
 hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|11|#eeeeee|yes+|||Hindu Temple||
 buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|11|#774936|yes+|||Buddhist Temple||
 historic|points|"INSTR(other_tags, '""historic""=>""ruins""') > 0 or INSTR(other_tags, '""historic""=>""archaeological_site""')"|#242423|transparent|7|1|Lato|11|#eeeeee|yes+|||Historic Place / Ruins||
@@ -24,6 +26,7 @@ junction|points|"INSTR(other_tags, '""junction""=>""yes""') > 0"|#333534|transpa
 information|points|"INSTR(other_tags, '""tourism""=>""information""') > 0 and INSTR(other_tags, '""information""=>""board""') > 0"|#333533|transparent|6|1|Lato|0|#333533|no|||Tourist Information||
 ford|points|"INSTR(other_tags, '""ford""=>""yes""') > 0"|#00509d|#eeeeee|4|1|Lato|0|#333533|no|||Ford||
 railway_station|points|"INSTR(other_tags, '""railway""=>""station""') > 0"|#333533|transparent|6|1|Lato|9|#333533|no|||Train Station||
+military|points|"INSTR(other_tags, '""military""=>""barracks""') > 0"|#333533|transparent|6|1|Lato|9|#333533|no|||Military||
 boundary|park_boundary|"boundary = 'national_park' and type = 'boundary'"|transparent|#585123|0.5|1|Lato|0|#333533|no|||Park Boundary|DashDotDotLine|
 railway|cropped_lines|railway = 'rail'|#eeeeee|#787878|1.0|1|Lato|11|#333533|no|||Train Track|DotLine|
 power_line|cropped_lines|"INSTR(other_tags, '""power""=>""line""') > 0"|#888|transparent|0.125|1|Lato|0|#333533|no|||Powerline||
