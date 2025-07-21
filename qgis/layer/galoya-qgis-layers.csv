@@ -4,8 +4,8 @@ protected_area|points|"INSTR(other_tags, '""protected_area""=>""terrestrial""') 
 scenic_area|points|"INSTR(other_tags, '""tourism""=>""viewpoint""') > 0 or INSTR(other_tags, '""tourism""=>""attraction""') > 0 or INSTR(other_tags, '""tourism""=>""artwork""') > 0"|#9b5de5|transparent|7|1|Lato|9|#eeeeee|yes+|||Scenic Area||
 bungalow|points|"INSTR(other_tags, '""tourism""=>""chalet""') > 0 or INSTR(other_tags, '""tourism""=>""hostel""') > 0"|#c8553d|transparent|7|1|Lato|9|#eeeeee|yes+|||Circuit Bungalow||
 campsite|points|"INSTR(other_tags, '""tourism""=>""camp_site""') > 0"|#4c956c|transparent|7|1|Lato|9|#eeeeee|yes+|||Camping Site||
-hindu_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|9|#eeeeee|yes+|||Hindu Temple||
-buddhist_temple|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|9|#774936|yes+|||Buddhist Temple||
+hindu_shrine|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""hindu""') > 0"|#fe7f2d|transparent|7|1|Lato|9|#eeeeee|yes+|||Hindu Shrine||
+buddhist_shrine|points|"INSTR(other_tags, '""amenity""=>""place_of_worship""') > 0 and INSTR(other_tags, '""religion""=>""buddhist""') > 0"|#fdc500|transparent|7|1|Lato|9|#774936|yes+|||Buddhist Shrine||
 historic|points|"INSTR(other_tags, '""historic""=>""ruins""') > 0 or INSTR(other_tags, '""historic""=>""archaeological_site""')"|#242423|transparent|7|1|Lato|9|#eeeeee|yes+|||Historic Place / Ruins||
 waterfall|points|"INSTR(other_tags, '""waterway""=>""waterfall""') > 0"|#18364E|transparent|7|1|Lato|9|#eeeeee|yes+|||Waterfall||
 cave|points|"INSTR(other_tags, '""natural""=>""cave_entrance""') > 0"|#403d39|transparent|7|1|Lato|9|#403d39|no|||Cave||

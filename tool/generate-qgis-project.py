@@ -37,9 +37,6 @@ from qgis.core import (
     QgsLabelLineSettings,
 )
 
-# from qgis.analysis import QgsNativeAlgorithms
-
-
 yaml = YAML(typ="safe")
 
 # Type alias for configuration
@@ -288,7 +285,7 @@ def main():
         project.addMapLayer(park_outer_glow_raster_layer)
         print("Park glow layer added successfully.")
     else:
-        print("Failed to load the raster layer.")
+        print("Failed to load the park glow raster layer.")
 
     # Then add the raster layer with hill-shading
     hill_shade_raster_layer = QgsRasterLayer(hill_shade_raster_file, "hill_shade")
@@ -301,7 +298,7 @@ def main():
         project.addMapLayer(hill_shade_raster_layer)
         print("Hill-shade layer added successfully.")
     else:
-        print("Failed to load the raster layer.")
+        print("Failed to load the hill-shade raster layer.")
 
     with open(layers_file, mode="r", newline="") as file:
         # Skip the first row (header)
@@ -379,9 +376,7 @@ def main():
                             inner_line.setPenStyle(Qt.PenStyle.DashLine)
                         case "DashDotDotLine":
                             inner_line.setPenStyle(Qt.PenStyle.DashDotDotLine)
-                    inner_line.setPenCapStyle(
-                        Qt.PenCapStyle.FlatCap
-                    )
+                    inner_line.setPenCapStyle(Qt.PenCapStyle.FlatCap)
                     symbol.appendSymbolLayer(inner_line)
 
                     if row[0] == "embankment":
@@ -442,37 +437,9 @@ def main():
 
                 # Add the layer to the new project
                 project.addMapLayer(layer)
-                print("Layer added to the new project.")
+                print("Layer '" + layer.name() + "' added to the new project.")
             else:
-                print("Layer failed to load.")
-
-    # ----This segment was used to invoke QGIS functions to do geometric manipulations. They were moved to Spatialite for flexibility. But keeping this segment in case it is needed in the future.----
-    # # Load the input SpatiaLite layers
-    # boundary = project.instance().mapLayersByName("boundary")[0]
-    # all_poly_sans_boundary = project.instance().mapLayersByName("all_poly_sans_boundary")[0]
-
-    # sys.path.append('/usr/share/qgis/python/plugins/')
-    # from qgis import processing
-    # from processing.core.Processing import Processing
-    # qgs.processingRegistry().addProvider(QgsNativeAlgorithms())
-
-    # difference_result = processing.run("qgis:difference", {
-    #     'INPUT':boundary.dataProvider().dataSourceUri(),
-    #     'OVERLAY':all_poly_sans_boundary.dataProvider().dataSourceUri(),
-    #     'OUTPUT':'spatialite://dbname=' + db_path + ' table="forest_cover_2" (geom)' ,'GRID_SIZE':None
-    # })
-
-    # # Load the resulting layer into the project
-    # forest_cover_layer = QgsVectorLayer('dbname=' + db_path + ' table="forest_cover_2" (geom)', "forest_cover_2", "spatialite")
-    # symbol = QgsFillSymbol.createSimple({'color': "#668B4E", 'outline_color': "transparent", 'outline_width': 0})
-    # symbol.symbolLayer(0).setStrokeStyle(Qt.NoPen)
-    # forest_cover_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-    # forest_cover_layer.setOpacity(0.85)
-    # project.addMapLayer(forest_cover_layer)
-    # #project.removeMapLayer(all_poly_sans_boundary)
-
-    # print("Difference layer created successfully.")
-    # ...............................................................................................................................................................................................----
+                print("Layer '" + layer.name() + "' failed to load.")
 
     # Save the project to the specified path
     project.write(new_project_path)
